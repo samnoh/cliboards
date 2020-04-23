@@ -1,13 +1,11 @@
 {
-    "name": "clienTerminal",
+    "name": "clien-terminal",
     "version": "1.0.0",
     "description": "",
     "main": "src/index.js",
     "scripts": {
         "dev": "nodemon --exec babel-node src/index.js",
-        "start": "npm run build && node build/index.js",
-        "prebuild": "rimraf dist build",
-        "build": "babel src -d build"
+        "start": "node src/index.js"
     },
     "repository": {
         "type": "git",
@@ -21,13 +19,7 @@
     },
     "homepage": "https://github.com/samnoh/clienTerminal#readme",
     "devDependencies": {
-        "@babel/cli": "7.8.4",
-        "@babel/core": "7.8.7",
-        "@babel/node": "7.8.7",
-        "@babel/plugin-proposal-class-properties": "7.8.3",
-        "@babel/preset-env": "7.8.7",
-        "nodemon": "2.0.2",
-        "rimraf": "3.0.2"
+        "nodemon": "2.0.2"
     },
     "dependencies": {
         "inquirer": "7.1.0",
