@@ -3,7 +3,6 @@
     "version": "1.0.0",
     "description": "",
     "scripts": {
-        "dev": "nodemon --exec babel-node src/index.js",
         "start": "node src/index.js"
     },
     "repository": {
