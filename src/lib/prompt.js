@@ -54,7 +54,6 @@ const promptNavigate = async (posts) => {
             name: 'answer',
             message: '선택하세요',
             choices: [...posts, new inquirer.Separator(), ...menu, new inquirer.Separator()],
-            pageSize: 15,
         });
 
         if (answer === 'first' || answer === 'prev' || answer === 'next') {

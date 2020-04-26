@@ -1,10 +1,13 @@
 const puppeteer = require('puppeteer');
 const chalk = require('chalk');
+const clear = require('clear');
 
 const { getUrl, boards } = require('./constants');
 
 class Clien {
     async init() {
+        clear();
+
         if (this.browser) return;
 
         try {
@@ -50,6 +53,7 @@ class Clien {
 
     async getPostDetail(link) {
         try {
+            clear();
             await this.page.goto(link);
 
             const post = await this.page.evaluate(() => {
@@ -80,7 +84,10 @@ class Clien {
 
     async getPosts() {
         try {
-            console.log(`${this.currentPageNumber + 1} 페이지`);
+            clear();
+            console.log(
+                `${boards[this.currentBoardIndex].name} ${this.currentPageNumber + 1} 페이지`
+            );
 
             await this.page.goto(
                 getUrl(boards[this.currentBoardIndex].value) + this.currentPageNumber
@@ -122,8 +129,10 @@ class Clien {
                 .filter((posts) => posts)
                 .map(({ title, author, link, upVotes, hit, time, numberOfComments }) => ({
                     name: `${
-                        upVotes ? chalk.blueBright(upVotes) : chalk.gray.dim(upVotes)
-                    } ${d} ${chalk.green.bold(title)}${
+                        upVotes
+                            ? chalk.blueBright(`${(' ' + upVotes).slice(-2)}`)
+                            : chalk.gray.dim(' 0')
+                    } ${d} ${chalk.green.bold(title.slice(0, 30))}${
                         numberOfComments ? ' ' + chalk.white.dim(numberOfComments) : ''
                     } ${d} ${chalk.gray(author)} ${d} ${chalk.gray.dim(hit)} ${d} ${chalk.gray.dim(
                         time
@@ -139,6 +148,7 @@ class Clien {
         try {
             await this.page.close();
             await this.browser.close();
+            clear();
         } catch (e) {
             console.error(e);
         }

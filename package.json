@@ -21,6 +21,7 @@
     },
     "dependencies": {
         "chalk": "4.0.0",
+        "clear": "0.1.0",
         "inquirer": "7.1.0",
         "puppeteer": "2.1.1"
     },
