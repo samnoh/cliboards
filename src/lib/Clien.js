@@ -7,7 +7,8 @@ const { parseEllipsisText } = require('./util');
 
 class Clien {
     async init() {
-        // clear();
+        clear();
+        this.currentPageNumber = 0;
 
         if (this.browser) return;
 
@@ -50,41 +51,6 @@ class Clien {
     async changePageNumber(pageNumber) {
         this.currentPageNumber = pageNumber;
         return await this.getPosts();
-    }
-
-    async getPostDetail(link) {
-        try {
-            clear();
-            await this.page.goto(link);
-
-            const post = await this.page.evaluate(() => {
-                const body = document.querySelector('.post_article');
-                const comments = document.querySelectorAll('.comment_row');
-
-                return {
-                    body: body.textContent
-                        .split('\n')
-                        .map((b) => b.trim())
-                        .join('\n')
-                        .trim(),
-                    comments: Array.from(comments).map((comment) => {
-                        const body = comment.querySelector('.comment_content');
-                        const author = comment.querySelector('.contact_name');
-                        const time = comment.querySelector('.comment_time');
-
-                        return {
-                            author:
-                                author.innerText || author.querySelector('img').getAttribute('alt'),
-                            time: time.innerText.split(' ')[0],
-                            body: body.innerText || '',
-                        };
-                    }),
-                };
-            });
-            console.log(JSON.stringify(post));
-        } catch (e) {
-            console.error(e);
-        }
     }
 
     async getPosts() {
@@ -144,6 +110,42 @@ class Clien {
                     )}`,
                     value: link,
                 }));
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    async getPostDetail(link) {
+        try {
+            clear();
+            await this.page.goto(link);
+
+            const post = await this.page.evaluate(() => {
+                const body = document.querySelector('.post_article');
+                const comments = document.querySelectorAll('.comment_row');
+
+                return {
+                    body: body.textContent
+                        .split('\n')
+                        .map((b) => b.trim())
+                        .join('\n')
+                        .trim(),
+                    comments: Array.from(comments).map((comment) => {
+                        const body = comment.querySelector('.comment_content');
+                        const author = comment.querySelector('.contact_name');
+                        const time = comment.querySelector('.comment_time');
+
+                        return {
+                            author:
+                                author.innerText || author.querySelector('img').getAttribute('alt'),
+                            time: time.innerText.split(' ')[0],
+                            body: body.innerText || '',
+                        };
+                    }),
+                };
+            });
+
+            return post;
         } catch (e) {
             console.error(e);
         }
