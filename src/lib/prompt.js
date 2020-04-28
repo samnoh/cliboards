@@ -1,4 +1,5 @@
 const inquirer = require('inquirer');
+const { terminal } = require('terminal-kit');
 
 const clien = require('./Clien');
 const { boards } = require('./constants');
@@ -7,7 +8,7 @@ const promptBoard = async () => {
     try {
         await clien.init();
         clien.currentPageNumber = 0;
-
+        ui.updateBottomBar('new bottom bar content\n');
         const { board } = await inquirer.prompt({
             type: 'list',
             name: 'board',

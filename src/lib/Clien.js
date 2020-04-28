@@ -7,7 +7,7 @@ const { parseEllipsisText } = require('./util');
 
 class Clien {
     async init() {
-        clear();
+        // clear();
 
         if (this.browser) return;
 
@@ -62,7 +62,11 @@ class Clien {
                 const comments = document.querySelectorAll('.comment_row');
 
                 return {
-                    body: body.textContent.trim(),
+                    body: body.textContent
+                        .split('\n')
+                        .map((b) => b.trim())
+                        .join('\n')
+                        .trim(),
                     comments: Array.from(comments).map((comment) => {
                         const body = comment.querySelector('.comment_content');
                         const author = comment.querySelector('.contact_name');
@@ -77,7 +81,7 @@ class Clien {
                     }),
                 };
             });
-            console.log(post);
+            console.log(JSON.stringify(post));
         } catch (e) {
             console.error(e);
         }
