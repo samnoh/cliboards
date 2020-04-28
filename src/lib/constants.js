@@ -13,5 +13,12 @@ module.exports = {
             value: 'cm_iphonien',
             name: '아이포니앙',
         },
+        {
+            value: 'cm_mac',
+            name: 'MaClien',
+        },
     ],
+    maxNumbers: {
+        title: 27,
+    },
 };

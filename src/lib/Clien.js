@@ -3,6 +3,7 @@ const chalk = require('chalk');
 const clear = require('clear');
 
 const { getUrl, boards } = require('./constants');
+const { parseEllipsisText } = require('./util');
 
 class Clien {
     async init() {
@@ -132,7 +133,7 @@ class Clien {
                         upVotes
                             ? chalk.blueBright(`${(' ' + upVotes).slice(-2)}`)
                             : chalk.gray.dim(' 0')
-                    } ${d} ${chalk.green.bold(title.slice(0, 30))}${
+                    } ${d} ${chalk.green.bold(parseEllipsisText(title))} ${
                         numberOfComments ? ' ' + chalk.white.dim(numberOfComments) : ''
                     } ${d} ${chalk.gray(author)} ${d} ${chalk.gray.dim(hit)} ${d} ${chalk.gray.dim(
                         time
