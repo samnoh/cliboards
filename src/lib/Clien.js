@@ -1,12 +1,10 @@
 const puppeteer = require('puppeteer');
-const clear = require('clear');
 
 const { getUrl, boards } = require('./constants');
 const { parseEllipsisText } = require('./util');
 
 class Clien {
     async init() {
-        clear();
         this.currentPageNumber = 0;
 
         if (this.browser) return;
@@ -38,12 +36,8 @@ class Clien {
         }
     }
 
-    async changeBoard(boardValue) {
-        if (typeof boardValue === 'string') {
-            this.currentBoardIndex = boards.findIndex((board) => board.value === boardValue);
-        } else if (typeof boardValue === 'number') {
-            this.currentBoardIndex = boardValue;
-        }
+    async changeBoard(board) {
+        this.currentBoardIndex = boards.findIndex((_board) => _board.value === board.value);
         return await this.getPosts();
     }
 
@@ -54,10 +48,9 @@ class Clien {
 
     async getPosts() {
         try {
-            clear();
-            console.log(
-                `${boards[this.currentBoardIndex].name} ${this.currentPageNumber + 1} 페이지`
-            );
+            // console.log(
+            //     `${boards[this.currentBoardIndex].name} ${this.currentPageNumber + 1} 페이지`
+            // );
 
             await this.page.goto(
                 getUrl(boards[this.currentBoardIndex].value) + this.currentPageNumber
@@ -115,7 +108,6 @@ class Clien {
 
     async getPostDetail(link) {
         try {
-            clear();
             await this.page.goto(link);
 
             const post = await this.page.evaluate(() => {
