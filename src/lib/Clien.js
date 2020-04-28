@@ -1,5 +1,4 @@
 const puppeteer = require('puppeteer');
-const chalk = require('chalk');
 const clear = require('clear');
 
 const { getUrl, boards } = require('./constants');
@@ -94,20 +93,19 @@ class Clien {
                 });
             });
 
-            const d = chalk.white('|');
-
             return posts
                 .filter((posts) => posts)
                 .map(({ title, author, link, upVotes, hit, time, numberOfComments }) => ({
-                    name: `${
-                        upVotes
-                            ? chalk.blueBright(`${(' ' + upVotes).slice(-2)}`)
-                            : chalk.gray.dim(' 0')
-                    } ${d} ${chalk.green.bold(parseEllipsisText(title))} ${
-                        numberOfComments ? ' ' + chalk.white.dim(numberOfComments) : ''
-                    } ${d} ${chalk.gray(author)} ${d} ${chalk.gray.dim(hit)} ${d} ${chalk.gray.dim(
-                        time
-                    )}`,
+                    // name: `${
+                    //     upVotes
+                    //         ? chalk.blueBright(`${(' ' + upVotes).slice(-2)}`)
+                    //         : chalk.gray.dim(' 0')
+                    // } ${d} ${chalk.green.bold(parseEllipsisText(title))} ${
+                    //     numberOfComments ? ' ' + chalk.white.dim(numberOfComments) : ''
+                    // } ${d} ${chalk.gray(author)} ${d} ${chalk.gray.dim(hit)} ${d} ${chalk.gray.dim(
+                    //     time
+                    // )}`,
+                    name: `${parseEllipsisText(title)}`,
                     value: link,
                 }));
         } catch (e) {

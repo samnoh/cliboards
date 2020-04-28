@@ -1,4 +1,3 @@
-const inquirer = require('inquirer');
 const blessed = require('blessed');
 
 const clien = require('./Clien');
@@ -36,7 +35,7 @@ screen.key(['escape', 'q', 'c', 'r', 'C-c'], async (ch, key) => {
     }
 });
 
-const prompt = async () => {
+const init = async () => {
     try {
         await clien.init();
     } catch (e) {
@@ -197,4 +196,8 @@ const promptDetail = async (link) => {
     } catch (e) {
         console.error(e);
     }
+};
+
+module.exports = {
+    init,
 };

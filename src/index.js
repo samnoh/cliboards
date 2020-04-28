@@ -3,7 +3,7 @@
 const prompt = require('./lib/prompt');
 
 const init = async () => {
-    await prompt.prompt();
+    await prompt.init();
 };
 
 init();
