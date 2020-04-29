@@ -18,7 +18,4 @@ module.exports = {
             name: 'MaClien',
         },
     ],
-    maxNumbers: {
-        title: 27,
-    },
 };

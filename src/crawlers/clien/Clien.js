@@ -1,57 +1,17 @@
-const puppeteer = require('puppeteer');
+const Crawler = require('../Crawler');
 
 const { getUrl, boards } = require('./constants');
-const { parseEllipsisText } = require('./util');
 
-class Clien {
-    async init() {
+class Clien extends Crawler {
+    constructor() {
+        super();
+
+        this.currentBoardIndex = 0;
         this.currentPageNumber = 0;
-
-        if (this.browser) return;
-
-        try {
-            this.currentBoardIndex = 0;
-            this.currentPageNumber = 0;
-
-            this.browser = await puppeteer.launch({ headless: true });
-
-            this.page = await this.browser.newPage();
-            await this.page.setUserAgent(
-                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.122 Safari/537.36'
-            );
-            await this.page.setRequestInterception(true);
-            this.page.on('request', (request) => {
-                if (
-                    ['image', 'stylesheet', 'font', 'script'].indexOf(request.resourceType()) !== -1
-                ) {
-                    request.abort();
-                } else {
-                    request.continue();
-                }
-            });
-
-            return this;
-        } catch (e) {
-            console.error(e);
-        }
-    }
-
-    async changeBoard(board) {
-        this.currentBoardIndex = boards.findIndex((_board) => _board.value === board.value);
-        return await this.getPosts();
-    }
-
-    async changePageNumber(pageNumber) {
-        this.currentPageNumber = pageNumber;
-        return await this.getPosts();
     }
 
     async getPosts() {
         try {
-            // console.log(
-            //     `${boards[this.currentBoardIndex].name} ${this.currentPageNumber + 1} 페이지`
-            // );
-
             await this.page.goto(
                 getUrl(boards[this.currentBoardIndex].value) + this.currentPageNumber
             );
@@ -98,7 +58,7 @@ class Clien {
                     // } ${d} ${chalk.gray(author)} ${d} ${chalk.gray.dim(hit)} ${d} ${chalk.gray.dim(
                     //     time
                     // )}`,
-                    name: `${parseEllipsisText(title)}`,
+                    name: `${title}`,
                     value: link,
                 }));
         } catch (e) {
@@ -141,15 +101,15 @@ class Clien {
         }
     }
 
-    async close() {
-        try {
-            await this.page.close();
-            await this.browser.close();
-            clear();
-        } catch (e) {
-            console.error(e);
-        }
+    async changeBoard(board) {
+        this.currentBoardIndex = boards.findIndex((_board) => _board.value === board.value);
+        return await this.getPosts();
+    }
+
+    async changePageNumber(pageNumber) {
+        this.currentPageNumber = pageNumber;
+        return await this.getPosts();
     }
 }
 
-module.exports = new Clien();
+module.exports = Clien;

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const prompt = require('./lib/prompt');
+const clien = require('./cli/CLIClien');
 
 (async () => {
-    await prompt.init();
+    await clien.start();
 })();
