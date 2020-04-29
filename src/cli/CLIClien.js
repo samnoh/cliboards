@@ -67,7 +67,6 @@ class CLIClien extends CLI {
 
     async start() {
         try {
-            await this.clien.start();
             //#region select
             this.boardList.on('select', async (item, index) => {
                 this.titleBox.focus();
@@ -106,6 +105,8 @@ class CLIClien extends CLI {
                 this.focusEventCallback(`title...`, 'q: back');
             });
             //#endregion
+
+            await this.clien.start();
 
             this.boardList.focus();
         } catch (e) {

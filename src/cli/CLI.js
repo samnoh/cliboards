@@ -7,6 +7,10 @@ class CLI {
             throw new TypeError('Abstract class "Crawler" cannot be instantiated directly');
         }
 
+        if (this.start === undefined || typeof this.start !== 'function') {
+            throw new TypeError('Child should extend the method "start"');
+        }
+
         this.screen = blessed.screen({
             smartCSR: true,
             fullUnicode: true,
