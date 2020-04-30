@@ -22,7 +22,8 @@ class CLIClien extends CLI {
             },
             style: {
                 selected: {
-                    bg: 'red',
+                    bg: 'lightgray',
+                    fg: 'black',
                 },
             },
             keys: true,
@@ -39,7 +40,8 @@ class CLIClien extends CLI {
             },
             style: {
                 selected: {
-                    bg: 'red',
+                    bg: 'lightgray',
+                    fg: 'black',
                 },
             },
             keys: true,
@@ -76,7 +78,7 @@ class CLIClien extends CLI {
                 nextWidget.setItems(
                     this.posts.map(
                         (post) =>
-                            `${post.title} {gray-fg}${post.numberOfComments} {|} ${post.author}{/}`
+                            `${post.title} {gray-fg}${post.numberOfComments} {|}${post.author}{/}`
                     )
                 );
 
@@ -91,7 +93,8 @@ class CLIClien extends CLI {
                 nextWidget.setContent(post.body);
 
                 this.setTitleFooterContent(
-                    `${post.title} {|} {gray-fg}${post.author} | ${post.hit} | ${post.upVotes}{/}`,
+                    post.title,
+                    `${post.author} | ${post.hit} | ${post.upVotes}`,
                     'q: back'
                 );
             });
@@ -99,28 +102,27 @@ class CLIClien extends CLI {
 
             //#region focus
             this.boardList.on('focus', () => {
-                this.setTitleFooterContent('CLI-ang', 'q: quit');
+                this.setTitleFooterContent('CLI-ang', '', 'q: quit');
             });
 
             this.listList.on('focus', () => {
                 this.setTitleFooterContent(
-                    `${boards[this.clien.currentBoardIndex].name} ${
-                        this.clien.currentPageNumber + 1
-                    } 페이지`,
-                    'q: back'
+                    boards[this.clien.currentBoardIndex].name,
+                    `${this.clien.currentPageNumber + 1} 페이지`,
+                    'q: back, r: refresh, number: page number, left/right arrow: prev/next page'
                 );
             });
+            //#endregion focus
 
             this.boardList.focus();
-            //#endregion focus
         } catch (e) {
             console.error(e);
         }
     }
 
-    setTitleFooterContent(titleText, footerText) {
-        this.titleBox.setContent(titleText);
-        this.footerBox.setContent(footerText);
+    setTitleFooterContent(leftTitleText, rightTitleText, footerText) {
+        this.titleBox.setContent(`${leftTitleText} {|}{gray-fg}${rightTitleText}{/}`);
+        this.footerBox.setContent(`{gray-fg}${footerText}{/}`);
 
         this.screen.render();
     }

@@ -66,7 +66,7 @@ class Clien extends Crawler {
             await this.page.goto(link);
 
             const post = await this.page.evaluate(() => {
-                const title = document.querySelector('.post_subject');
+                const title = document.querySelector('.post_subject span');
                 const author = document.querySelector('.post_info .contact_name');
                 const hit = document.querySelector('.view_info');
                 const body = document.querySelector('.post_article');
@@ -74,17 +74,16 @@ class Clien extends Crawler {
                 const comments = document.querySelectorAll('.comment_row');
 
                 return {
-                    title: title.textContent.trim(),
+                    title: title.innerText.trim(),
                     author:
-                        author.textContent.trim() ||
-                        author.querySelector('img').getAttribute('alt'),
-                    hit: hit.textContent.trim(),
+                        author.innerText.trim() || author.querySelector('img').getAttribute('alt'),
+                    hit: hit.innerText.trim(),
                     body: body.textContent
                         .split('\n')
                         .map((b) => b.trim())
                         .join('\n')
                         .trim(),
-                    upVotes: parseInt(upVotes.textContent),
+                    upVotes: parseInt(upVotes.innerText),
                     comments: Array.from(comments).map((comment) => {
                         const body = comment.querySelector('.comment_content');
                         const author = comment.querySelector('.contact_name');

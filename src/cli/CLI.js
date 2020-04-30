@@ -51,11 +51,13 @@ class CLI {
 
         this.footerBox = blessed.box({
             parent: box,
+            tags: true,
             width: '100%',
             top: '100%-1',
             height: 1,
             padding: {
                 left: 2,
+                right: 2,
             },
             style: {
                 bg: '#243B4D',
