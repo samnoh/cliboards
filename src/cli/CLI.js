@@ -25,6 +25,7 @@ class CLI {
 
         this.titleBox = blessed.box({
             parent: box,
+            tags: true,
             top: 0,
             width: '100%',
             height: 1,
@@ -39,10 +40,6 @@ class CLI {
 
         this.bodyBox = blessed.box({
             parent: box,
-            scrollable: true,
-            keys: true,
-            vi: true,
-            alwaysScroll: true,
             top: 1,
             bottom: 1,
             width: '100%',
@@ -94,6 +91,7 @@ class CLI {
             currWidget.detach();
             this.bodyBox.append(nextWidget);
             nextWidget.focus();
+            return nextWidget;
         } else {
             this.terminate();
         }

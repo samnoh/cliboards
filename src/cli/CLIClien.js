@@ -4,7 +4,7 @@ const CLI = require('./CLI');
 const {
     Clien,
     constants: { boards },
-} = require('../crawlers/clien');
+} = require('../crawler/clien');
 
 class CLIClien extends CLI {
     constructor() {
@@ -27,10 +27,10 @@ class CLIClien extends CLI {
             },
             keys: true,
             vi: true,
-            draggable: true,
         });
         this.listList = blessed.list({
             width: '100%',
+            tags: true,
             scrollbar: {
                 ch: ' ',
                 style: {
@@ -44,7 +44,6 @@ class CLIClien extends CLI {
             },
             keys: true,
             vi: true,
-            draggable: true,
         });
         this.detailBox = blessed.box({
             scrollable: true,
@@ -58,7 +57,6 @@ class CLIClien extends CLI {
             },
         });
         this.widgets = [this.boardList, this.listList, this.detailBox];
-        this.screen.render();
 
         this.clien = new Clien();
         this.terminateCallback = async () => await this.clien.close();
@@ -67,33 +65,45 @@ class CLIClien extends CLI {
 
     async start() {
         try {
+            await this.clien.start();
+
             //#region select
             this.boardList.on('select', async (item, index) => {
                 this.titleBox.focus();
                 this.posts = await this.clien.changeBoard(boards[index]);
 
-                this.moveToWidget('next');
-                this.listList.setItems(this.posts.map((post) => post.name));
-                this.listList.focus();
+                const nextWidget = this.moveToWidget('next');
+                nextWidget.setItems(
+                    this.posts.map(
+                        (post) =>
+                            `${post.title} {gray-fg}${post.numberOfComments} {|} ${post.author}{/}`
+                    )
+                );
+
+                this.screen.render();
             });
 
             this.listList.on('select', async (item, index) => {
                 this.titleBox.focus();
-                const post = await this.clien.getPostDetail(this.posts[index].value);
+                const post = await this.clien.getPostDetail(this.posts[index].link);
 
-                this.moveToWidget('next');
-                this.detailBox.setContent(post.body);
-                this.detailBox.focus();
+                const nextWidget = this.moveToWidget('next');
+                nextWidget.setContent(post.body);
+
+                this.setTitleFooterContent(
+                    `${post.title} {|} {gray-fg}${post.author} | ${post.hit} | ${post.upVotes}{/}`,
+                    'q: back'
+                );
             });
             //#endregion select
 
             //#region focus
             this.boardList.on('focus', () => {
-                this.focusEventCallback('CLI-ang', 'q: quit');
+                this.setTitleFooterContent('CLI-ang', 'q: quit');
             });
 
             this.listList.on('focus', () => {
-                this.focusEventCallback(
+                this.setTitleFooterContent(
                     `${boards[this.clien.currentBoardIndex].name} ${
                         this.clien.currentPageNumber + 1
                     } 페이지`,
@@ -101,20 +111,14 @@ class CLIClien extends CLI {
                 );
             });
 
-            this.detailBox.on('focus', () => {
-                this.focusEventCallback(`title...`, 'q: back');
-            });
-            //#endregion
-
-            await this.clien.start();
-
             this.boardList.focus();
+            //#endregion focus
         } catch (e) {
             console.error(e);
         }
     }
 
-    focusEventCallback(titleText, footerText) {
+    setTitleFooterContent(titleText, footerText) {
         this.titleBox.setContent(titleText);
         this.footerBox.setContent(footerText);
 

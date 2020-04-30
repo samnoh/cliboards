@@ -1,6 +1,6 @@
 const Crawler = require('../Crawler');
 
-const { getUrl, boards } = require('./constants');
+const { baseUrl, getUrl, boards } = require('./constants');
 
 class Clien extends Crawler {
     constructor() {
@@ -16,7 +16,7 @@ class Clien extends Crawler {
                 getUrl(boards[this.currentBoardIndex].value) + this.currentPageNumber
             );
 
-            const posts = await this.page.evaluate(() => {
+            const posts = await this.page.evaluate((baseUrl) => {
                 const lists = document.querySelectorAll('.list_content .list_item');
 
                 return Array.from(lists).map((list) => {
@@ -36,7 +36,7 @@ class Clien extends Crawler {
                                   author.querySelector('img').getAttribute('alt'),
                               hit: hit.innerText.trim(),
                               time: time.innerText.trim().split(' ')[0],
-                              link: 'https://clien.net' + link.getAttribute('href'),
+                              link: baseUrl + link.getAttribute('href'),
                               upVotes: parseInt(upVotes.innerText),
                               numberOfComments: numberOfComments
                                   ? parseInt(numberOfComments.innerText)
@@ -44,22 +44,17 @@ class Clien extends Crawler {
                           }
                         : null;
                 });
-            });
+            }, baseUrl);
 
             return posts
                 .filter((posts) => posts)
                 .map(({ title, author, link, upVotes, hit, time, numberOfComments }) => ({
-                    // name: `${
-                    //     upVotes
-                    //         ? chalk.blueBright(`${(' ' + upVotes).slice(-2)}`)
-                    //         : chalk.gray.dim(' 0')
-                    // } ${d} ${chalk.green.bold(parseEllipsisText(title))} ${
-                    //     numberOfComments ? ' ' + chalk.white.dim(numberOfComments) : ''
-                    // } ${d} ${chalk.gray(author)} ${d} ${chalk.gray.dim(hit)} ${d} ${chalk.gray.dim(
-                    //     time
-                    // )}`,
-                    name: `${title}`,
-                    value: link,
+                    title,
+                    author,
+                    hit,
+                    numberOfComments,
+                    upVotes,
+                    link,
                 }));
         } catch (e) {
             console.error(e);
@@ -71,15 +66,25 @@ class Clien extends Crawler {
             await this.page.goto(link);
 
             const post = await this.page.evaluate(() => {
+                const title = document.querySelector('.post_subject');
+                const author = document.querySelector('.post_info .contact_name');
+                const hit = document.querySelector('.view_info');
                 const body = document.querySelector('.post_article');
+                const upVotes = document.querySelector('.symph_count strong');
                 const comments = document.querySelectorAll('.comment_row');
 
                 return {
+                    title: title.textContent.trim(),
+                    author:
+                        author.textContent.trim() ||
+                        author.querySelector('img').getAttribute('alt'),
+                    hit: hit.textContent.trim(),
                     body: body.textContent
                         .split('\n')
                         .map((b) => b.trim())
                         .join('\n')
                         .trim(),
+                    upVotes: parseInt(upVotes.textContent),
                     comments: Array.from(comments).map((comment) => {
                         const body = comment.querySelector('.comment_content');
                         const author = comment.querySelector('.contact_name');

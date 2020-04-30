@@ -1,4 +1,5 @@
 module.exports = {
+    baseUrl: 'https://clien.net',
     getUrl: (boardName) => `https://www.clien.net/service/board/${boardName}?&po=`,
     boards: [
         {
