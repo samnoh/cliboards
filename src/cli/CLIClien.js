@@ -69,6 +69,23 @@ class CLIClien extends CLI {
         try {
             await this.clien.start();
 
+            //#region keys
+            // this.listList.on('keypress', async (ch, key) => {
+            //     if (key.name === 'left' && this.clien.currentPageNumber > 0) {
+            //         // this.posts = await this.clien.changePageNumber(
+            //         //     this.clien.currentPageNumber - 1
+            //         // );
+            //         this.clien.currentPageNumber -= 1;
+            //     } else if (key.name === 'right') {
+            //         // this.posts = await this.clien.changePageNumber(
+            //         //     this.clien.currentPageNumber + 1
+            //         // );
+            //         this.clien.currentPageNumber += 1;
+            //     }
+            //     this.boardList.select(boards[this.clien.currentBoardIndex]);
+            // });
+            //#endregion
+
             //#region select
             this.boardList.on('select', async (item, index) => {
                 this.titleBox.focus();
@@ -81,22 +98,16 @@ class CLIClien extends CLI {
                             `${post.title} {gray-fg}${post.numberOfComments} {|}${post.author}{/}`
                     )
                 );
-
                 this.screen.render();
             });
 
             this.listList.on('select', async (item, index) => {
                 this.titleBox.focus();
-                const post = await this.clien.getPostDetail(this.posts[index].link);
+                this.post = await this.clien.getPostDetail(this.posts[index].link);
 
                 const nextWidget = this.moveToWidget('next');
-                nextWidget.setContent(post.body);
-
-                this.setTitleFooterContent(
-                    post.title,
-                    `${post.author} | ${post.hit} | ${post.upVotes}`,
-                    'q: back'
-                );
+                nextWidget.setContent(this.post.body);
+                this.screen.render();
             });
             //#endregion select
 
@@ -111,6 +122,11 @@ class CLIClien extends CLI {
                     `${this.clien.currentPageNumber + 1} 페이지`,
                     'q: back, r: refresh, number: page number, left/right arrow: prev/next page'
                 );
+            });
+
+            this.detailBox.on('focus', () => {
+                const { title, author, hit, upVotes } = this.post;
+                this.setTitleFooterContent(title, `${author} | ${hit} | ${upVotes}`, 'q: back');
             });
             //#endregion focus
 
