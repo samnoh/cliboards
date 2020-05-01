@@ -85,35 +85,30 @@ class CLIClien extends CLI {
                 await this.refreshPosts();
             });
 
-            // this.detailBox.on('keypress', async (ch, { full }) => {
-            //     if (full === 'r') {
-            //         // refresh
-            //     } else if (full === 'left') {
-            //         if (this.currentPostIndex) {
-            //             this.currentPostIndex -= 1;
-            //         }
-            //         // handle the first item of the second+ page
-            //         else if (this.clien.currentPageNumber) {
-            //             this.clien.currentPageNumber -= 1;
-            //             await this.refreshPosts();
-            //             const index = this.posts.findIndex((post) => post.link === this.post.link);
-            //             this.currentPostIndex = index < 0 ? this.posts.length - 1 : index - 1;
-            //         } else return;
-            //     } else if (full === 'right') {
-            //         this.currentPostIndex += 1;
+            this.detailBox.on('keypress', async (ch, { full }) => {
+                if (full === 'r') {
+                    // refresh
+                } else if (full === 'left') {
+                    if (this.currentPostIndex) {
+                        this.currentPostIndex -= 1;
+                    } else if (this.clien.currentPageNumber) {
+                        this.clien.currentPageNumber -= 1;
+                        await this.refreshPosts();
+                        this.currentPostIndex = this.posts.length - 1;
+                    } else return;
+                } else if (full === 'right') {
+                    this.currentPostIndex += 1;
 
-            //         // handle the last item of the posts[]
-            //         if (this.currentPostIndex === this.posts.length) {
-            //             this.clien.currentPageNumber += 1;
-            //             await this.refreshPosts();
-            //             const index = this.posts.findIndex((post) => post.link === this.post.link);
-            //             this.currentPostIndex = index < 0 ? 0 : index + 1;
-            //         }
-            //     } else {
-            //         return;
-            //     }
-            //     await this.refreshPostDetail();
-            // });
+                    if (this.currentPostIndex === this.posts.length) {
+                        this.clien.currentPageNumber += 1;
+                        await this.refreshPosts();
+                        this.currentPostIndex = 0;
+                    }
+                } else {
+                    return;
+                }
+                await this.refreshPostDetail();
+            });
             //#endregion
 
             //#region select
@@ -182,7 +177,7 @@ class CLIClien extends CLI {
 
     async refreshPosts() {
         await this.getPosts(this.clien.currentBoardIndex);
-        this.listList.clearItems();
+        this.listList.select(0);
         this.listList.setItems(
             this.posts.map(
                 ({ title, numberOfComments, author }) =>
@@ -195,14 +190,8 @@ class CLIClien extends CLI {
     async refreshPostDetail() {
         await this.getPostDetail(this.currentPostIndex);
         this.detailBox.setContent(this.post.body);
-        // this.listList.select(this.currentPostIndex);
+        this.listList.select(this.currentPostIndex);
         this.detailBox.focus();
-    }
-
-    setTitleFooterContent(leftTitleText, rightTitleText, footerText) {
-        this.titleBox.setContent(`${leftTitleText} {|}{gray-fg}${rightTitleText}{/}`);
-        this.footerBox.setContent(`{gray-fg}${footerText}{/}`);
-        this.screen.render();
     }
 }
 

@@ -89,7 +89,7 @@ class CLI {
         this.currentWidgetIndex = nextWidgetIndex;
 
         if (nextWidget) {
-            direction === 'prev' && currWidget.clearItems && currWidget.clearItems();
+            direction === 'prev' && currWidget.select && currWidget.select(0);
             currWidget.detach();
             this.bodyBox.append(nextWidget);
 
@@ -105,6 +105,12 @@ class CLI {
         this.terminateCallback && (await this.terminateCallback());
         this.screen.destroy();
         return process.exit(0);
+    }
+
+    setTitleFooterContent(leftTitleText, rightTitleText, footerText) {
+        this.titleBox.setContent(`${leftTitleText} {|}{gray-fg}${rightTitleText}{/}`);
+        this.footerBox.setContent(`{gray-fg}${footerText}{/}`);
+        this.screen.render();
     }
 }
 
