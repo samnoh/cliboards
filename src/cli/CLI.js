@@ -16,13 +16,11 @@ class CLI {
             fullUnicode: true,
             error: true,
         });
-
         const box = blessed.box({
             parent: this.screen,
             width: '100%',
             height: '100%',
         });
-
         this.titleBox = blessed.box({
             parent: box,
             tags: true,
@@ -37,7 +35,6 @@ class CLI {
                 bg: '#243B4D',
             },
         });
-
         this.bodyBox = blessed.box({
             parent: box,
             top: 1,
@@ -48,7 +45,6 @@ class CLI {
                 inverse: true,
             },
         });
-
         this.footerBox = blessed.box({
             parent: box,
             tags: true,
@@ -57,11 +53,15 @@ class CLI {
             height: 1,
             padding: {
                 left: 2,
-                right: 2,
             },
             style: {
                 bg: '#243B4D',
             },
+        });
+
+        this.footerBox.on('focus', () => {
+            this.footerBox.setContent(`${this.footerBox.getContent()} {|}{yellow-fg}Loading...{/}`);
+            this.screen.render();
         });
 
         this.currentWidgetIndex = 0;
@@ -79,7 +79,7 @@ class CLI {
     }
 
     // direction: 'prev' || 'next'
-    moveToWidget(direction) {
+    moveToWidget(direction, callback) {
         const nextWidgetIndex =
             direction === 'next' ? this.currentWidgetIndex + 1 : this.currentWidgetIndex - 1;
 
@@ -92,8 +92,10 @@ class CLI {
             direction === 'prev' && currWidget.clearItems && currWidget.clearItems();
             currWidget.detach();
             this.bodyBox.append(nextWidget);
+
+            callback && callback(nextWidget);
+
             nextWidget.focus();
-            return nextWidget;
         } else {
             this.terminate();
         }

@@ -89,17 +89,20 @@ class Clien extends Crawler {
                         const author = comment.querySelector('.contact_name');
                         const time = comment.querySelector('.comment_time');
 
-                        return {
-                            author:
-                                author.innerText || author.querySelector('img').getAttribute('alt'),
-                            time: time.innerText.split(' ')[0],
-                            body: body.innerText || '',
-                        };
+                        return author && author.innerText
+                            ? {
+                                  author:
+                                      author.innerText ||
+                                      author.querySelector('img').getAttribute('alt'),
+                                  time: time.innerText.split(' ')[0],
+                                  body: body.innerText || '',
+                              }
+                            : null;
                     }),
                 };
             });
 
-            return post;
+            return { ...post, comments: post.comments.filter((comment) => comment) };
         } catch (e) {
             console.error(e);
         }

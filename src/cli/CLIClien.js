@@ -62,7 +62,7 @@ class CLIClien extends CLI {
 
         this.clien = new Clien();
         this.terminateCallback = async () => await this.clien.close();
-        this.posts = [];
+        this.currentPostIndex = 0;
     }
 
     async start() {
@@ -70,50 +70,79 @@ class CLIClien extends CLI {
             await this.clien.start();
 
             //#region keys
-            // this.listList.on('keypress', async (ch, key) => {
-            //     if (key.name === 'left' && this.clien.currentPageNumber > 0) {
-            //         // this.posts = await this.clien.changePageNumber(
-            //         //     this.clien.currentPageNumber - 1
-            //         // );
-            //         this.clien.currentPageNumber -= 1;
-            //     } else if (key.name === 'right') {
-            //         // this.posts = await this.clien.changePageNumber(
-            //         //     this.clien.currentPageNumber + 1
-            //         // );
-            //         this.clien.currentPageNumber += 1;
+            this.listList.on('keypress', async (ch, { full }) => {
+                if (full === 'r') {
+                    // refresh
+                } else if (full === 'left' && this.clien.currentPageNumber) {
+                    this.clien.currentPageNumber -= 1;
+                } else if (full === 'right') {
+                    this.clien.currentPageNumber += 1;
+                } else if (!isNaN(parseInt(full))) {
+                    this.clien.currentPageNumber = full === '0' ? 9 : full - 1;
+                } else {
+                    return;
+                }
+                await this.refreshPosts();
+            });
+
+            // this.detailBox.on('keypress', async (ch, { full }) => {
+            //     if (full === 'r') {
+            //         // refresh
+            //     } else if (full === 'left') {
+            //         if (this.currentPostIndex) {
+            //             this.currentPostIndex -= 1;
+            //         }
+            //         // handle the first item of the second+ page
+            //         else if (this.clien.currentPageNumber) {
+            //             this.clien.currentPageNumber -= 1;
+            //             await this.refreshPosts();
+            //             const index = this.posts.findIndex((post) => post.link === this.post.link);
+            //             this.currentPostIndex = index < 0 ? this.posts.length - 1 : index - 1;
+            //         } else return;
+            //     } else if (full === 'right') {
+            //         this.currentPostIndex += 1;
+
+            //         // handle the last item of the posts[]
+            //         if (this.currentPostIndex === this.posts.length) {
+            //             this.clien.currentPageNumber += 1;
+            //             await this.refreshPosts();
+            //             const index = this.posts.findIndex((post) => post.link === this.post.link);
+            //             this.currentPostIndex = index < 0 ? 0 : index + 1;
+            //         }
+            //     } else {
+            //         return;
             //     }
-            //     this.boardList.select(boards[this.clien.currentBoardIndex]);
+            //     await this.refreshPostDetail();
             // });
             //#endregion
 
             //#region select
             this.boardList.on('select', async (item, index) => {
-                this.titleBox.focus();
-                this.posts = await this.clien.changeBoard(boards[index]);
+                await this.getPosts(index);
 
-                const nextWidget = this.moveToWidget('next');
-                nextWidget.setItems(
-                    this.posts.map(
-                        (post) =>
-                            `${post.title} {gray-fg}${post.numberOfComments} {|}${post.author}{/}`
-                    )
-                );
-                this.screen.render();
+                this.moveToWidget('next', (nextWidget) => {
+                    nextWidget.setItems(
+                        this.posts.map(
+                            ({ title, numberOfComments, author }) =>
+                                `${title} {gray-fg}${numberOfComments} {|}${author}{/}`
+                        )
+                    );
+                });
             });
 
             this.listList.on('select', async (item, index) => {
-                this.titleBox.focus();
-                this.post = await this.clien.getPostDetail(this.posts[index].link);
+                await this.getPostDetail(index);
 
-                const nextWidget = this.moveToWidget('next');
-                nextWidget.setContent(this.post.body);
-                this.screen.render();
+                this.moveToWidget('next', (nextWidget) => {
+                    nextWidget.setContent(this.post.body);
+                });
             });
             //#endregion select
 
             //#region focus
             this.boardList.on('focus', () => {
-                this.setTitleFooterContent('CLI-ang', '', 'q: quit');
+                this.clien.currentPageNumber = 0;
+                this.setTitleFooterContent('클리앙', 'CLIboard', 'q: quit');
             });
 
             this.listList.on('focus', () => {
@@ -126,20 +155,53 @@ class CLIClien extends CLI {
 
             this.detailBox.on('focus', () => {
                 const { title, author, hit, upVotes } = this.post;
-                this.setTitleFooterContent(title, `${author} | ${hit} | ${upVotes}`, 'q: back');
+                this.setTitleFooterContent(
+                    title,
+                    `${author} | ${hit} | ${upVotes}`,
+                    'q: back, r: refresh, left/right arrow: prev/next post'
+                );
             });
             //#endregion focus
 
             this.boardList.focus();
         } catch (e) {
-            console.error(e);
+            // console.error(e);
         }
+    }
+
+    async getPosts(index) {
+        this.footerBox.focus();
+        this.posts = await this.clien.changeBoard(boards[index]);
+    }
+
+    async getPostDetail(index) {
+        this.footerBox.focus();
+        this.currentPostIndex = index;
+        if (this.posts[index]) this.post = await this.clien.getPostDetail(this.posts[index].link);
+    }
+
+    async refreshPosts() {
+        await this.getPosts(this.clien.currentBoardIndex);
+        this.listList.clearItems();
+        this.listList.setItems(
+            this.posts.map(
+                ({ title, numberOfComments, author }) =>
+                    `${title} {gray-fg}${numberOfComments} {|}${author}{/}`
+            )
+        );
+        this.listList.focus();
+    }
+
+    async refreshPostDetail() {
+        await this.getPostDetail(this.currentPostIndex);
+        this.detailBox.setContent(this.post.body);
+        // this.listList.select(this.currentPostIndex);
+        this.detailBox.focus();
     }
 
     setTitleFooterContent(leftTitleText, rightTitleText, footerText) {
         this.titleBox.setContent(`${leftTitleText} {|}{gray-fg}${rightTitleText}{/}`);
         this.footerBox.setContent(`{gray-fg}${footerText}{/}`);
-
         this.screen.render();
     }
 }
