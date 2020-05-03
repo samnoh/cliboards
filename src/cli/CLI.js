@@ -73,7 +73,7 @@ class CLI {
             this.terminate();
         });
 
-        this.screen.key(['escape', 'q'], () => {
+        this.screen.key(['escape', 'q', 'h'], () => {
             this.moveToWidget('prev');
         });
     }

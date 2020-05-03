@@ -137,14 +137,14 @@ class CLIClien extends CLI {
             //#region focus
             this.boardList.on('focus', () => {
                 this.clien.currentPageNumber = 0;
-                this.setTitleFooterContent('클리앙', 'CLIboard', 'q: quit');
+                this.setTitleFooterContent('클리앙', 'CLIboard', 'q: quit, i: login');
             });
 
             this.listList.on('focus', () => {
                 this.setTitleFooterContent(
                     boards[this.clien.currentBoardIndex].name,
                     `${this.clien.currentPageNumber + 1} 페이지`,
-                    'q: back, r: refresh, number: page number, left/right arrow: prev/next page'
+                    'q: back, r: refresh, left/right arrow: prev/next page'
                 );
             });
 
