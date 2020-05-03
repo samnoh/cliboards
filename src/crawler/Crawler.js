@@ -21,7 +21,9 @@ class Crawler {
 
             this.page.on('request', (request) => {
                 if (
-                    ['image', 'stylesheet', 'font', 'script'].indexOf(request.resourceType()) !== -1
+                    ['image', 'media', 'stylesheet', 'font', 'script'].indexOf(
+                        request.resourceType()
+                    ) !== -1
                 ) {
                     request.abort();
                 } else {

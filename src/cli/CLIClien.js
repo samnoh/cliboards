@@ -1,4 +1,5 @@
 const blessed = require('blessed');
+const open = require('open');
 
 const CLI = require('./CLI');
 const {
@@ -12,7 +13,7 @@ class CLIClien extends CLI {
 
         this.boardList = blessed.list({
             parent: this.bodyBox,
-            items: boards.map((board) => board.name),
+            items: boards.map(({ name }) => name),
             width: '100%',
             scrollbar: {
                 ch: ' ',
@@ -86,28 +87,36 @@ class CLIClien extends CLI {
             });
 
             this.detailBox.on('keypress', async (ch, { full }) => {
-                if (full === 'r') {
-                    // refresh
-                } else if (full === 'left') {
-                    if (this.currentPostIndex) {
-                        this.currentPostIndex -= 1;
-                    } else if (this.clien.currentPageNumber) {
-                        this.clien.currentPageNumber -= 1;
-                        await this.refreshPosts();
-                        this.currentPostIndex = this.posts.length - 1;
-                    } else return;
-                } else if (full === 'right') {
-                    this.currentPostIndex += 1;
+                switch (full) {
+                    case 'r':
+                        await this.refreshPostDetail();
+                        break;
+                    case 'o':
+                        await open(this.posts[this.currentPostIndex].link);
+                        break;
+                    case 'left':
+                        if (this.currentPostIndex) {
+                            this.currentPostIndex -= 1;
+                        } else if (this.clien.currentPageNumber) {
+                            this.clien.currentPageNumber -= 1;
+                            await this.refreshPosts();
+                            this.currentPostIndex = this.posts.length - 1;
+                        } else {
+                            break;
+                        }
+                        await this.refreshPostDetail();
+                        break;
+                    case 'right':
+                        this.currentPostIndex += 1;
 
-                    if (this.currentPostIndex === this.posts.length) {
-                        this.clien.currentPageNumber += 1;
-                        await this.refreshPosts();
-                        this.currentPostIndex = 0;
-                    }
-                } else {
-                    return;
+                        if (this.currentPostIndex === this.posts.length) {
+                            this.clien.currentPageNumber += 1;
+                            await this.refreshPosts();
+                            this.currentPostIndex = 0;
+                        }
+                        await this.refreshPostDetail();
+                        break;
                 }
-                await this.refreshPostDetail();
             });
             //#endregion
 
@@ -137,7 +146,7 @@ class CLIClien extends CLI {
             //#region focus
             this.boardList.on('focus', () => {
                 this.clien.currentPageNumber = 0;
-                this.setTitleFooterContent('클리앙', 'CLIboard', 'q: quit, i: login');
+                this.setTitleFooterContent('클리앙', 'CLIboard', 'q: quit, i: login, h: info');
             });
 
             this.listList.on('focus', () => {
@@ -153,7 +162,7 @@ class CLIClien extends CLI {
                 this.setTitleFooterContent(
                     title,
                     `${author} | ${hit} | ${upVotes}`,
-                    'q: back, r: refresh, left/right arrow: prev/next post'
+                    'q: back, r: refresh, o: open, left/right arrow: prev/next post'
                 );
             });
             //#endregion focus

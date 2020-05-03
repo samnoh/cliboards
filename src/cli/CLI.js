@@ -73,13 +73,13 @@ class CLI {
             this.terminate();
         });
 
-        this.screen.key(['escape', 'q', 'h'], () => {
-            this.moveToWidget('prev');
+        this.screen.key(['escape', 'q', 'h'], (ch, key) => {
+            this.moveToWidget('prev', null, key.full);
         });
     }
 
     // direction: 'prev' || 'next'
-    moveToWidget(direction, callback) {
+    moveToWidget(direction, callback, key) {
         const nextWidgetIndex =
             direction === 'next' ? this.currentWidgetIndex + 1 : this.currentWidgetIndex - 1;
 
@@ -97,7 +97,7 @@ class CLI {
 
             nextWidget.focus();
         } else {
-            this.terminate();
+            key !== 'h' && this.terminate();
         }
     }
 
