@@ -85,19 +85,22 @@ class Clien extends Crawler {
                         .trim(),
                     upVotes: parseInt(upVotes.innerText),
                     comments: Array.from(comments).map((comment) => {
+                        const isRemoved = comment.classList.contains('blocked');
+                        const isReply = comment.classList.contains('re');
                         const body = comment.querySelector('.comment_content');
                         const author = comment.querySelector('.contact_name');
                         const time = comment.querySelector('.comment_time');
 
-                        return author && author.innerText
-                            ? {
+                        return isRemoved
+                            ? null
+                            : {
+                                  isReply,
                                   author:
                                       author.innerText ||
                                       author.querySelector('img').getAttribute('alt'),
                                   time: time.innerText.split(' ')[0],
                                   body: body.innerText || '',
-                              }
-                            : null;
+                              };
                     }),
                 };
             });
