@@ -35,7 +35,7 @@ class Clien extends Crawler {
                                   author.innerText.trim() ||
                                   author.querySelector('img').getAttribute('alt'),
                               hit: hit.innerText.trim(),
-                              time: time.innerText.trim().split(' ')[0],
+                              time: time.innerText.trim(),
                               link: baseUrl + link.getAttribute('href'),
                               upVotes: parseInt(upVotes.innerText),
                               numberOfComments: numberOfComments
@@ -72,12 +72,14 @@ class Clien extends Crawler {
                 const body = document.querySelector('.post_article');
                 const upVotes = document.querySelector('.symph_count strong');
                 const comments = document.querySelectorAll('.comment_row');
+                const time = document.querySelector('.post_author span');
 
                 return {
                     title: title.innerText.trim(),
                     author:
                         author.innerText.trim() || author.querySelector('img').getAttribute('alt'),
                     hit: hit.innerText.trim(),
+                    time: time.innerText.trim(),
                     body: body.textContent
                         .split('\n')
                         .map((b) => b.trim())

@@ -50,10 +50,14 @@ class CLIClien extends CLI {
         });
         this.detailBox = blessed.box({
             scrollable: true,
+            tags: true,
             keys: true,
             vi: true,
             alwaysScroll: true,
             width: '100%',
+            padding: {
+                bottom: 1,
+            },
             scrollbar: {
                 ch: ' ',
                 inverse: true,
@@ -141,6 +145,7 @@ class CLIClien extends CLI {
 
                 this.moveToWidget('next', (nextWidget) => {
                     nextWidget.setContent(this.post.body);
+                    this.showComments();
                 });
             });
             //#endregion select
@@ -152,6 +157,7 @@ class CLIClien extends CLI {
             });
 
             this.listList.on('focus', () => {
+                this.detailBox.setContent('');
                 this.setTitleFooterContent(
                     boards[this.clien.currentBoardIndex].name,
                     `${this.clien.currentPageNumber + 1} 페이지`,
@@ -160,10 +166,10 @@ class CLIClien extends CLI {
             });
 
             this.detailBox.on('focus', () => {
-                const { title, author, hit, upVotes } = this.post;
+                const { title, author, hit, upVotes, comments, time } = this.post;
                 this.setTitleFooterContent(
-                    title,
-                    `${author} | ${hit} | ${upVotes}`,
+                    `${title} {gray-fg}${comments.length}{/}`,
+                    `${author} | ${time} | ${hit} | ${upVotes}`,
                     'q: back, r: refresh, o: open, left/right arrow: prev/next post'
                 );
             });
@@ -203,9 +209,29 @@ class CLIClien extends CLI {
 
     async refreshPostDetail() {
         await this.getPostDetail(this.currentPostIndex);
+
         this.detailBox.setContent(this.post.body);
+        this.showComments();
         this.listList.select(this.currentPostIndex);
         this.detailBox.focus();
+    }
+
+    showComments() {
+        const { verticalLine, detailBox } = this;
+        const { comments } = this.post;
+
+        if (!comments.length) return;
+
+        const formattedComments = comments
+            .map(
+                ({ body, isReply, author, time }) =>
+                    `{gray-fg}${author}{|}${time}{/}\n${isReply ? '{right}' : ''}${body}${
+                        isReply ? '{/right}' : ''
+                    }`
+            )
+            .join(verticalLine);
+
+        detailBox.setContent(detailBox.getContent() + `\n\n${verticalLine}${formattedComments}`);
     }
 }
 

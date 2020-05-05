@@ -60,6 +60,7 @@ class CLI {
             },
         });
 
+        this.screen.on('resize', () => this.setVerticalLine());
         this.footerBox.on('focus', () => {
             this.footerBox.setContent(`${this.footerBox.getContent()} {|}{yellow-fg}Loading...{/}`);
             this.screen.render();
@@ -67,6 +68,7 @@ class CLI {
 
         this.currentWidgetIndex = 0;
         this.setKeyBindings();
+        this.setVerticalLine();
     }
 
     setKeyBindings() {
@@ -112,6 +114,10 @@ class CLI {
         this.titleBox.setContent(`${leftTitleText} {|}{gray-fg}${rightTitleText}{/}`);
         this.footerBox.setContent(`{gray-fg}${footerText}{/}`);
         this.screen.render();
+    }
+
+    setVerticalLine() {
+        this.verticalLine = '\n{gray-fg}' + '-'.repeat(this.screen.width - 1) + '{/}\n';
     }
 }
 
