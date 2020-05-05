@@ -57,7 +57,7 @@ class Clien extends Crawler {
                     link,
                 }));
         } catch (e) {
-            console.error(e);
+            return new Error(e);
         }
     }
 
@@ -107,7 +107,7 @@ class Clien extends Crawler {
 
             return { ...post, comments: post.comments.filter((comment) => comment) };
         } catch (e) {
-            console.error(e);
+            return new Error(e);
         }
     }
 

@@ -15,6 +15,7 @@ class CLI {
             smartCSR: true,
             fullUnicode: true,
             error: true,
+            debug: true,
         });
         const box = blessed.box({
             parent: this.screen,
@@ -73,8 +74,8 @@ class CLI {
             this.terminate();
         });
 
-        this.screen.key(['escape', 'q', 'h'], (ch, key) => {
-            this.moveToWidget('prev', null, key.full);
+        this.screen.key(['escape', 'q'], (ch, key) => {
+            this.moveToWidget('prev', null);
         });
     }
 
@@ -97,7 +98,7 @@ class CLI {
 
             nextWidget.focus();
         } else {
-            key !== 'h' && this.terminate();
+            this.terminate();
         }
     }
 

@@ -94,6 +94,7 @@ class CLIClien extends CLI {
                     case 'o':
                         await open(this.posts[this.currentPostIndex].link);
                         break;
+                    case 'h':
                     case 'left':
                         if (this.currentPostIndex) {
                             this.currentPostIndex -= 1;
@@ -106,6 +107,7 @@ class CLIClien extends CLI {
                         }
                         await this.refreshPostDetail();
                         break;
+                    case ';':
                     case 'right':
                         this.currentPostIndex += 1;
 
@@ -168,20 +170,23 @@ class CLIClien extends CLI {
             //#endregion focus
 
             this.boardList.focus();
-        } catch (e) {
-            // console.error(e);
-        }
+        } catch (e) {}
     }
 
     async getPosts(index) {
-        this.footerBox.focus();
-        this.posts = await this.clien.changeBoard(boards[index]);
+        try {
+            this.footerBox.focus();
+            this.posts = await this.clien.changeBoard(boards[index]);
+        } catch (e) {}
     }
 
     async getPostDetail(index) {
-        this.footerBox.focus();
-        this.currentPostIndex = index;
-        if (this.posts[index]) this.post = await this.clien.getPostDetail(this.posts[index].link);
+        try {
+            this.footerBox.focus();
+            this.currentPostIndex = index;
+            if (this.posts[index])
+                this.post = await this.clien.getPostDetail(this.posts[index].link);
+        } catch (e) {}
     }
 
     async refreshPosts() {
