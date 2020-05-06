@@ -257,6 +257,7 @@ class CLIClien extends CLI {
 
     flushComments() {
         const { commentBoxes } = this;
+
         if (commentBoxes) {
             commentBoxes.map((box) => box.destroy());
             commentBoxes.length = 0;
