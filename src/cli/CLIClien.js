@@ -55,7 +55,6 @@ class CLIClien extends CLI {
             vi: true,
             alwaysScroll: true,
             width: '100%',
-            height: 'shrink',
             padding: {
                 bottom: 1,
             },
