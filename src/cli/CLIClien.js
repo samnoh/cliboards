@@ -55,6 +55,7 @@ class CLIClien extends CLI {
             vi: true,
             alwaysScroll: true,
             width: '100%',
+            height: 'shrink',
             padding: {
                 bottom: 1,
             },
@@ -145,7 +146,7 @@ class CLIClien extends CLI {
 
                 this.moveToWidget('next', (nextWidget) => {
                     nextWidget.setContent(this.post.body);
-                    this.showComments();
+                    this.renderComments();
                 });
             });
             //#endregion select
@@ -157,7 +158,8 @@ class CLIClien extends CLI {
             });
 
             this.listList.on('focus', () => {
-                this.detailBox.setContent('');
+                this.listList.scrollTo(this.currentPostIndex);
+                this.flushComments();
                 this.setTitleFooterContent(
                     boards[this.clien.currentBoardIndex].name,
                     `${this.clien.currentPageNumber + 1} 페이지`,
@@ -169,7 +171,7 @@ class CLIClien extends CLI {
                 const { title, author, hit, upVotes, comments, time } = this.post;
                 this.setTitleFooterContent(
                     `${title} {gray-fg}${comments.length}{/}`,
-                    `${author} | ${time} | ${hit} | ${upVotes}`,
+                    `${author} | ${hit} | ${upVotes} | ${time}`,
                     'q: back, r: refresh, o: open, left/right arrow: prev/next post'
                 );
             });
@@ -197,41 +199,68 @@ class CLIClien extends CLI {
 
     async refreshPosts() {
         await this.getPosts(this.clien.currentBoardIndex);
-        this.listList.select(0);
+
         this.listList.setItems(
             this.posts.map(
                 ({ title, numberOfComments, author }) =>
                     `${title} {gray-fg}${numberOfComments} {|}${author}{/}`
             )
         );
+        this.listList.select(0);
+        this.currentPostIndex = 0;
         this.listList.focus();
     }
 
     async refreshPostDetail() {
         await this.getPostDetail(this.currentPostIndex);
 
+        this.flushComments();
+        this.detailBox.scrollTo(0);
         this.detailBox.setContent(this.post.body);
-        this.showComments();
+        this.renderComments();
         this.listList.select(this.currentPostIndex);
         this.detailBox.focus();
     }
 
-    showComments() {
-        const { verticalLine, detailBox } = this;
+    renderComments() {
         const { comments } = this.post;
 
         if (!comments.length) return;
 
-        const formattedComments = comments
-            .map(
-                ({ body, isReply, author, time }) =>
-                    `{gray-fg}${author}{|}${time}{/}\n${isReply ? '{right}' : ''}${body}${
-                        isReply ? '{/right}' : ''
-                    }`
-            )
-            .join(verticalLine);
+        let prevTop = this.detailBox.getScreenLines().length + 1;
 
-        detailBox.setContent(detailBox.getContent() + `\n\n${verticalLine}${formattedComments}`);
+        this.commentBoxes = comments.map(({ body, isRemoved, isReply, author, time, upVotes }) => {
+            const info = `{gray-fg}${author}{|} ${upVotes ? upVotes + ' | ' : ''}${time}{/}\n`;
+
+            const commentBox = blessed.box({
+                parent: this.detailBox,
+                top: prevTop,
+                width: '100%-1',
+                height: parseInt(body.length / this.detailBox.width) + 5,
+                content: isRemoved ? body : info + body,
+                border: {
+                    type: 'line',
+                    fg: 'gray',
+                },
+                tags: true,
+                padding: {
+                    left: isReply ? 4 : 0,
+                },
+            });
+
+            commentBox.height = commentBox.getScreenLines().length + 2;
+            prevTop += commentBox.height - 1;
+
+            return commentBox;
+        });
+    }
+
+    flushComments() {
+        const { commentBoxes } = this;
+        if (commentBoxes) {
+            commentBoxes.map((box) => box.destroy());
+            commentBoxes.length = 0;
+        }
     }
 }
 

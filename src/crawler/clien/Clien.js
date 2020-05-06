@@ -46,16 +46,7 @@ class Clien extends Crawler {
                 });
             }, baseUrl);
 
-            return posts
-                .filter((posts) => posts)
-                .map(({ title, author, link, upVotes, hit, time, numberOfComments }) => ({
-                    title,
-                    author,
-                    hit,
-                    numberOfComments,
-                    upVotes,
-                    link,
-                }));
+            return posts.filter((posts) => posts);
         } catch (e) {
             return new Error(e);
         }
@@ -65,7 +56,7 @@ class Clien extends Crawler {
         try {
             await this.page.goto(link);
 
-            const post = await this.page.evaluate(() => {
+            return await this.page.evaluate(() => {
                 const title = document.querySelector('.post_subject span');
                 const author = document.querySelector('.post_info .contact_name');
                 const hit = document.querySelector('.view_info');
@@ -79,7 +70,7 @@ class Clien extends Crawler {
                     author:
                         author.innerText.trim() || author.querySelector('img').getAttribute('alt'),
                     hit: hit.innerText.trim(),
-                    time: time.innerText.trim(),
+                    time: time.innerText.trim().split(' ')[1],
                     body: body.textContent
                         .split('\n')
                         .map((b) => b.trim())
@@ -92,22 +83,27 @@ class Clien extends Crawler {
                         const body = comment.querySelector('.comment_content');
                         const author = comment.querySelector('.contact_name');
                         const time = comment.querySelector('.comment_time');
+                        const upVotes = comment.querySelector('.comment_symph');
 
                         return isRemoved
-                            ? null
+                            ? {
+                                  isReply,
+                                  isRemoved,
+                                  body: '삭제 되었습니다.',
+                              }
                             : {
+                                  isRemoved,
                                   isReply,
                                   author:
                                       author.innerText ||
                                       author.querySelector('img').getAttribute('alt'),
                                   time: time.innerText.split(' ')[0],
                                   body: body.innerText || '',
+                                  upVotes: parseInt(upVotes.innerText.trim()),
                               };
                     }),
                 };
             });
-
-            return { ...post, comments: post.comments.filter((comment) => comment) };
         } catch (e) {
             return new Error(e);
         }

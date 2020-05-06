@@ -2,7 +2,7 @@ const blessed = require('blessed');
 
 // abstract
 class CLI {
-    constructor() {
+    constructor(title) {
         if (this.constructor === CLI) {
             throw new TypeError('Abstract class "Crawler" cannot be instantiated directly');
         }
@@ -12,6 +12,8 @@ class CLI {
         }
 
         this.screen = blessed.screen({
+            title,
+            dockBorders: true,
             smartCSR: true,
             fullUnicode: true,
             error: true,
