@@ -68,7 +68,6 @@ class CLIClien extends CLI {
 
         this.clien = new Clien();
         this.terminateCallback = async () => await this.clien.close();
-        this.currentPostIndex = 0;
     }
 
     async start() {
@@ -153,6 +152,7 @@ class CLIClien extends CLI {
 
             //#region focus
             this.boardList.on('focus', () => {
+                this.currentPostIndex = 0;
                 this.clien.currentPageNumber = 0;
                 this.setTitleFooterContent('클리앙', 'CLIboard', 'q: quit, i: login, h: info');
             });
