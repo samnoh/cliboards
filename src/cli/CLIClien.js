@@ -73,6 +73,9 @@ class CLIClien extends CLI {
 
             //#region keys
             this.boardList.on('keypress', async (ch, { full }) => {
+                this.boardList.scrollTo(0);
+                this.boardList.select(0);
+
                 switch (full) {
                     case 'right':
                         await this.getBoards(true);
