@@ -11,7 +11,7 @@ class Crawler {
         if (this.browser) return;
 
         try {
-            this.browser = await puppeteer.launch({ headless: true });
+            this.browser = await puppeteer.launch({ headless: false });
 
             this.page = await this.browser.newPage();
             await this.page.setUserAgent(
@@ -21,16 +21,9 @@ class Crawler {
 
             this.page.on('request', (request) => {
                 if (
-                    [
-                        'image',
-                        'stylesheet',
-                        'media',
-                        'font',
-                        'texttrack',
-                        'object',
-                        'beacon',
-                        'imageset',
-                    ].indexOf(request.resourceType()) !== -1
+                    ['image', 'stylesheet', 'media', 'font', 'imageset', 'script'].indexOf(
+                        request.resourceType()
+                    ) !== -1
                 ) {
                     request.abort();
                 } else {
