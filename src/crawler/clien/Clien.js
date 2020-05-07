@@ -13,10 +13,8 @@ class Clien extends Crawler {
 
     async getBoards() {
         try {
-            const boards = config.get('boards');
-
-            if (boards) {
-                this.boards = boards;
+            if (config.has('boards')) {
+                this.boards = config.get('boards');
                 return;
             }
 
