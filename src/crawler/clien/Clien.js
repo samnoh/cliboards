@@ -82,8 +82,16 @@ class Clien extends Crawler {
                         const isReply = comment.classList.contains('re');
                         const body = comment.querySelector('.comment_content');
                         const author = comment.querySelector('.contact_name');
-                        const time = comment.querySelector('.comment_time');
+                        const time = comment.querySelector('.comment_time .timestamp');
                         const upVotes = comment.querySelector('.comment_symph');
+                        const replyTo = body.querySelector('.comment_view strong img');
+
+                        if (isReply && replyTo) {
+                            body.innerText = body.innerText.replace(
+                                '@',
+                                '@' + replyTo.getAttribute('data-nick-id')
+                            );
+                        }
 
                         return isRemoved
                             ? {
@@ -97,8 +105,8 @@ class Clien extends Crawler {
                                   author:
                                       author.innerText ||
                                       author.querySelector('img').getAttribute('alt'),
-                                  time: time.innerText.split(' ')[0],
-                                  body: body.innerText || '',
+                                  time: time.innerText.split(' ')[1],
+                                  body: body.innerText,
                                   upVotes: parseInt(upVotes.innerText.trim()),
                               };
                     }),

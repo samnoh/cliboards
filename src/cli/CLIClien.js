@@ -229,7 +229,9 @@ class CLIClien extends CLI {
         let prevTop = this.detailBox.getScreenLines().length + 1;
 
         this.commentBoxes = comments.map(({ body, isRemoved, isReply, author, time, upVotes }) => {
-            const info = `{gray-fg}${author}{|} ${upVotes} | ${time}{/}\n`;
+            const info = `{gray-fg}${author}{|} ${
+                upVotes ? `{green-fg}${upVotes}{/green-fg} | ` : ''
+            }${time}{/}\n`;
 
             const commentBox = blessed.box({
                 parent: this.detailBox,
