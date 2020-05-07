@@ -107,7 +107,7 @@ class CLI {
     async terminate() {
         this.terminateCallback && (await this.terminateCallback());
         this.screen.destroy();
-        blessed.program().clear();
+        // blessed.program().clear();
         return process.exit(0);
     }
 

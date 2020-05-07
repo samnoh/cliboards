@@ -2,7 +2,11 @@ const blessed = require('blessed');
 const open = require('open');
 
 const CLI = require('./CLI');
-const { Clien } = require('../crawler/clien');
+const {
+    Clien,
+    constants: { getUrl },
+} = require('../crawler/clien');
+const config = require('../helper/configstore');
 
 class CLIClien extends CLI {
     constructor() {
@@ -63,25 +67,26 @@ class CLIClien extends CLI {
 
         this.clien = new Clien();
         this.terminateCallback = async () => await this.clien.close();
-        this.isSub = false;
+        this.isSubBoard = false;
     }
 
     async start() {
         try {
             await this.clien.start();
-            await this.getBoards(this.isSub);
 
             //#region keys
             this.boardList.on('keypress', async (ch, { full }) => {
-                this.boardList.scrollTo(0);
-                this.boardList.select(0);
-
                 switch (full) {
+                    case 'r':
+                        config.delete('boards');
+                        this.clien.boards = [];
+                        await this.getBoards(this.isSubBoard);
+                        break;
                     case 'right':
-                        await this.getBoards(true);
+                        this.getCurrentBoards(true);
                         break;
                     case 'left':
-                        await this.getBoards(false);
+                        this.getCurrentBoards(false);
                         break;
                 }
             });
@@ -165,7 +170,11 @@ class CLIClien extends CLI {
             this.boardList.on('focus', () => {
                 this.currentPostIndex = 0;
                 this.clien.currentPageNumber = 0;
-                this.setTitleFooterContent('클리앙', 'CLIboard', 'q: quit, i: login, h: info');
+                this.setTitleFooterContent(
+                    '클리앙',
+                    this.isSubBoard ? '소모임' : '커뮤니티',
+                    'q: quit, r: refresh, left/right arrow: prev/next page'
+                );
             });
 
             this.listList.on('focus', () => {
@@ -188,26 +197,37 @@ class CLIClien extends CLI {
             });
             //#endregion focus
 
-            this.boardList.focus();
+            await this.getBoards(this.isSubBoard);
         } catch (e) {}
     }
 
-    async getBoards(_isSub) {
+    async getBoards(isSub) {
         if (!this.clien.boards.length) {
+            this.footerBox.focus();
             await this.clien.getBoards();
+            this.mainBoardsLength = this.clien.boards.filter(({ isSub }) => !isSub).length;
         }
-        this.isSub = _isSub;
+
+        this.isSubBoard = isSub;
         this.boardList.setItems(
-            this.clien.boards.filter(({ isSub }) => isSub === _isSub).map(({ name }) => name)
+            this.clien.boards
+                .filter(({ isSub }) => isSub === this.isSubBoard)
+                .map(({ name }) => name)
         );
         this.boardList.focus();
+    }
+
+    async getCurrentBoards(isSub) {
+        this.boardList.scrollTo(0);
+        this.boardList.select(0);
+        isSub !== this.isSubBoard && (await this.getBoards(isSub));
     }
 
     async getPosts(index) {
         try {
             this.footerBox.focus();
             this.posts = await this.clien.changeBoard(
-                this.clien.boards.filter(({ isSub }) => isSub === this.isSub)[index]
+                this.clien.boards[this.isSubBoard ? index + this.mainBoardsLength : index]
             );
         } catch (e) {}
     }
@@ -222,7 +242,11 @@ class CLIClien extends CLI {
     }
 
     async refreshPosts() {
-        await this.getPosts(this.clien.currentBoardIndex);
+        await this.getPosts(
+            this.isSubBoard
+                ? this.clien.currentBoardIndex - this.mainBoardsLength
+                : this.clien.currentBoardIndex
+        );
 
         this.listList.setItems(
             this.posts.map(

@@ -1,6 +1,6 @@
 const Crawler = require('../Crawler');
-
-const { baseUrl, getUrl, boards } = require('./constants');
+const { baseUrl, getUrl } = require('./constants');
+const config = require('../../helper/configstore');
 
 class Clien extends Crawler {
     constructor() {
@@ -13,6 +13,13 @@ class Clien extends Crawler {
 
     async getBoards() {
         try {
+            const boards = config.get('boards');
+
+            if (boards) {
+                this.boards = boards;
+                return;
+            }
+
             await this.page.goto(baseUrl);
 
             this.boards = await this.page.evaluate(() => {
@@ -26,7 +33,7 @@ class Clien extends Crawler {
                         const name = board.querySelectorAll('span')[1];
                         const link = board.getAttribute('href');
 
-                        return link.includes('/service/board')
+                        return link.includes('/service/board') && index !== 3
                             ? {
                                   name: name.innerText,
                                   value: link,
@@ -36,10 +43,12 @@ class Clien extends Crawler {
                     })
                     .filter((board) => board);
             });
+
+            config.set('boards', this.boards);
         } catch (e) {}
     }
 
-    async getPosts() {
+    async getPosts(link) {
         try {
             await this.page.goto(
                 getUrl(this.boards[this.currentBoardIndex].value) + this.currentPageNumber
