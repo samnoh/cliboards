@@ -30,19 +30,14 @@ class Crawler {
                     request.continue();
                 }
             });
-        } catch (e) {
-            console.error(e);
-        }
+        } catch (e) {}
     }
 
     async close() {
         try {
             await this.page.close();
             await this.browser.close();
-            clear();
-        } catch (e) {
-            console.error(e);
-        }
+        } catch (e) {}
     }
 }
 
