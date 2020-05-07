@@ -79,7 +79,7 @@ class CLIClien extends CLI {
                 switch (full) {
                     case 'r':
                         config.delete('boards');
-                        this.clien.boards = [];
+                        this.clien.boards.length = 0;
                         await this.getBoards(this.isSubBoard);
                         break;
                     case 'right':
