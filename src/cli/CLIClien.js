@@ -2,10 +2,7 @@ const blessed = require('blessed');
 const open = require('open');
 
 const CLI = require('./CLI');
-const {
-    Clien,
-    constants: { boards },
-} = require('../crawler/clien');
+const { Clien } = require('../crawler/clien');
 
 class CLIClien extends CLI {
     constructor() {
@@ -13,7 +10,6 @@ class CLIClien extends CLI {
 
         this.boardList = blessed.list({
             parent: this.bodyBox,
-            items: boards.map(({ name }) => name),
             width: '100%',
             scrollbar: {
                 ch: ' ',
@@ -67,13 +63,26 @@ class CLIClien extends CLI {
 
         this.clien = new Clien();
         this.terminateCallback = async () => await this.clien.close();
+        this.isSub = false;
     }
 
     async start() {
         try {
             await this.clien.start();
+            await this.getBoards(this.isSub);
 
             //#region keys
+            this.boardList.on('keypress', async (ch, { full }) => {
+                switch (full) {
+                    case 'right':
+                        await this.getBoards(true);
+                        break;
+                    case 'left':
+                        await this.getBoards(false);
+                        break;
+                }
+            });
+
             this.listList.on('keypress', async (ch, { full }) => {
                 if (full === 'r') {
                     // refresh
@@ -160,7 +169,7 @@ class CLIClien extends CLI {
                 this.listList.scrollTo(this.currentPostIndex);
                 this.flushComments();
                 this.setTitleFooterContent(
-                    boards[this.clien.currentBoardIndex].name,
+                    this.clien.boards[this.clien.currentBoardIndex].name,
                     `${this.clien.currentPageNumber + 1} 페이지`,
                     'q: back, r: refresh, left/right arrow: prev/next page'
                 );
@@ -180,10 +189,23 @@ class CLIClien extends CLI {
         } catch (e) {}
     }
 
+    async getBoards(_isSub) {
+        if (!this.clien.boards.length) {
+            await this.clien.getBoards();
+        }
+        this.isSub = _isSub;
+        this.boardList.setItems(
+            this.clien.boards.filter(({ isSub }) => isSub === _isSub).map(({ name }) => name)
+        );
+        this.boardList.focus();
+    }
+
     async getPosts(index) {
         try {
             this.footerBox.focus();
-            this.posts = await this.clien.changeBoard(boards[index]);
+            this.posts = await this.clien.changeBoard(
+                this.clien.boards.filter(({ isSub }) => isSub === this.isSub)[index]
+            );
         } catch (e) {}
     }
 

@@ -8,45 +8,74 @@ class Clien extends Crawler {
 
         this.currentBoardIndex = 0;
         this.currentPageNumber = 0;
+        this.boards = [];
+    }
+
+    async getBoards() {
+        try {
+            await this.page.goto(baseUrl);
+
+            this.boards = await this.page.evaluate(() => {
+                const main = Array.from(document.querySelectorAll('.navmenu a'));
+                const sub = Array.from(document.querySelectorAll('.menu_somoim a'));
+
+                const mainLength = main.length;
+
+                return [...main, ...sub]
+                    .map((board, index) => {
+                        const name = board.querySelectorAll('span')[1];
+                        const link = board.getAttribute('href');
+
+                        return link.includes('/service/board')
+                            ? {
+                                  name: name.innerText,
+                                  value: link,
+                                  isSub: mainLength < index,
+                              }
+                            : null;
+                    })
+                    .filter((board) => board);
+            });
+        } catch (e) {}
     }
 
     async getPosts() {
         try {
             await this.page.goto(
-                getUrl(boards[this.currentBoardIndex].value) + this.currentPageNumber
+                getUrl(this.boards[this.currentBoardIndex].value) + this.currentPageNumber
             );
 
-            const posts = await this.page.evaluate((baseUrl) => {
+            return await this.page.evaluate((baseUrl) => {
                 const lists = document.querySelectorAll('.list_content .list_item');
 
-                return Array.from(lists).map((list) => {
-                    const title = list.querySelector('.list_subject .subject_fixed');
-                    const link = list.querySelector('.list_subject');
-                    const author = list.querySelector('.list_author .nickname');
-                    const hit = list.querySelector('.list_hit');
-                    const time = list.querySelector('.list_time');
-                    const upVotes = list.querySelector('.list_symph');
-                    const numberOfComments = list.querySelector('.rSymph05');
+                return Array.from(lists)
+                    .map((list) => {
+                        const title = list.querySelector('.list_subject .subject_fixed');
+                        const link = list.querySelector('.list_subject');
+                        const author = list.querySelector('.list_author .nickname');
+                        const hit = list.querySelector('.list_hit');
+                        const time = list.querySelector('.list_time');
+                        const upVotes = list.querySelector('.list_symph');
+                        const numberOfComments = list.querySelector('.rSymph05');
 
-                    return title && title.innerText
-                        ? {
-                              title: title.innerText.trim(),
-                              author:
-                                  author.innerText.trim() ||
-                                  author.querySelector('img').getAttribute('alt'),
-                              hit: hit.innerText.trim(),
-                              time: time.innerText.trim(),
-                              link: baseUrl + link.getAttribute('href'),
-                              upVotes: parseInt(upVotes.innerText),
-                              numberOfComments: numberOfComments
-                                  ? parseInt(numberOfComments.innerText)
-                                  : 0,
-                          }
-                        : null;
-                });
+                        return title && title.innerText
+                            ? {
+                                  title: title.innerText.trim(),
+                                  author:
+                                      author.innerText.trim() ||
+                                      author.querySelector('img').getAttribute('alt'),
+                                  hit: hit.innerText.trim(),
+                                  time: time.innerText.trim(),
+                                  link: baseUrl + link.getAttribute('href'),
+                                  upVotes: parseInt(upVotes.innerText),
+                                  numberOfComments: numberOfComments
+                                      ? parseInt(numberOfComments.innerText)
+                                      : 0,
+                              }
+                            : null;
+                    })
+                    .filter((posts) => posts);
             }, baseUrl);
-
-            return posts.filter((posts) => posts);
         } catch (e) {
             return new Error(e);
         }
@@ -123,7 +152,7 @@ class Clien extends Crawler {
     }
 
     async changeBoard(board) {
-        this.currentBoardIndex = boards.findIndex((_board) => _board.value === board.value);
+        this.currentBoardIndex = this.boards.findIndex((_board) => _board.value === board.value);
         return await this.getPosts();
     }
 
