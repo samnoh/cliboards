@@ -127,7 +127,7 @@ class CLIClien extends CLI {
                         }
                         await this.refreshPostDetail();
                         break;
-                    case ';':
+                    case 'l':
                     case 'right':
                         this.currentPostIndex += 1;
 
