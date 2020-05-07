@@ -65,6 +65,10 @@ class Clien extends Crawler {
                 const comments = document.querySelectorAll('.comment_row');
                 const time = document.querySelector('.post_author span');
 
+                // body.querySelectorAll('img').forEach((image) => {
+                //     image.textContent = 'IMAGE';
+                // });
+
                 return {
                     title: title.innerText.trim(),
                     author:
@@ -87,10 +91,11 @@ class Clien extends Crawler {
                         const replyTo = body.querySelector('.comment_view strong img');
 
                         if (isReply && replyTo) {
-                            body.innerText = body.innerText.replace(
-                                '@',
-                                '@' + replyTo.getAttribute('data-nick-id')
+                            const nickId = document.createTextNode(
+                                replyTo.getAttribute('data-nick-id')
                             );
+
+                            replyTo.parentNode.replaceChild(nickId, replyTo);
                         }
 
                         return isRemoved
