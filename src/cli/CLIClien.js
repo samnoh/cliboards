@@ -78,7 +78,7 @@ class CLIClien extends CLI {
             this.boardList.on('keypress', async (ch, { full }) => {
                 switch (full) {
                     case 'r':
-                        config.delete('boards');
+                        config.delete('clien/boards');
                         this.clien.boards.length = 0;
                         await this.getBoards(this.isSubBoard);
                         break;

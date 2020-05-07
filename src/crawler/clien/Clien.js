@@ -13,8 +13,8 @@ class Clien extends Crawler {
 
     async getBoards() {
         try {
-            if (config.has('boards')) {
-                this.boards = config.get('boards');
+            if (config.has('clien/boards')) {
+                this.boards = config.get('clien/boards');
                 return;
             }
 
@@ -42,7 +42,7 @@ class Clien extends Crawler {
                     .filter((board) => board);
             });
 
-            config.set('boards', this.boards);
+            config.set('clien/boards', this.boards);
         } catch (e) {}
     }
 
