@@ -4,7 +4,7 @@ const open = require('open');
 const CLI = require('./CLI');
 const {
     Clien,
-    constants: { getUrl },
+    constants: { sortUrls },
 } = require('../crawler/clien');
 const config = require('../helper/configstore');
 
@@ -94,6 +94,9 @@ class CLIClien extends CLI {
             this.listList.on('keypress', async (ch, { full }) => {
                 if (full === 'r') {
                     // refresh
+                } else if (full === 's') {
+                    // 1 ^ this.clien.sortListIndex: 1 -> 0 or 0 -> 1
+                    this.clien.changeSortList(1 ^ this.clien.sortListIndex);
                 } else if (full === 'left' && this.clien.currentPageNumber) {
                     this.clien.currentPageNumber -= 1;
                 } else if (full === 'right') {
@@ -184,8 +187,10 @@ class CLIClien extends CLI {
                 this.flushComments();
                 this.setTitleFooterContent(
                     this.clien.boards[this.clien.currentBoardIndex].name,
-                    `${this.clien.currentPageNumber + 1} 페이지`,
-                    'q: back, r: refresh, left/right arrow: prev/next page'
+                    `${this.clien.currentPageNumber + 1} 페이지 | ${
+                        sortUrls[this.clien.sortListIndex].name
+                    }`,
+                    'q: back, r: refresh, s: sort, left/right arrow: prev/next page'
                 );
             });
 

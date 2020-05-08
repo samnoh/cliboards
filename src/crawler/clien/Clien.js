@@ -1,5 +1,5 @@
 const Crawler = require('../Crawler');
-const { baseUrl, getUrl } = require('./constants');
+const { baseUrl, getUrl, sortUrls } = require('./constants');
 const config = require('../../helper/configstore');
 
 class Clien extends Crawler {
@@ -9,6 +9,7 @@ class Clien extends Crawler {
         this.currentBoardIndex = 0;
         this.currentPageNumber = 0;
         this.boards = [];
+        this.sortListIndex = 0;
     }
 
     async getBoards() {
@@ -53,7 +54,9 @@ class Clien extends Crawler {
     async getPosts(link) {
         try {
             await this.page.goto(
-                getUrl(this.boards[this.currentBoardIndex].value) + this.currentPageNumber
+                getUrl(this.boards[this.currentBoardIndex].value) +
+                    this.currentPageNumber +
+                    sortUrls[this.sortListIndex].value
             );
 
             return await this.page.evaluate((baseUrl) => {
@@ -176,6 +179,12 @@ class Clien extends Crawler {
 
     async changePageNumber(pageNumber) {
         this.currentPageNumber = pageNumber;
+        return await this.getPosts();
+    }
+
+    async changeSortList(index) {
+        this.currentPageNumber = 0;
+        this.sortListIndex = index;
         return await this.getPosts();
     }
 }
