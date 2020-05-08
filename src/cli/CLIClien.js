@@ -149,8 +149,10 @@ class CLIClien extends CLI {
                 this.moveToWidget('next', (nextWidget) => {
                     nextWidget.setItems(
                         this.posts.map(
-                            ({ title, numberOfComments, author }) =>
-                                `${title} {gray-fg}${numberOfComments} {|}${author}{/}`
+                            ({ category, title, numberOfComments, author }) =>
+                                `${
+                                    category ? '{gray-fg}' + category + '{/} ' : ''
+                                }${title} {gray-fg}${numberOfComments} {|}${author}{/}`
                         )
                     );
                 });
@@ -188,9 +190,11 @@ class CLIClien extends CLI {
             });
 
             this.detailBox.on('focus', () => {
-                const { title, author, hit, upVotes, comments, time } = this.post;
+                const { category, title, author, hit, upVotes, comments, time } = this.post;
                 this.setTitleFooterContent(
-                    `${title} {gray-fg}${comments.length}{/}`,
+                    `${category ? '[' + category + '] ' : ''}${title} {gray-fg}${
+                        comments.length
+                    }{/}`,
                     `${author} | ${hit} | ${upVotes} | ${time}`,
                     'q: back, r: refresh, o: open, left/right arrow: prev/next post'
                 );
@@ -251,8 +255,10 @@ class CLIClien extends CLI {
 
         this.listList.setItems(
             this.posts.map(
-                ({ title, numberOfComments, author }) =>
-                    `${title} {gray-fg}${numberOfComments} {|}${author}{/}`
+                ({ category, title, numberOfComments, author }) =>
+                    `${
+                        category ? '{gray-fg}' + category + '{/} ' : ''
+                    }${title} {gray-fg}${numberOfComments} {|}${author}{/}`
             )
         );
         this.listList.select(0);

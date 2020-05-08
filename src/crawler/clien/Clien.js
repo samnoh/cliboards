@@ -32,7 +32,8 @@ class Clien extends Crawler {
                         const link = board.getAttribute('href');
 
                         return link.includes('/service/board') &&
-                            ['사진게시판', '아무거나질문'].indexOf(name.innerText) === -1
+                            ['사진게시판', '아무거나질문', '임시소모임'].indexOf(name.innerText) ===
+                                -1
                             ? {
                                   name: name.innerText,
                                   value: link,
@@ -60,6 +61,7 @@ class Clien extends Crawler {
 
                 return Array.from(lists)
                     .map((list) => {
+                        const category = list.querySelector('.list_subject .category');
                         const title = list.querySelector('.list_subject .subject_fixed');
                         const link = list.querySelector('.list_subject');
                         const author = list.querySelector('.list_author .nickname');
@@ -70,6 +72,7 @@ class Clien extends Crawler {
 
                         return title && title.innerText
                             ? {
+                                  category: category && category.innerText,
                                   title: title.innerText.trim(),
                                   author:
                                       author.innerText.trim() ||
@@ -96,7 +99,8 @@ class Clien extends Crawler {
             await this.page.goto(link);
 
             return await this.page.evaluate(() => {
-                const title = document.querySelector('.post_subject span');
+                const category = document.querySelector('.post_subject .post_category');
+                const title = document.querySelector('.post_subject span:not(.post_category)');
                 const author = document.querySelector('.post_info .contact_name');
                 const hit = document.querySelector('.view_info');
                 const body = document.querySelector('.post_article');
@@ -109,6 +113,7 @@ class Clien extends Crawler {
                 // });
 
                 return {
+                    category: category && category.innerText,
                     title: title.innerText.trim(),
                     author:
                         author.innerText.trim() || author.querySelector('img').getAttribute('alt'),

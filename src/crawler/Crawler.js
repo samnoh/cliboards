@@ -12,7 +12,10 @@ class Crawler {
         if (this.browser) return;
 
         try {
-            this.browser = await puppeteer.launch({ headless: false });
+            this.browser = await puppeteer.launch({
+                headless: true,
+                args: ['--no-sandbox', '--disable-setuid-sandbox', '--diable-dev-shm-usage'],
+            });
 
             this.page = await this.browser.newPage();
             await this.page.setUserAgent(
