@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+const clien = require('../cli/CLIClien');
 
 class Crawler {
     constructor() {
@@ -11,7 +12,7 @@ class Crawler {
         if (this.browser) return;
 
         try {
-            this.browser = await puppeteer.launch({ headless: true });
+            this.browser = await puppeteer.launch({ headless: false });
 
             this.page = await this.browser.newPage();
             await this.page.setUserAgent(
@@ -23,7 +24,8 @@ class Crawler {
                 if (
                     ['image', 'stylesheet', 'media', 'font', 'imageset', 'script'].indexOf(
                         request.resourceType()
-                    ) !== -1
+                    ) !== -1 ||
+                    request.url().startsWith('https://www.youtube.com')
                 ) {
                     request.abort();
                 } else {

@@ -24,18 +24,19 @@ class Clien extends Crawler {
                 const main = Array.from(document.querySelectorAll('.navmenu a'));
                 const sub = Array.from(document.querySelectorAll('.menu_somoim a'));
 
-                const mainLength = main.length;
+                const mainBoardSize = main.length;
 
                 return [...main, ...sub]
                     .map((board, index) => {
                         const name = board.querySelectorAll('span')[1];
                         const link = board.getAttribute('href');
 
-                        return link.includes('/service/board') && index !== 3
+                        return link.includes('/service/board') &&
+                            ['사진게시판', '아무거나질문'].indexOf(name.innerText) === -1
                             ? {
                                   name: name.innerText,
                                   value: link,
-                                  isSub: mainLength < index,
+                                  isSub: mainBoardSize < index,
                               }
                             : null;
                     })
@@ -43,7 +44,9 @@ class Clien extends Crawler {
             });
 
             config.set('clien/boards', this.boards);
-        } catch (e) {}
+        } catch (e) {
+            return new Error(e);
+        }
     }
 
     async getPosts(link) {
