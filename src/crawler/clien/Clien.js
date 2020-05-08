@@ -124,14 +124,17 @@ class Clien extends Crawler {
                         const author = comment.querySelector('.contact_name');
                         const time = comment.querySelector('.comment_time .timestamp');
                         const upVotes = comment.querySelector('.comment_symph');
-                        const replyTo = body.querySelector('.comment_view strong img');
 
-                        if (isReply && replyTo) {
-                            const nickId = document.createTextNode(
-                                replyTo.getAttribute('data-nick-id')
-                            );
+                        if (isReply && !isRemoved) {
+                            const replyTo = body.querySelector('.comment_view strong img');
 
-                            replyTo.parentNode.replaceChild(nickId, replyTo);
+                            if (replyTo) {
+                                const nickId = document.createTextNode(
+                                    replyTo.getAttribute('data-nick-id')
+                                );
+
+                                replyTo.parentNode.replaceChild(nickId, replyTo);
+                            }
                         }
 
                         return isRemoved
@@ -141,8 +144,8 @@ class Clien extends Crawler {
                                   body: '삭제 되었습니다.',
                               }
                             : {
-                                  isRemoved,
                                   isReply,
+                                  isRemoved,
                                   author:
                                       author.innerText ||
                                       author.querySelector('img').getAttribute('alt'),

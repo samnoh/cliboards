@@ -236,8 +236,9 @@ class CLIClien extends CLI {
         try {
             this.footerBox.focus();
             this.currentPostIndex = index;
-            if (this.posts[index])
+            if (this.posts[index]) {
                 this.post = await this.clien.getPostDetail(this.posts[index].link);
+            }
         } catch (e) {}
     }
 
@@ -273,7 +274,7 @@ class CLIClien extends CLI {
     renderComments() {
         const { comments } = this.post;
 
-        if (!comments.length) return;
+        if (!comments || !comments.length) return;
 
         let prevTop = this.detailBox.getScreenLines().length + 1;
 
