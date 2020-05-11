@@ -97,6 +97,7 @@ class CLIClien extends CLI {
                 } else if (full === 's') {
                     // 1 ^ this.clien.sortListIndex: 1 -> 0 or 0 -> 1
                     this.clien.changeSortList(1 ^ this.clien.sortListIndex);
+                    // this.listList.setItems([]);
                 } else if (full === 'left' && this.clien.currentPageNumber) {
                     this.clien.currentPageNumber -= 1;
                 } else if (full === 'right') {
@@ -121,18 +122,20 @@ class CLIClien extends CLI {
                     case 'left':
                         if (this.currentPostIndex) {
                             this.currentPostIndex -= 1;
+                            this.posts[this.currentPostIndex].hasRead = true;
+                            await this.refreshPostDetail();
                         } else if (this.clien.currentPageNumber) {
                             this.clien.currentPageNumber -= 1;
                             await this.refreshPosts();
                             this.currentPostIndex = this.posts.length - 1;
-                        } else {
-                            break;
+                            this.posts[this.currentPostIndex].hasRead = true;
+                            await this.refreshPostDetail();
                         }
-                        await this.refreshPostDetail();
                         break;
                     case 'l':
                     case 'right':
                         this.currentPostIndex += 1;
+                        this.posts[this.currentPostIndex].hasRead = true;
 
                         if (this.currentPostIndex === this.posts.length) {
                             this.clien.currentPageNumber += 1;
@@ -148,22 +151,13 @@ class CLIClien extends CLI {
             //#region select
             this.boardList.on('select', async (item, index) => {
                 await this.getPosts(index);
-
-                this.moveToWidget('next', (nextWidget) => {
-                    nextWidget.setItems(
-                        this.posts.map(
-                            ({ category, title, numberOfComments, author }) =>
-                                `${
-                                    category ? '{gray-fg}' + category + '{/} ' : ''
-                                }${title} {gray-fg}${numberOfComments} {|}${author}{/}`
-                        )
-                    );
-                });
+                this.moveToWidget('next');
             });
 
             this.listList.on('select', async (item, index) => {
                 await this.getPostDetail(index);
 
+                this.posts[index].hasRead = true;
                 this.moveToWidget('next', (nextWidget) => {
                     nextWidget.setContent(this.post.body);
                     this.renderComments();
@@ -174,7 +168,7 @@ class CLIClien extends CLI {
             //#region focus
             this.boardList.on('focus', () => {
                 this.currentPostIndex = 0;
-                this.clien.currentPageNumber = 0;
+                this.clien.changeSortList(0);
                 this.setTitleFooterContent(
                     '클리앙',
                     this.isSubBoard ? '소모임' : '커뮤니티',
@@ -183,8 +177,19 @@ class CLIClien extends CLI {
             });
 
             this.listList.on('focus', () => {
-                this.listList.scrollTo(this.currentPostIndex);
                 this.flushComments();
+
+                this.listList.setItems(
+                    this.posts.map(
+                        ({ category, title, numberOfComments, author, hasRead }) =>
+                            `${category ? '{gray-fg}' + category + '{/} ' : ''}${
+                                hasRead ? '{gray-fg}' + title + '{/}' : title
+                            } {gray-fg}${numberOfComments} {|}${author}{/}`
+                    )
+                );
+                this.listList.scrollTo(this.currentPostIndex);
+                this.listList.select(this.currentPostIndex);
+
                 this.setTitleFooterContent(
                     this.clien.boards[this.clien.currentBoardIndex].name,
                     `${this.clien.currentPageNumber + 1} 페이지 | ${
@@ -258,15 +263,6 @@ class CLIClien extends CLI {
                 : this.clien.currentBoardIndex
         );
 
-        this.listList.setItems(
-            this.posts.map(
-                ({ category, title, numberOfComments, author }) =>
-                    `${
-                        category ? '{gray-fg}' + category + '{/} ' : ''
-                    }${title} {gray-fg}${numberOfComments} {|}${author}{/}`
-            )
-        );
-        this.listList.select(0);
         this.currentPostIndex = 0;
         this.listList.focus();
     }

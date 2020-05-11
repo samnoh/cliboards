@@ -1,14 +1,15 @@
 const Crawler = require('../Crawler');
-const { baseUrl, getUrl, sortUrls } = require('./constants');
+const { baseUrl, getUrl, sortUrls, skipBoards } = require('./constants');
 const config = require('../../helper/configstore');
 
 class Clien extends Crawler {
     constructor() {
         super();
 
+        this.boards = [];
+        this.postsRead = new Set();
         this.currentBoardIndex = 0;
         this.currentPageNumber = 0;
-        this.boards = [];
         this.sortListIndex = 0;
     }
 
@@ -21,7 +22,7 @@ class Clien extends Crawler {
 
             await this.page.goto(baseUrl);
 
-            this.boards = await this.page.evaluate(() => {
+            this.boards = await this.page.evaluate((skipBoards) => {
                 const main = Array.from(document.querySelectorAll('.navmenu a'));
                 const sub = Array.from(document.querySelectorAll('.menu_somoim a'));
 
@@ -33,8 +34,7 @@ class Clien extends Crawler {
                         const link = board.getAttribute('href');
 
                         return link.includes('/service/board') &&
-                            ['사진게시판', '아무거나질문', '임시소모임'].indexOf(name.innerText) ===
-                                -1
+                            skipBoards.indexOf(name.innerText) === -1
                             ? {
                                   name: name.innerText,
                                   value: link,
@@ -43,15 +43,16 @@ class Clien extends Crawler {
                             : null;
                     })
                     .filter((board) => board);
-            });
+            }, skipBoards);
 
             config.set('clien/boards', this.boards);
         } catch (e) {
+            config.delete('clien/boards');
             return new Error(e);
         }
     }
 
-    async getPosts(link) {
+    async getPosts() {
         try {
             await this.page.goto(
                 getUrl(this.boards[this.currentBoardIndex].value) +
@@ -59,7 +60,7 @@ class Clien extends Crawler {
                     sortUrls[this.sortListIndex].value
             );
 
-            return await this.page.evaluate((baseUrl) => {
+            const posts = await this.page.evaluate((baseUrl) => {
                 const lists = document.querySelectorAll('.list_content .list_item');
 
                 return Array.from(lists)
@@ -92,6 +93,8 @@ class Clien extends Crawler {
                     })
                     .filter((posts) => posts);
             }, baseUrl);
+
+            return posts.map((post) => ({ ...post, hasRead: this.postsRead.has(post.link) }));
         } catch (e) {
             return new Error(e);
         }
@@ -100,6 +103,8 @@ class Clien extends Crawler {
     async getPostDetail(link) {
         try {
             await this.page.goto(link);
+
+            this.postsRead.add(link); // set post that you read
 
             return await this.page.evaluate(() => {
                 const category = document.querySelector('.post_subject .post_category');
@@ -177,15 +182,9 @@ class Clien extends Crawler {
         return await this.getPosts();
     }
 
-    async changePageNumber(pageNumber) {
-        this.currentPageNumber = pageNumber;
-        return await this.getPosts();
-    }
-
-    async changeSortList(index) {
+    changeSortList(index) {
         this.currentPageNumber = 0;
         this.sortListIndex = index;
-        return await this.getPosts();
     }
 }
 

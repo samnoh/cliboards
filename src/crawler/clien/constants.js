@@ -11,4 +11,5 @@ module.exports = {
             value: '&od=T33',
         },
     ],
+    skipBoards: ['사진게시판', '아무거나질문', '임시소모임'],
 };
