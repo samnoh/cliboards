@@ -73,6 +73,7 @@ class Clien extends Crawler {
                         const time = list.querySelector('.list_time');
                         const upVotes = list.querySelector('.list_symph');
                         const numberOfComments = list.querySelector('.rSymph05');
+                        const hasImages = list.querySelector('.fa-picture-o');
 
                         return title && title.innerText
                             ? {
@@ -88,6 +89,7 @@ class Clien extends Crawler {
                                   numberOfComments: numberOfComments
                                       ? parseInt(numberOfComments.innerText)
                                       : 0,
+                                  hasImages: !!hasImages,
                               }
                             : null;
                     })
@@ -115,10 +117,21 @@ class Clien extends Crawler {
                 const upVotes = document.querySelector('.symph_count strong');
                 const comments = document.querySelectorAll('.comment_row');
                 const time = document.querySelector('.post_author span');
+                const images = Array.from(
+                    document.querySelectorAll('.post_content img') || []
+                ).map((image) => image.getAttribute('src'));
 
-                // body.querySelectorAll('img').forEach((image) => {
-                //     image.textContent = 'IMAGE';
-                // });
+                const gifs = Array.from(body.querySelectorAll('.fr-video') || []);
+
+                gifs.map((gif, index) => {
+                    const src = gif.querySelector('source').getAttribute('src');
+                    gif.innerHTML = `GIF_${index} `;
+                    images.push(src);
+                });
+
+                body.querySelectorAll('img').forEach((image, index) => {
+                    image.textContent = `IMAGE_${index} `;
+                });
 
                 return {
                     category: category && category.innerText,
@@ -133,6 +146,8 @@ class Clien extends Crawler {
                         .join('\n')
                         .trim(),
                     upVotes: parseInt(upVotes.innerText),
+                    images,
+                    hasImages: images.length,
                     comments: Array.from(comments).map((comment) => {
                         const isRemoved = comment.classList.contains('blocked');
                         const isReply = comment.classList.contains('re');

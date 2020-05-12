@@ -115,6 +115,9 @@ class CLIClien extends CLI {
                     case 'r':
                         await this.refreshPostDetail();
                         break;
+                    case 'i':
+                        await this.openImages();
+                        break;
                     case 'o':
                         await open(this.posts[this.currentPostIndex].link);
                         break;
@@ -159,7 +162,9 @@ class CLIClien extends CLI {
 
                 this.posts[index].hasRead = true;
                 this.moveToWidget('next', (nextWidget) => {
-                    nextWidget.setContent(this.post.body);
+                    nextWidget.setContent(
+                        this.post.body.replace(/(GIF_\d+|IMAGE_\d+)/g, '{inverse}$&{/inverse}')
+                    );
                     this.renderComments();
                     nextWidget.scrollTo(0);
                 });
@@ -182,10 +187,14 @@ class CLIClien extends CLI {
 
                 this.listList.setItems(
                     this.posts.map(
-                        ({ category, title, numberOfComments, author, hasRead }) =>
+                        ({ category, title, numberOfComments, author, hasRead, hasImages }) =>
                             `${category ? '{gray-fg}' + category + '{/} ' : ''}${
                                 hasRead ? '{gray-fg}' + title + '{/}' : title
-                            } {gray-fg}${numberOfComments} {|}${author}{/}`
+                            } {gray-fg}${
+                                hasImages
+                                    ? '{underline}' + numberOfComments + '{/underline}'
+                                    : numberOfComments
+                            }  {|}${author}{/}`
                     )
                 );
                 this.listList.scrollTo(this.currentPostIndex);
@@ -201,13 +210,27 @@ class CLIClien extends CLI {
             });
 
             this.detailBox.on('focus', () => {
-                const { category, title, author, hit, upVotes, comments, time } = this.post;
+                const {
+                    category,
+                    title,
+                    author,
+                    hit,
+                    upVotes,
+                    comments,
+                    time,
+                    images,
+                    hasImages,
+                } = this.post;
                 this.setTitleFooterContent(
                     `${category ? '[' + category + '] ' : ''}${title} {gray-fg}${
                         comments.length
                     }{/}`,
                     `${author} | ${hit} | ${upVotes} | ${time}`,
-                    'q: back, r: refresh, o: open, left/right arrow: prev/next post'
+                    `q: back, r: refresh, o: open, ${
+                        hasImages
+                            ? `i: view ${images.length} image${images.length !== 1 ? 's' : ''}, `
+                            : ''
+                    }left/right arrow: prev/next post`
                 );
             });
             //#endregion focus
@@ -272,11 +295,23 @@ class CLIClien extends CLI {
         await this.getPostDetail(this.currentPostIndex);
 
         this.flushComments();
-        this.detailBox.setContent(this.post.body);
+        this.detailBox.setContent(
+            this.post.body.replace(/(GIF_\d+|IMAGE_\d+)/g, '{inverse}$&{/inverse}')
+        );
         this.renderComments();
         this.detailBox.scrollTo(0);
         this.listList.select(this.currentPostIndex);
         this.detailBox.focus();
+    }
+
+    async openImages() {
+        const { images } = this.post;
+
+        if (!images || !images.length) return;
+
+        try {
+            await images.map(async (image) => await open(image));
+        } catch (e) {}
     }
 
     renderComments() {
