@@ -161,6 +161,7 @@ class CLIClien extends CLI {
                 this.moveToWidget('next', (nextWidget) => {
                     nextWidget.setContent(this.post.body);
                     this.renderComments();
+                    nextWidget.scrollTo(0);
                 });
             });
             //#endregion select
@@ -271,9 +272,9 @@ class CLIClien extends CLI {
         await this.getPostDetail(this.currentPostIndex);
 
         this.flushComments();
-        this.detailBox.scrollTo(0);
         this.detailBox.setContent(this.post.body);
         this.renderComments();
+        this.detailBox.scrollTo(0);
         this.listList.select(this.currentPostIndex);
         this.detailBox.focus();
     }
