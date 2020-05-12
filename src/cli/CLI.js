@@ -62,23 +62,16 @@ class CLI {
             },
         });
 
+        this.screen.key('C-c', () => {
+            this.terminate();
+        });
+
         this.footerBox.on('focus', () => {
             this.footerBox.setContent(`${this.footerBox.getContent()} {|}{yellow-fg}Loading...{/}`);
             this.screen.render();
         });
 
         this.currentWidgetIndex = 0;
-        this.setKeyBindings();
-    }
-
-    setKeyBindings() {
-        this.screen.key('C-c', () => {
-            this.terminate();
-        });
-
-        this.screen.key(['escape', 'q'], (ch, key) => {
-            this.moveToWidget('prev', null);
-        });
     }
 
     // direction: 'prev' || 'next'
@@ -105,10 +98,15 @@ class CLI {
     }
 
     async terminate() {
-        this.terminateCallback && (await this.terminateCallback());
-        this.screen.destroy();
-        // blessed.program().clear();
-        return process.exit(0);
+        try {
+            this.terminateCallback && (await this.terminateCallback());
+
+            this.screen.destroy();
+        } catch (e) {
+        } finally {
+            blessed.program().clear();
+            return process.exit(0);
+        }
     }
 
     setTitleFooterContent(leftTitleText, rightTitleText, footerText) {

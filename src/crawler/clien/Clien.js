@@ -193,8 +193,12 @@ class Clien extends Crawler {
     }
 
     async changeBoard(board) {
-        this.currentBoardIndex = this.boards.findIndex((_board) => _board.value === board.value);
-        return await this.getPosts();
+        try {
+            this.currentBoardIndex = this.boards.findIndex(
+                (_board) => _board.value === board.value
+            );
+            return await this.getPosts();
+        } catch (e) {}
     }
 
     changeSortList(index) {
