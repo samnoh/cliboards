@@ -1,5 +1,5 @@
 const Crawler = require('../Crawler');
-const { baseUrl, getUrl, sortUrls, skipBoards } = require('./constants');
+const { baseUrl, getUrl, sortUrls, ignoreBoards } = require('./constants');
 const config = require('../../helper/configstore');
 
 class Clien extends Crawler {
@@ -22,7 +22,7 @@ class Clien extends Crawler {
 
             await this.page.goto(baseUrl);
 
-            this.boards = await this.page.evaluate((skipBoards) => {
+            this.boards = await this.page.evaluate((ignoreBoards) => {
                 const main = Array.from(document.querySelectorAll('.navmenu a'));
                 const sub = Array.from(document.querySelectorAll('.menu_somoim a'));
 
@@ -34,7 +34,7 @@ class Clien extends Crawler {
                         const link = board.getAttribute('href');
 
                         return link.includes('/service/board') &&
-                            skipBoards.indexOf(name.innerText) === -1
+                            ignoreBoards.indexOf(name.innerText) === -1
                             ? {
                                   name: name.innerText,
                                   value: link,
@@ -43,7 +43,7 @@ class Clien extends Crawler {
                             : null;
                     })
                     .filter((board) => board);
-            }, skipBoards);
+            }, ignoreBoards);
 
             config.set('clien/boards', this.boards);
         } catch (e) {
@@ -116,12 +116,14 @@ class Clien extends Crawler {
 
             const gifs = Array.from(body.querySelectorAll('.fr-video') || []);
 
+            // handle GIFs
             gifs.map((gif, index) => {
                 const src = gif.querySelector('source').getAttribute('src');
                 gif.innerHTML = `GIF_${index} `;
                 images.push(src);
             });
 
+            // handle images
             body.querySelectorAll('img').forEach((image, index) => {
                 image.textContent = `IMAGE_${index} `;
             });
@@ -148,6 +150,7 @@ class Clien extends Crawler {
                     const time = comment.querySelector('.comment_time .timestamp');
                     const upVotes = comment.querySelector('.comment_symph');
 
+                    // handle animated author name
                     if (isReply && !isRemoved) {
                         const replyTo = body.querySelector('.comment_view strong img');
 

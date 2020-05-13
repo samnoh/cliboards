@@ -10,7 +10,7 @@ const config = require('../helper/configstore');
 
 class CLIClien extends CLI {
     constructor() {
-        super();
+        super('CLIboards by Sam Noh');
 
         this.clien = new Clien();
         this.isSubBoard = false;
@@ -175,7 +175,6 @@ class CLIClien extends CLI {
 
                         await this.refreshPostDetail();
                         this.posts[this.currentPostIndex].hasRead = true;
-
                         break;
                 }
             });
@@ -266,6 +265,7 @@ class CLIClien extends CLI {
                     images,
                     hasImages,
                 } = this.post;
+
                 this.setTitleFooterContent(
                     `${category ? '[' + category + '] ' : ''}${title} {gray-fg}${
                         comments.length
@@ -422,10 +422,8 @@ class CLIClien extends CLI {
 
         images.map(async (image, index) => {
             try {
-                await open(image, { background: true });
-            } catch (e) {
-                // Error
-            }
+                await open(image, { background: true, url: true });
+            } catch (e) {}
         });
     }
 }

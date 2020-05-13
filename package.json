@@ -1,5 +1,5 @@
 {
-    "name": "clien-terminal",
+    "name": "cliboards",
     "version": "1.0.0",
     "description": "",
     "scripts": {
@@ -7,15 +7,15 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/samnoh/clienTerminal.git"
+        "url": "git+https://github.com/samnoh/cliboards.git"
     },
     "keywords": [],
     "author": "Sam Noh <samnoh.dev@gmail.com>",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/samnoh/clienTerminal/issues"
+        "url": "https://github.com/samnoh/cliboards/issues"
     },
-    "homepage": "https://github.com/samnoh/clienTerminal#readme",
+    "homepage": "https://github.com/samnoh/cliboards#readme",
     "devDependencies": {
         "nodemon": "2.0.2"
     },
