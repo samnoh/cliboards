@@ -95,6 +95,10 @@ class CLIClien extends CLI {
             this.listList.on('keypress', async (ch, { full }) => {
                 if (!this.posts.length) return;
 
+                const prevPaggeNumber = this.clien.currentPageNumber;
+                const prevPosts = this.posts;
+                const prevPostIndex = this.currentPostIndex;
+
                 if (full === 'r') {
                     // refresh
                 } else if (full === 's') {
@@ -112,6 +116,14 @@ class CLIClien extends CLI {
                 }
 
                 await this.refreshPosts();
+
+                if (!this.posts.length) {
+                    // no more pages -> go back to the previous page
+                    this.clien.currentPageNumber = prevPaggeNumber;
+                    this.posts = prevPosts;
+                    this.currentPostIndex = prevPostIndex;
+                    this.listList.focus();
+                }
             });
 
             this.detailBox.on('keypress', async (ch, { full }) => {
@@ -146,9 +158,19 @@ class CLIClien extends CLI {
                         this.currentPostIndex += 1;
 
                         if (this.currentPostIndex === this.posts.length) {
+                            const prevPosts = this.posts;
                             this.clien.currentPageNumber += 1;
+
                             await this.refreshPosts();
-                            this.currentPostIndex = 0;
+
+                            if (this.posts.length) {
+                                this.currentPostIndex = 0;
+                            } else {
+                                // no more pages -> go back to the last page
+                                this.clien.currentPageNumber -= 1;
+                                this.currentPostIndex = prevPosts.length - 1;
+                                this.posts = prevPosts;
+                            }
                         }
 
                         await this.refreshPostDetail();
@@ -301,22 +323,17 @@ class CLIClien extends CLI {
             );
         } catch (e) {
             this.posts = [];
-            throw new Error(e);
         }
     }
 
     async refreshPosts() {
-        try {
-            await this.getPosts(
-                this.isSubBoard
-                    ? this.clien.currentBoardIndex - this.mainBoardsLength
-                    : this.clien.currentBoardIndex
-            );
-            this.currentPostIndex = 0;
-        } catch (e) {
-        } finally {
-            this.listList.focus();
-        }
+        await this.getPosts(
+            this.isSubBoard
+                ? this.clien.currentBoardIndex - this.mainBoardsLength
+                : this.clien.currentBoardIndex
+        );
+        this.currentPostIndex = 0;
+        this.listList.focus();
     }
 
     async getPostDetail(index) {
