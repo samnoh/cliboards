@@ -14,9 +14,8 @@ class CLI {
         this.screen = blessed.screen({
             title,
             dockBorders: true,
-            smartCSR: true,
+            fastCSR: true,
             fullUnicode: true,
-            error: true,
             debug: true,
         });
         const box = blessed.box({
@@ -71,8 +70,17 @@ class CLI {
         });
 
         this.footerBox.on('focus', () => {
-            this.footerBox.setContent(`${this.footerBox.getContent()} {|}{yellow-fg}Loading...{/}`);
+            this.footerBox.setContent(`${this.footerBox.getContent()} {|}{gray-fg}Loading...{/}`);
+            this.footerBox.style = {
+                bg: 'blue',
+            };
             this.screen.render();
+        });
+
+        this.footerBox.on('blur', () => {
+            this.footerBox.style = {
+                bg: '#243B4D',
+            };
         });
 
         this.currentWidgetIndex = 0;
