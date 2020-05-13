@@ -75,104 +75,94 @@ class CLIClien extends CLI {
         try {
             await this.clien.start();
 
-            //#region keys
-            this.widgets.map((widget) => {
-                widget.key(['escape', 'q'], (ch, key) => {
-                    this.moveToWidget('prev', null);
-                });
-            });
-
+            //#region keypress
             this.boardList.on('keypress', async (ch, { full }) => {
-                try {
-                    switch (full) {
-                        case 'r':
-                            config.delete('clien/boards');
-                            this.clien.boards.length = 0;
-                            await this.getBoards(this.isSubBoard);
-                            break;
-                        case 'right':
-                            this.getCurrentBoards(true);
-                            break;
-                        case 'left':
-                            this.getCurrentBoards(false);
-                            break;
-                    }
-                } catch (e) {}
+                switch (full) {
+                    case 'r':
+                        config.delete('clien/boards');
+                        this.clien.boards.length = 0;
+                        await this.getBoards(this.isSubBoard);
+                        break;
+                    case 'right':
+                        this.getCurrentBoards(true);
+                        break;
+                    case 'left':
+                        this.getCurrentBoards(false);
+                        break;
+                }
             });
 
             this.listList.on('keypress', async (ch, { full }) => {
-                try {
-                    if (full === 'r') {
-                        // refresh
-                    } else if (full === 's') {
-                        // 1 ^ this.clien.sortListIndex: 1 -> 0 or 0 -> 1
-                        this.clien.changeSortList(1 ^ this.clien.sortListIndex);
-                        // this.listList.setItems([]);
-                    } else if (full === 'left' && this.clien.currentPageNumber) {
-                        this.clien.currentPageNumber -= 1;
-                    } else if (full === 'right') {
-                        this.clien.currentPageNumber += 1;
-                    } else if (!isNaN(parseInt(full))) {
-                        this.clien.currentPageNumber = full === '0' ? 9 : full - 1;
-                    } else {
-                        return;
-                    }
+                if (!this.posts.length) return;
 
-                    await this.refreshPosts();
-                } catch (e) {}
+                if (full === 'r') {
+                    // refresh
+                } else if (full === 's') {
+                    // 1 ^ this.clien.sortListIndex: 1 -> 0 or 0 -> 1
+                    this.clien.changeSortList(1 ^ this.clien.sortListIndex);
+                    // this.listList.setItems([]);
+                } else if (full === 'left' && this.clien.currentPageNumber) {
+                    this.clien.currentPageNumber -= 1;
+                } else if (full === 'right') {
+                    this.clien.currentPageNumber += 1;
+                } else if (!isNaN(parseInt(full))) {
+                    this.clien.currentPageNumber = full === '0' ? 9 : full - 1;
+                } else {
+                    return;
+                }
+
+                await this.refreshPosts();
             });
 
             this.detailBox.on('keypress', async (ch, { full }) => {
-                try {
-                    switch (full) {
-                        case 'r':
-                            await this.refreshPostDetail();
-                            break;
-                        case 'i':
-                            await this.openImages();
-                            break;
-                        case 'o':
-                            await open(this.posts[this.currentPostIndex].link);
-                            break;
-                        case 'h':
-                        case 'left':
-                            if (this.currentPostIndex) {
-                                this.currentPostIndex -= 1;
-                                this.posts[this.currentPostIndex].hasRead = true;
-                                await this.refreshPostDetail();
-                            } else if (this.clien.currentPageNumber) {
-                                this.clien.currentPageNumber -= 1;
-                                await this.refreshPosts();
-                                this.currentPostIndex = this.posts.length - 1;
-                                this.posts[this.currentPostIndex].hasRead = true;
-                                await this.refreshPostDetail();
-                            }
-                            break;
-                        case 'l':
-                        case 'right':
-                            this.currentPostIndex += 1;
+                if (!this.post) return;
 
-                            if (this.currentPostIndex === this.posts.length) {
-                                this.clien.currentPageNumber += 1;
-                                await this.refreshPosts();
-                                this.currentPostIndex = 0;
-                            }
-
-                            await this.refreshPostDetail();
+                switch (full) {
+                    case 'r':
+                        await this.refreshPostDetail();
+                        break;
+                    case 'i':
+                        this.openImages();
+                        break;
+                    case 'o':
+                        await open(this.posts[this.currentPostIndex].link);
+                        break;
+                    case 'h':
+                    case 'left':
+                        if (this.currentPostIndex) {
+                            this.currentPostIndex -= 1;
                             this.posts[this.currentPostIndex].hasRead = true;
+                            await this.refreshPostDetail();
+                        } else if (this.clien.currentPageNumber) {
+                            this.clien.currentPageNumber -= 1;
+                            await this.refreshPosts();
+                            this.currentPostIndex = this.posts.length - 1;
+                            this.posts[this.currentPostIndex].hasRead = true;
+                            await this.refreshPostDetail();
+                        }
+                        break;
+                    case 'l':
+                    case 'right':
+                        this.currentPostIndex += 1;
 
-                            break;
-                    }
-                } catch (e) {}
+                        if (this.currentPostIndex === this.posts.length) {
+                            this.clien.currentPageNumber += 1;
+                            await this.refreshPosts();
+                            this.currentPostIndex = 0;
+                        }
+
+                        await this.refreshPostDetail();
+                        this.posts[this.currentPostIndex].hasRead = true;
+
+                        break;
+                }
             });
             //#endregion
 
             //#region select
             this.boardList.on('select', async (item, index) => {
-                try {
-                    await this.getPosts(index);
-                    this.moveToWidget('next');
-                } catch (e) {}
+                await this.getPosts(index);
+                this.moveToWidget('next');
             });
 
             this.listList.on('select', async (item, index) => {
@@ -183,12 +173,18 @@ class CLIClien extends CLI {
                     this.moveToWidget('next', () => {
                         this.rednerDetailBody();
                     });
-                } catch (e) {}
+                } catch (e) {
+                    this.moveToWidget('next');
+                }
             });
             //#endregion select
 
             //#region focus
             this.boardList.on('focus', () => {
+                if (!this.boardList.getItem(0)) {
+                    this.setTitleFooterContent('Error', '', 'q: quit, r: refresh');
+                    return;
+                }
                 this.currentPostIndex = 0;
                 this.clien.changeSortList(0);
                 this.setTitleFooterContent(
@@ -199,6 +195,12 @@ class CLIClien extends CLI {
             });
 
             this.listList.on('focus', () => {
+                if (!this.posts.length) {
+                    this.listList.setItems([]);
+                    this.setTitleFooterContent('Error', '', 'q: back');
+                    return;
+                }
+
                 this.listList.setItems(
                     this.posts.map(
                         ({ category, title, numberOfComments, author, hasRead, hasImages }) =>
@@ -224,6 +226,13 @@ class CLIClien extends CLI {
             });
 
             this.detailBox.on('focus', () => {
+                if (!this.post) {
+                    this.detailBox.setContent('');
+                    this.flushComments();
+                    this.setTitleFooterContent('Error', '', 'q: back');
+                    return;
+                }
+
                 const {
                     category,
                     title,
@@ -250,13 +259,16 @@ class CLIClien extends CLI {
             //#endregion focus
 
             await this.getBoards(this.isSubBoard);
-        } catch (e) {}
+        } catch (e) {
+            this.terminate();
+        }
     }
 
     async getBoards(isSub) {
         try {
             if (!this.clien.boards.length) {
                 this.footerBox.focus();
+
                 await this.clien.getBoards();
                 this.mainBoardsLength = this.clien.boards.filter(({ isSub }) => !isSub).length;
             }
@@ -268,34 +280,29 @@ class CLIClien extends CLI {
                     .map(({ name }) => name)
             );
             this.boardList.focus();
-        } catch (e) {}
+        } catch (e) {
+            this.boardList.setItems([]);
+            this.boardList.focus();
+        }
     }
 
     async getCurrentBoards(isSub) {
-        try {
-            this.boardList.scrollTo(0);
-            this.boardList.select(0);
-            isSub !== this.isSubBoard && (await this.getBoards(isSub));
-        } catch (e) {}
+        this.boardList.scrollTo(0);
+        this.boardList.select(0);
+        isSub !== this.isSubBoard && (await this.getBoards(isSub));
     }
 
     async getPosts(index) {
         try {
             this.footerBox.focus();
+
             this.posts = await this.clien.changeBoard(
                 this.clien.boards[this.isSubBoard ? index + this.mainBoardsLength : index]
             );
-        } catch (e) {}
-    }
-
-    async getPostDetail(index) {
-        try {
-            this.footerBox.focus();
-            this.currentPostIndex = index;
-            if (this.posts[index]) {
-                this.post = await this.clien.getPostDetail(this.posts[index].link);
-            }
-        } catch (e) {}
+        } catch (e) {
+            this.posts = [];
+            throw new Error(e);
+        }
     }
 
     async refreshPosts() {
@@ -305,10 +312,25 @@ class CLIClien extends CLI {
                     ? this.clien.currentBoardIndex - this.mainBoardsLength
                     : this.clien.currentBoardIndex
             );
-
             this.currentPostIndex = 0;
+        } catch (e) {
+        } finally {
             this.listList.focus();
-        } catch (e) {}
+        }
+    }
+
+    async getPostDetail(index) {
+        try {
+            this.footerBox.focus();
+            this.currentPostIndex = index;
+
+            if (this.posts[index]) {
+                this.post = await this.clien.getPostDetail(this.posts[index].link);
+            }
+        } catch (e) {
+            this.post = null;
+            throw new Error(e);
+        }
     }
 
     async refreshPostDetail() {
@@ -316,18 +338,10 @@ class CLIClien extends CLI {
             await this.getPostDetail(this.currentPostIndex);
             this.listList.select(this.currentPostIndex);
             this.rednerDetailBody();
+        } catch (e) {
+        } finally {
             this.detailBox.focus();
-        } catch (e) {}
-    }
-
-    async openImages() {
-        const { images } = this.post;
-
-        if (!images || !images.length) return;
-
-        try {
-            await images.map(async (image) => await open(image));
-        } catch (e) {}
+        }
     }
 
     rednerDetailBody() {
@@ -382,6 +396,20 @@ class CLIClien extends CLI {
             commentBoxes.map((box) => box.destroy());
             commentBoxes.length = 0;
         }
+    }
+
+    openImages() {
+        const { images } = this.post;
+
+        if (!images || !images.length) return;
+
+        images.map(async (image, index) => {
+            try {
+                await open(image, { background: true });
+            } catch (e) {
+                // Error
+            }
+        });
     }
 }
 

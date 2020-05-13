@@ -1,5 +1,4 @@
 const puppeteer = require('puppeteer');
-const clien = require('../cli/CLIClien');
 
 class Crawler {
     constructor() {
@@ -35,14 +34,19 @@ class Crawler {
                     request.continue();
                 }
             });
-        } catch (e) {}
+        } catch (e) {
+            this.browser && (await this.browser.close());
+            throw new Error(e);
+        }
     }
 
     async close() {
         try {
             await this.page.close();
             await this.browser.close();
-        } catch (e) {}
+        } catch (e) {
+            throw new Error(e);
+        }
     }
 }
 

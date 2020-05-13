@@ -66,6 +66,10 @@ class CLI {
             this.terminate();
         });
 
+        this.screen.key(['escape', 'q'], (ch, key) => {
+            !this.footerBox.focused && this.moveToWidget('prev', null);
+        });
+
         this.footerBox.on('focus', () => {
             this.footerBox.setContent(`${this.footerBox.getContent()} {|}{yellow-fg}Loading...{/}`);
             this.screen.render();
@@ -98,18 +102,13 @@ class CLI {
     }
 
     async terminate() {
-        try {
-            this.terminateCallback && (await this.terminateCallback());
-
-            this.screen.destroy();
-        } catch (e) {
-        } finally {
-            blessed.program().clear();
-            return process.exit(0);
-        }
+        this.terminateCallback && (await this.terminateCallback());
+        this.screen.destroy();
+        blessed.program().clear();
+        return process.exit(0);
     }
 
-    setTitleFooterContent(leftTitleText, rightTitleText, footerText) {
+    setTitleFooterContent(leftTitleText = '', rightTitleText = '', footerText = '') {
         this.titleBox.setContent(`${leftTitleText} {|}{gray-fg}${rightTitleText}{/}`);
         this.footerBox.setContent(`{gray-fg}${footerText}{/}`);
         this.screen.render();
