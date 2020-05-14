@@ -1,0 +1,26 @@
+{
+    "CLIEN": {
+        "cursor_bg": "",
+        "cursor_color": "",
+        "top_bg": "",
+        "top_left_color": "",
+        "top_right_color": "",
+        "top_info_color": "",
+        "bottom_bg": "",
+        "bottom_left_color": "",
+        "bottom_right_color": "",
+        "bottom_bg_loading": "",
+        "list_bg": "",
+        "list_left_color": "",
+        "list_right_color": "",
+        "list_read_color": "",
+        "list_info_color": "",
+        "post__bg": "",
+        "post_color": "",
+        "comment_bg": "",
+        "comment_border_color": "",
+        "comment_top_color": "",
+        "comment_bottom_color": "",
+        "comment_top_color_likes": ""
+    }
+}

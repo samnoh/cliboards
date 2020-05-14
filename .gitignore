@@ -2,3 +2,5 @@
 node_modules
 build
 *.json
+!colors.default.json
+!colors.example.json
