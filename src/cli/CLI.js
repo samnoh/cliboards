@@ -1,5 +1,7 @@
 const blessed = require('blessed');
 
+const getTheme = require('../helper/getTheme');
+
 // abstract
 class CLI {
     constructor(title) {
@@ -10,6 +12,8 @@ class CLI {
         if (this.start === undefined || typeof this.start !== 'function') {
             throw new TypeError('Child should extend the method "start"');
         }
+
+        this.colors = getTheme(title);
 
         this.screen = blessed.screen({
             title,
@@ -34,7 +38,8 @@ class CLI {
                 right: 2,
             },
             style: {
-                bg: '#243B4D',
+                bg: this.colors.top_bg,
+                fg: this.colors.top_left_color,
             },
         });
         this.bodyBox = blessed.box({
@@ -57,7 +62,7 @@ class CLI {
                 left: 2,
             },
             style: {
-                bg: '#243B4D',
+                fg: this.colors.bottom_left_color,
             },
         });
 
@@ -70,17 +75,17 @@ class CLI {
         });
 
         this.footerBox.on('focus', () => {
-            this.footerBox.setContent(`${this.footerBox.getContent()} {|}{gray-fg}Loading...{/}`);
-            this.footerBox.style = {
-                bg: 'blue',
-            };
+            this.footerBox.setContent(
+                `${this.footerBox.getContent()} {|}{${
+                    this.colors.bottom_right_color
+                }-fg}Loading...{/}`
+            );
+            this.footerBox.style = { ...this.footerBox.style, bg: this.colors.bottom_bg_loading };
             this.screen.render();
         });
 
         this.footerBox.on('blur', () => {
-            this.footerBox.style = {
-                bg: '#243B4D',
-            };
+            this.footerBox.style = { ...this.footerBox.style, bg: this.colors.bottom_bg };
         });
 
         this.currentWidgetIndex = 0;
@@ -109,16 +114,18 @@ class CLI {
         }
     }
 
-    async terminate() {
+    async terminate(exitCode = 0, message) {
         this.terminateCallback && (await this.terminateCallback());
-        this.screen.destroy();
-        blessed.program().clear();
-        return process.exit(0);
+        !exitCode && blessed.program().clear();
+        message && console[exitCode ? 'error' : 'log'](message);
+        return process.exit(exitCode);
     }
 
     setTitleFooterContent(leftTitleText = '', rightTitleText = '', footerText = '') {
-        this.titleBox.setContent(`${leftTitleText} {|}{gray-fg}${rightTitleText}{/}`);
-        this.footerBox.setContent(`{gray-fg}${footerText}{/}`);
+        this.titleBox.setContent(
+            `${leftTitleText} {|}{${this.colors.top_right_color}-fg}${rightTitleText}{/}`
+        );
+        this.footerBox.setContent(footerText);
         this.screen.render();
     }
 }

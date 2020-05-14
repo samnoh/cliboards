@@ -10,7 +10,7 @@ const config = require('../helper/configstore');
 
 class CLIClien extends CLI {
     constructor() {
-        super('CLIboards by Sam Noh');
+        super('CLIEN');
 
         this.clien = new Clien();
         this.isSubBoard = false;
@@ -27,9 +27,11 @@ class CLIClien extends CLI {
             },
             style: {
                 selected: {
-                    bg: 'lightgray',
-                    fg: 'black',
+                    bg: this.colors.cursor_bg,
+                    fg: this.colors.cursor_color,
                 },
+                bg: this.colors.list_bg,
+                fg: this.colors.list_left_color,
             },
             keys: true,
             vi: true,
@@ -45,9 +47,11 @@ class CLIClien extends CLI {
             },
             style: {
                 selected: {
-                    bg: 'lightgray',
-                    fg: 'black',
+                    bg: this.colors.cursor_bg,
+                    fg: this.colors.cursor_color,
                 },
+                bg: this.colors.list_bg,
+                fg: this.colors.list_left_color,
             },
             keys: true,
             vi: true,
@@ -59,12 +63,13 @@ class CLIClien extends CLI {
             vi: true,
             alwaysScroll: true,
             width: '100%',
-            padding: {
-                bottom: 1,
-            },
             scrollbar: {
                 ch: ' ',
                 inverse: true,
+            },
+            style: {
+                bg: this.colors.post__bg,
+                fg: this.colors.post_color,
             },
         });
 
@@ -225,13 +230,19 @@ class CLIClien extends CLI {
                 this.listList.setItems(
                     this.posts.map(
                         ({ category, title, numberOfComments, author, hasRead, hasImages }) =>
-                            `${category ? '{gray-fg}' + category + '{/} ' : ''}${
-                                hasRead ? '{gray-fg}' + title + '{/}' : title
-                            } {gray-fg}${
+                            `${
+                                category
+                                    ? `{${this.colors.list_info_color}-fg}` + category + '{/} '
+                                    : ''
+                            }${
+                                hasRead
+                                    ? `{${this.colors.list_read_color}-fg}` + title + '{/}'
+                                    : title
+                            } {${this.colors.list_info_color}-fg}${
                                 hasImages
                                     ? '{underline}' + numberOfComments + '{/underline}'
                                     : numberOfComments
-                            }  {|}${author}{/}`
+                            }{/}  {|}{${this.colors.list_right_color}-fg}${author}{/}`
                     )
                 );
                 this.listList.scrollTo(this.currentPostIndex);
@@ -267,9 +278,9 @@ class CLIClien extends CLI {
                 } = this.post;
 
                 this.setTitleFooterContent(
-                    `${category ? '[' + category + '] ' : ''}${title} {gray-fg}${
-                        comments.length
-                    }{/}`,
+                    `${
+                        category ? `{${this.colors.top_info_color}-fg}` + category + '{/} ' : ''
+                    }${title} {${this.colors.top_info_color}-fg}${comments.length}{/}`,
                     `${author} | ${hit} | ${upVotes} | ${time}`,
                     `q: back, r: refresh, o: open, ${
                         hasImages
@@ -379,8 +390,10 @@ class CLIClien extends CLI {
         let prevTop = this.detailBox.getScreenLines().length + 1;
 
         this.commentBoxes = comments.map(({ body, isRemoved, isReply, author, time, upVotes }) => {
-            const info = `{gray-fg}${author}{|} ${
-                upVotes ? `{green-fg}${upVotes}{/green-fg} | ` : ''
+            const info = `{${this.colors.comment_top_color}-fg}${author}{|} ${
+                upVotes
+                    ? `{${this.colors.comment_top_color_likes}-fg}${upVotes}{/${this.colors.comment_top_color_likes}-fg} | `
+                    : ''
             }${time}{/}\n`;
 
             const commentBox = blessed.box({
@@ -391,7 +404,11 @@ class CLIClien extends CLI {
                 content: isRemoved ? body : info + body,
                 border: {
                     type: 'line',
-                    fg: 'gray',
+                    fg: this.colors.comment_border_color,
+                },
+                style: {
+                    bg: this.colors.comment_bg,
+                    fg: this.colors.comment_bottom_color,
                 },
                 tags: true,
                 padding: {
