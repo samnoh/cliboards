@@ -1,12 +1,11 @@
 const blessed = require('blessed');
-const open = require('open');
 
 const CLI = require('./CLI');
 const {
     Clien,
     constants: { sortUrls },
 } = require('../crawler/clien');
-const config = require('../helper/configstore');
+const { configstore, openUrls } = require('../helpers');
 
 class CLIClien extends CLI {
     constructor() {
@@ -84,7 +83,7 @@ class CLIClien extends CLI {
             this.boardList.on('keypress', async (ch, { full }) => {
                 switch (full) {
                     case 'r':
-                        config.delete('clien/boards');
+                        configstore.delete('clien/boards');
                         this.clien.boards.length = 0;
                         await this.getBoards(this.isSubBoard);
                         break;
@@ -139,10 +138,10 @@ class CLIClien extends CLI {
                         await this.refreshPostDetail();
                         break;
                     case 'i':
-                        this.openImages();
+                        await openUrls(this.post.images || null);
                         break;
                     case 'o':
-                        await open(this.posts[this.currentPostIndex].link);
+                        await openUrls(this.posts[this.currentPostIndex].link);
                         break;
                     case 'h':
                     case 'left':
@@ -430,18 +429,6 @@ class CLIClien extends CLI {
             commentBoxes.map((box) => box.destroy());
             commentBoxes.length = 0;
         }
-    }
-
-    openImages() {
-        const { images } = this.post;
-
-        if (!images || !images.length) return;
-
-        images.map(async (image, index) => {
-            try {
-                await open(image, { background: true, url: true });
-            } catch (e) {}
-        });
     }
 }
 

@@ -1,6 +1,6 @@
 const blessed = require('blessed');
 
-const getTheme = require('../helper/getTheme');
+const { getTheme } = require('../helpers');
 
 // abstract
 class CLI {
@@ -71,7 +71,7 @@ class CLI {
         });
 
         this.screen.key(['escape', 'q'], (ch, key) => {
-            !this.footerBox.focused && this.moveToWidget('prev', null);
+            !this.footerBox.focused && this.moveToWidget('prev');
         });
 
         this.footerBox.on('focus', () => {

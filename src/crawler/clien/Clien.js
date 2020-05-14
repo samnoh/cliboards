@@ -1,6 +1,6 @@
 const Crawler = require('../Crawler');
 const { baseUrl, getUrl, sortUrls, ignoreBoards } = require('./constants');
-const config = require('../../helper/configstore');
+const { configstore } = require('../../helpers');
 
 class Clien extends Crawler {
     constructor() {
@@ -15,8 +15,8 @@ class Clien extends Crawler {
 
     async getBoards() {
         try {
-            if (config.has('clien/boards')) {
-                this.boards = config.get('clien/boards');
+            if (configstore.has('clien/boards')) {
+                this.boards = configstore.get('clien/boards');
                 return;
             }
 
@@ -45,9 +45,9 @@ class Clien extends Crawler {
                     .filter((board) => board);
             }, ignoreBoards);
 
-            config.set('clien/boards', this.boards);
+            configstore.set('clien/boards', this.boards);
         } catch (e) {
-            config.delete('clien/boards');
+            configstore.delete('clien/boards');
             throw new Error(e);
         }
     }
