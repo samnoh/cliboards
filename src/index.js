@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
-const clien = require('./boards/Clien');
+const Boards = require('./newBoards/Boards');
 
 (async () => {
-    await clien.start();
+    const boards = new Boards();
+    boards.start();
 })();

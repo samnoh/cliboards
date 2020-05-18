@@ -6,6 +6,7 @@ class Clien extends Crawler {
     constructor() {
         super();
 
+        this.title = 'CLIEN';
         this.boards = [];
         this.postsRead = new Set();
         this.currentBoardIndex = 0;
@@ -47,7 +48,7 @@ class Clien extends Crawler {
 
             configstore.set('clien/boards', this.boards);
         } catch (e) {
-            configstore.delete('clien/boards');
+            this.deleteBoards();
             throw new Error(e);
         }
     }
@@ -196,6 +197,10 @@ class Clien extends Crawler {
     changeSortList(index) {
         this.currentPageNumber = 0;
         this.sortListIndex = index;
+    }
+
+    deleteBoards() {
+        configstore.delete('clien/boards');
     }
 }
 
