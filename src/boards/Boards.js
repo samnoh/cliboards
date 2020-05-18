@@ -2,19 +2,17 @@ const blessed = require('blessed');
 
 const { getTheme } = require('../helpers');
 
-const screen = blessed.screen({
-    title,
-    dockBorders: true,
-    fastCSR: true,
-    fullUnicode: true,
-    debug: true,
-});
-
 class Boards {
     constructor(title) {
         this.colors = getTheme(title);
 
-        this.screen = screen;
+        this.screen = blessed.screen({
+            title,
+            dockBorders: true,
+            fastCSR: true,
+            fullUnicode: true,
+            debug: true,
+        });
 
         const box = blessed.box({
             parent: this.screen,
