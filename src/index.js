@@ -3,6 +3,5 @@
 const Boards = require('./newBoards/Boards');
 
 (async () => {
-    const boards = new Boards();
-    boards.start();
+    const boards = Boards.start();
 })();
