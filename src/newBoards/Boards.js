@@ -151,8 +151,8 @@ class Boards {
     }
 
     setKeyPressEvent() {
-        this.screen.key('C-c', () => {
-            this.terminate();
+        this.screen.key('C-c', async () => {
+            await this.terminate();
         });
 
         this.screen.key(['escape', 'q'], () => {
@@ -266,6 +266,7 @@ class Boards {
     setSelectEvent() {
         this.communityList.on('select', async (index) => {
             this.crawler = new Clien();
+            this.screen.title = this.crawler.title;
             await this.crawler.start();
 
             await this.getBoards(false);
@@ -303,6 +304,7 @@ class Boards {
         });
 
         this.communityList.on('focus', () => {
+            this.screen.title = '';
             this.setTitleFooterContent('test', '', 'q: quit');
         });
 
@@ -569,6 +571,7 @@ class Boards {
     }
 
     async terminate(exitCode = 0, message) {
+        await this.crawler.close();
         !exitCode && blessed.program().clear();
         message && console[exitCode ? 'error' : 'log'](message);
         return process.exit(exitCode);
