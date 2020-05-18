@@ -7,15 +7,15 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/samnoh/cliboards.git"
+        "url": "git+https://github.com/samnoh/cli-boards.git"
     },
     "keywords": [],
     "author": "Sam Noh <samnoh.dev@gmail.com>",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/samnoh/cliboards/issues"
+        "url": "https://github.com/samnoh/cli-boards/issues"
     },
-    "homepage": "https://github.com/samnoh/cliboards#readme",
+    "homepage": "https://github.com/samnoh/cli-boards#readme",
     "devDependencies": {
         "nodemon": "2.0.2"
     },
