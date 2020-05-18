@@ -92,25 +92,33 @@ class CLI {
     }
 
     // direction: 'prev' || 'next'
-    moveToWidget(direction, callback, key) {
-        const nextWidgetIndex =
-            direction === 'next' ? this.currentWidgetIndex + 1 : this.currentWidgetIndex - 1;
+    moveToWidget(direction, callback) {
+        try {
+            const nextWidgetIndex =
+                direction === 'next' ? this.currentWidgetIndex + 1 : this.currentWidgetIndex - 1;
 
-        const currWidget = this.widgets[this.currentWidgetIndex];
-        const nextWidget = this.widgets[nextWidgetIndex];
+            const nextWidget = this.widgets[nextWidgetIndex];
+            const currWidget = this.widgets[this.currentWidgetIndex];
 
-        this.currentWidgetIndex = nextWidgetIndex;
+            if (!currWidget) {
+                throw new Error('The next widget index is outside the bounds of the widgets array');
+            }
 
-        if (nextWidget) {
-            direction === 'prev' && currWidget.select && currWidget.select(0);
-            currWidget.detach();
-            this.bodyBox.append(nextWidget);
+            this.currentWidgetIndex = nextWidgetIndex;
 
-            callback && callback(nextWidget);
+            if (nextWidget) {
+                direction === 'prev' && currWidget.select && currWidget.select(0);
+                currWidget.detach();
+                this.bodyBox.append(nextWidget);
 
-            nextWidget.focus();
-        } else {
-            this.terminate();
+                callback && callback(nextWidget);
+
+                nextWidget.focus();
+            } else {
+                this.terminate();
+            }
+        } catch (e) {
+            this.terminate(1, e);
         }
     }
 

@@ -292,7 +292,7 @@ class CLIClien extends CLI {
 
             await this.getBoards(this.isSubBoard);
         } catch (e) {
-            this.terminate();
+            this.terminate(1, e);
         }
     }
 
