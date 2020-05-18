@@ -3,9 +3,9 @@ const blessed = require('blessed');
 const { getTheme } = require('../helpers');
 
 // abstract
-class CLI {
+class Boards {
     constructor(title) {
-        if (this.constructor === CLI) {
+        if (this.constructor === Boards) {
             throw new TypeError('Abstract class "Crawler" cannot be instantiated directly');
         }
 
@@ -138,4 +138,4 @@ class CLI {
     }
 }
 
-module.exports = CLI;
+module.exports = Boards;

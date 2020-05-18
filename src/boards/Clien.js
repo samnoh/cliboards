@@ -1,17 +1,17 @@
 const blessed = require('blessed');
 
-const CLI = require('./CLI');
+const Boards = require('./Boards');
 const {
-    Clien,
+    Clien: _Clien,
     constants: { sortUrls },
 } = require('../crawler/clien');
 const { configstore, openUrls } = require('../helpers');
 
-class CLIClien extends CLI {
+class Clien extends Boards {
     constructor() {
         super('CLIEN');
 
-        this.clien = new Clien();
+        this.clien = new _Clien();
         this.isSubBoard = false;
         this.terminateCallback = async () => await this.clien.close();
 
@@ -432,4 +432,4 @@ class CLIClien extends CLI {
     }
 }
 
-module.exports = new CLIClien();
+module.exports = new Clien();
