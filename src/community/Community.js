@@ -7,7 +7,7 @@ const {
     constants: { sortUrls },
 } = require('../crawler/clien');
 
-class Boards extends CLI {
+class Community extends CLI {
     constructor() {
         super();
 
@@ -90,17 +90,13 @@ class Boards extends CLI {
     }
 
     static start() {
-        const boards = new Boards();
+        const community = new Community();
 
-        boards.setKeyPressEvent();
-        boards.setSelectEvent();
-        boards.setFocusEvent();
-        boards.setBlurEvent();
+        community.setAllEvents();
+        community.communityList.setItems(['CLEIN', 'DC INSIDE']);
+        community.communityList.focus();
 
-        boards.communityList.setItems(['CLEIN', 'DC INSIDE']);
-        boards.communityList.focus();
-
-        return boards;
+        return community;
     }
 
     setKeyPressEvent() {
@@ -336,6 +332,13 @@ class Boards extends CLI {
         super.setBlurEvent();
     }
 
+    setAllEvents() {
+        this.setKeyPressEvent();
+        this.setSelectEvent();
+        this.setFocusEvent();
+        this.setBlurEvent();
+    }
+
     async getBoards(isSub) {
         try {
             if (!this.crawler.boards.length) {
@@ -471,4 +474,4 @@ class Boards extends CLI {
     }
 }
 
-module.exports = Boards;
+module.exports = Community;

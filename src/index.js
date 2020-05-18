@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const Boards = require('./newBoards/Boards');
+const Community = require('./community/Community');
 
 (async () => {
-    const boards = Boards.start();
+    Community.start();
 })();
