@@ -2,26 +2,20 @@ const blessed = require('blessed');
 
 const { getTheme } = require('../helpers');
 
-// abstract
+const screen = blessed.screen({
+    title,
+    dockBorders: true,
+    fastCSR: true,
+    fullUnicode: true,
+    debug: true,
+});
+
 class Boards {
     constructor(title) {
-        if (this.constructor === Boards) {
-            throw new TypeError('Abstract class "Crawler" cannot be instantiated directly');
-        }
-
-        if (this.start === undefined || typeof this.start !== 'function') {
-            throw new TypeError('Child should extend the method "start"');
-        }
-
         this.colors = getTheme(title);
 
-        this.screen = blessed.screen({
-            title,
-            dockBorders: true,
-            fastCSR: true,
-            fullUnicode: true,
-            debug: true,
-        });
+        this.screen = screen;
+
         const box = blessed.box({
             parent: this.screen,
             width: '100%',

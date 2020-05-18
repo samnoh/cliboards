@@ -22,6 +22,5 @@
         "comment_top_color": "gray",
         "comment_bottom_color": "inverse",
         "comment_top_color_likes": "green"
-    },
-    "DCINSIDE": {}
+    }
 }
