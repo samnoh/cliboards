@@ -2,10 +2,7 @@ const blessed = require('blessed');
 
 const CLI = require('./CLI');
 const { openUrls } = require('../helpers');
-const {
-    Clien,
-    constants: { sortUrls },
-} = require('../crawler/clien');
+const Clien = require('../crawler/clien');
 
 class Community extends CLI {
     constructor() {
@@ -287,7 +284,7 @@ class Community extends CLI {
             this.setTitleFooterContent(
                 this.crawler.boards[this.crawler.currentBoardIndex].name,
                 `${this.crawler.currentPageNumber + 1} 페이지 | ${
-                    sortUrls[this.crawler.sortListIndex].name
+                    this.crawler.sortUrls[this.crawler.sortListIndex].name
                 }`,
                 'q: back, r: refresh, s: sort, left/right arrow: prev/next page'
             );

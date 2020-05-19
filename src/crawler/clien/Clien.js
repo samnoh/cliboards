@@ -15,6 +15,7 @@ class Clien extends Crawler {
         this.currentPageNumber = 0;
         this.sortListIndex = 0;
         this.postsRead = new Set();
+        this.sortUrls = sortUrls;
     }
 
     async getBoards() {
@@ -60,7 +61,7 @@ class Clien extends Crawler {
         await this.page.goto(
             getUrl(this.boards[this.currentBoardIndex].value) +
                 this.currentPageNumber +
-                sortUrls[this.sortListIndex].value
+                this.sortUrls[this.sortListIndex].value
         );
 
         const posts = await this.page.evaluate((baseUrl) => {
