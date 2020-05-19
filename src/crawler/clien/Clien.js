@@ -9,6 +9,8 @@ class Clien extends Crawler {
         this.title = 'CLIEN';
         this.boards = [];
         this.hasSubBoards = true;
+        this.subBoardsTitle = '소모임';
+        this.mainBoardsTitle = '커뮤니티';
         this.currentBoardIndex = 0;
         this.currentPageNumber = 0;
         this.sortListIndex = 0;

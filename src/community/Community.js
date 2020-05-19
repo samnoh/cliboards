@@ -253,8 +253,8 @@ class Community extends CLI {
             this.currentPostIndex = 0;
             this.crawler.changeSortList(0);
             this.setTitleFooterContent(
-                '클리앙',
-                this.isSubBoard ? '소모임' : '커뮤니티',
+                this.crawler.title,
+                this.isSubBoard ? this.crawler.subBoardsTitle : this.crawler.mainBoardsTitle,
                 'q: quit, r: refresh, left/right arrow: prev/next page'
             );
         });
