@@ -1,14 +1,7 @@
 const Clien = require('./clien');
 
-const getCrawler = (index) => {
-    switch (index) {
-        case 0:
-            return new Clien();
-        case 1:
-            return new Clien();
-        default:
-            throw new Error(index);
-    }
-};
+const crawlers = [Clien, Clien];
 
-module.exports = { getCrawler };
+const getCrawler = (index) => new crawlers[index]();
+
+module.exports = { getCrawler, crawlers: crawlers.map((c) => c.toString()) };

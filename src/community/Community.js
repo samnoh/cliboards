@@ -2,7 +2,7 @@ const blessed = require('blessed');
 
 const CLI = require('./CLI');
 const { openUrls } = require('../helpers');
-const { getCrawler } = require('../crawler');
+const { getCrawler, crawlers } = require('../crawler');
 
 class Community extends CLI {
     constructor() {
@@ -90,7 +90,7 @@ class Community extends CLI {
         const community = new Community();
 
         community.setAllEvents();
-        community.communityList.setItems(['CLEIN', 'DC INSIDE']);
+        community.communityList.setItems(crawlers);
         community.communityList.focus();
 
         return community;

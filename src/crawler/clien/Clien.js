@@ -6,7 +6,7 @@ class Clien extends Crawler {
     constructor() {
         super();
 
-        this.title = 'CLIEN';
+        this.title = Clien.toString();
         this.boards = [];
         this.hasSubBoards = true;
         this.subBoardsTitle = '소모임';
@@ -205,6 +205,10 @@ class Clien extends Crawler {
 
     deleteBoards() {
         configstore.delete(this.title);
+    }
+
+    static toString() {
+        return 'Clien';
     }
 }
 
