@@ -2,7 +2,7 @@ const blessed = require('blessed');
 
 const CLI = require('./CLI');
 const { openUrls } = require('../helpers');
-const Clien = require('../crawler/clien');
+const { getCrawler } = require('../crawler');
 
 class Community extends CLI {
     constructor() {
@@ -206,8 +206,9 @@ class Community extends CLI {
     setSelectEvent() {
         super.setSelectEvent();
 
-        this.communityList.on('select', async (index) => {
-            this.crawler = new Clien();
+        this.communityList.on('select', async (_, index) => {
+            this.crawler && (await this.crawler.close());
+            this.crawler = getCrawler(index);
             this.screen.title = this.crawler.title;
             await this.crawler.start();
 
