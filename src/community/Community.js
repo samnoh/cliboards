@@ -107,13 +107,13 @@ class Community extends CLI {
                 case 'r':
                     this.crawler.deleteBoards();
                     this.crawler.boards.length = 0;
-                    await this.getBoards(this.isSubBoard);
+                    await this.getBoards(false);
                     break;
                 case 'right':
-                    this.getCurrentBoards(true);
+                    this.getCurrentBoards(this.crawler.hasSubBoards && true);
                     break;
                 case 'left':
-                    this.getCurrentBoards(false);
+                    this.getCurrentBoards(this.crawler.hasSubBoards && false);
                     break;
             }
         });
@@ -242,7 +242,7 @@ class Community extends CLI {
 
         this.communityList.on('focus', () => {
             this.screen.title = '';
-            this.setTitleFooterContent('test', '', 'q: quit');
+            this.setTitleFooterContent('커뮤니티 목록', '', 'q: quit');
         });
 
         this.boardsList.on('focus', () => {
@@ -282,8 +282,7 @@ class Community extends CLI {
                         }{/}  {|}{${this.colors.list_right_color}-fg}${author}{/}`
                 )
             );
-            this.listList.scrollTo(this.currentPostIndex);
-            this.listList.select(this.currentPostIndex);
+            this.resetScroll(this.listList, this.currentPostIndex);
 
             this.setTitleFooterContent(
                 this.crawler.boards[this.crawler.currentBoardIndex].name,
@@ -344,8 +343,11 @@ class Community extends CLI {
             if (!this.crawler.boards.length) {
                 this.footerBox.focus();
                 await this.crawler.getBoards();
+
                 this.mainBoardsLength = this.crawler.boards.filter(({ isSub }) => !isSub).length;
             }
+
+            this.resetScroll(this.boardsList);
 
             this.isSubBoard = isSub;
             this.boardsList.setItems(
@@ -361,8 +363,7 @@ class Community extends CLI {
     }
 
     async getCurrentBoards(isSub) {
-        this.boardsList.scrollTo(0);
-        this.boardsList.select(0);
+        this.resetScroll(this.boardsList);
         isSub !== this.isSubBoard && (await this.getBoards(isSub));
     }
 
@@ -471,6 +472,11 @@ class Community extends CLI {
             commentBoxes.map((box) => box.destroy());
             commentBoxes.length = 0;
         }
+    }
+
+    resetScroll(widget, offset = 0) {
+        widget.scrollTo(offset);
+        widget.select(offset);
     }
 }
 
