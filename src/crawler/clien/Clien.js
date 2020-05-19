@@ -6,17 +6,19 @@ class Clien extends Crawler {
     constructor() {
         super();
 
+        this.title = 'CLIEN';
         this.boards = [];
-        this.postsRead = new Set();
+        this.hasSubBoards = true;
         this.currentBoardIndex = 0;
         this.currentPageNumber = 0;
         this.sortListIndex = 0;
+        this.postsRead = new Set();
     }
 
     async getBoards() {
         try {
-            if (configstore.has('clien/boards')) {
-                this.boards = configstore.get('clien/boards');
+            if (configstore.has(this.title)) {
+                this.boards = configstore.get(this.title);
                 return;
             }
 
@@ -45,9 +47,9 @@ class Clien extends Crawler {
                     .filter((board) => board);
             }, ignoreBoards);
 
-            configstore.set('clien/boards', this.boards);
+            configstore.set(this.title, this.boards);
         } catch (e) {
-            configstore.delete('clien/boards');
+            this.deleteBoards();
             throw new Error(e);
         }
     }
@@ -196,6 +198,10 @@ class Clien extends Crawler {
     changeSortList(index) {
         this.currentPageNumber = 0;
         this.sortListIndex = index;
+    }
+
+    deleteBoards() {
+        configstore.delete(this.title);
     }
 }
 

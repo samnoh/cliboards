@@ -2,18 +2,18 @@ const blessed = require('blessed');
 
 const { getTheme } = require('../helpers');
 
-class Boards {
-    constructor(title) {
-        this.colors = getTheme(title);
+class CLI {
+    constructor() {
+        this.isSubBoard = false;
+        this.currentWidgetIndex = 0;
+        this.colors = getTheme('default');
 
         this.screen = blessed.screen({
-            title,
             dockBorders: true,
             fastCSR: true,
             fullUnicode: true,
             debug: true,
         });
-
         const box = blessed.box({
             parent: this.screen,
             width: '100%',
@@ -57,15 +57,23 @@ class Boards {
                 fg: this.colors.bottom_left_color,
             },
         });
+    }
 
-        this.screen.key('C-c', () => {
-            this.terminate();
+    setKeyPressEvent() {
+        this.screen.key('C-c', async () => {
+            await this.terminate();
         });
 
-        this.screen.key(['escape', 'q'], (ch, key) => {
+        this.screen.key(['escape', 'q'], () => {
             !this.footerBox.focused && this.moveToWidget('prev');
         });
+    }
 
+    setSelectEvent() {
+        //
+    }
+
+    setFocusEvent() {
         this.footerBox.on('focus', () => {
             this.footerBox.setContent(
                 `${this.footerBox.getContent()} {|}{${
@@ -75,12 +83,12 @@ class Boards {
             this.footerBox.style = { ...this.footerBox.style, bg: this.colors.bottom_bg_loading };
             this.screen.render();
         });
+    }
 
+    setBlurEvent() {
         this.footerBox.on('blur', () => {
             this.footerBox.style = { ...this.footerBox.style, bg: this.colors.bottom_bg };
         });
-
-        this.currentWidgetIndex = 0;
     }
 
     // direction: 'prev' || 'next'
@@ -114,13 +122,6 @@ class Boards {
         }
     }
 
-    async terminate(exitCode = 0, message) {
-        this.terminateCallback && (await this.terminateCallback());
-        !exitCode && blessed.program().clear();
-        message && console[exitCode ? 'error' : 'log'](message);
-        return process.exit(exitCode);
-    }
-
     setTitleFooterContent(leftTitleText = '', rightTitleText = '', footerText = '') {
         this.titleBox.setContent(
             `${leftTitleText} {|}{${this.colors.top_right_color}-fg}${rightTitleText}{/}`
@@ -128,6 +129,13 @@ class Boards {
         this.footerBox.setContent(footerText);
         this.screen.render();
     }
+
+    async terminate(exitCode = 0, message) {
+        await this.crawler.close();
+        !exitCode && blessed.program().clear();
+        message && console[exitCode ? 'error' : 'log'](message);
+        return process.exit(exitCode);
+    }
 }
 
-module.exports = Boards;
+module.exports = CLI;

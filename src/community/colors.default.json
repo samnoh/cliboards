@@ -1,5 +1,5 @@
 {
-    "CLIEN": {
+    "default": {
         "cursor_bg": "lightgray",
         "cursor_color": "black",
         "top_bg": "#243B4D",
