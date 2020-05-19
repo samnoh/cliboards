@@ -6,7 +6,7 @@ class CLI {
     constructor() {
         this.isSubBoard = false;
         this.currentWidgetIndex = 0;
-        this.colors = getTheme('DEFAULT');
+        this.colors = getTheme('default');
 
         this.screen = blessed.screen({
             dockBorders: true,
