@@ -55,6 +55,7 @@ class CLI {
             },
             style: {
                 fg: this.colors.bottom_left_color,
+                bg: this.colors.bottom_bg,
             },
         });
     }
@@ -131,7 +132,7 @@ class CLI {
     }
 
     async terminate(exitCode = 0, message) {
-        await this.crawler.close();
+        this.crawler && (await this.crawler.close());
         !exitCode && blessed.program().clear();
         message && console[exitCode ? 'error' : 'log'](message);
         return process.exit(exitCode);
