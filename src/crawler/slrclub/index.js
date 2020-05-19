@@ -2,11 +2,11 @@ const Crawler = require('../Crawler');
 const { baseUrl, getUrl, sortUrls, ignoreBoards } = require('./constants');
 const { configstore } = require('../../helpers');
 
-class Clien extends Crawler {
+class SLRClub extends Crawler {
     constructor() {
         super();
 
-        this.title = Clien.toString();
+        this.title = SLRClub.toString();
         this.boards = [];
         this.hasSubBoards = true;
         this.subBoardsTitle = '소모임';
@@ -208,8 +208,8 @@ class Clien extends Crawler {
     }
 
     static toString() {
-        return 'Clien';
+        return 'SLRClub';
     }
 }
 
-module.exports = Clien;
+module.exports = SLRClub;

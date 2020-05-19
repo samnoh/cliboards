@@ -1,6 +1,7 @@
 const Clien = require('./clien');
+const SLRClub = require('./slrclub');
 
-const crawlers = [Clien, Clien];
+const crawlers = [Clien, SLRClub];
 
 const getCrawler = (index) => new crawlers[index]();
 
