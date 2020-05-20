@@ -8,9 +8,7 @@ class SLRClub extends Crawler {
 
         this.title = SLRClub.toString();
         this.boards = [];
-        this.hasSubBoards = true;
-        this.subBoardsTitle = '소모임';
-        this.mainBoardsTitle = '커뮤니티';
+        this.boardTypes = ['커뮤니티', '포럼'];
         this.currentBoardIndex = 0;
         this.currentPageNumber = 0;
         this.sortListIndex = 0;
@@ -20,6 +18,15 @@ class SLRClub extends Crawler {
 
     async getBoards() {
         try {
+            this.boards = [
+                {
+                    name: '자유게시판',
+                    value: 'free',
+                    type: this.boardTypes[0],
+                },
+            ];
+
+            return;
             if (configstore.has(this.title)) {
                 this.boards = configstore.get(this.title);
                 return;
@@ -58,41 +65,34 @@ class SLRClub extends Crawler {
     }
 
     async getPosts() {
-        await this.page.goto(
-            getUrl(this.boards[this.currentBoardIndex].value) +
-                this.currentPageNumber +
-                this.sortUrls[this.sortListIndex].value
-        );
+        await this.page.goto(getUrl(this.boards[this.currentBoardIndex].value));
 
         const posts = await this.page.evaluate((baseUrl) => {
-            const lists = document.querySelectorAll('.list_content .list_item');
+            const lists = document.querySelectorAll('.bbs_tbl_layout tr:not(#bhead)');
 
             return Array.from(lists)
+                .slice(1)
+                .slice(0, -2)
                 .map((list) => {
-                    const category = list.querySelector('.list_subject .category');
-                    const title = list.querySelector('.list_subject .subject_fixed');
-                    const link = list.querySelector('.list_subject');
-                    const author = list.querySelector('.list_author .nickname');
-                    const hit = list.querySelector('.list_hit');
-                    const time = list.querySelector('.list_time');
-                    const upVotes = list.querySelector('.list_symph');
-                    const numberOfComments = list.querySelector('.rSymph05');
-                    const hasImages = list.querySelector('.fa-picture-o');
+                    const title = list.querySelector('.sbj a');
+                    const author = list.querySelector('.list_name');
+                    const hit = list.querySelector('.list_click');
+                    const time = list.querySelector('.list_date');
+                    const upVotes = list.querySelector('.list_vote');
+                    const hasImages = list.querySelector('.sbj .li_ic');
+                    const numberOfComments = list.querySelector('.sbj').lastChild;
 
                     return title && title.innerText
                         ? {
-                              category: category && category.innerText,
+                              category: null,
                               title: title.innerText.trim(),
-                              author:
-                                  author.innerText.trim() ||
-                                  author.querySelector('img').getAttribute('alt'),
+                              author: author.innerText.trim(),
                               hit: hit.innerText.trim(),
                               time: time.innerText.trim(),
-                              link: baseUrl + link.getAttribute('href'),
+                              link: baseUrl + title.getAttribute('href'),
                               upVotes: parseInt(upVotes.innerText),
-                              numberOfComments: numberOfComments
-                                  ? parseInt(numberOfComments.innerText)
-                                  : 0,
+                              numberOfComments:
+                                  numberOfComments.textContent.replace(/[^0-9]/g, '') || 0,
                               hasImages: !!hasImages,
                           }
                         : null;

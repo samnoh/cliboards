@@ -8,9 +8,7 @@ class Clien extends Crawler {
 
         this.title = Clien.toString();
         this.boards = [];
-        this.hasSubBoards = true;
-        this.subBoardsTitle = '소모임';
-        this.mainBoardsTitle = '커뮤니티';
+        this.boardTypes = ['커뮤니티', '소모임'];
         this.currentBoardIndex = 0;
         this.currentPageNumber = 0;
         this.sortListIndex = 0;
@@ -43,7 +41,7 @@ class Clien extends Crawler {
                             ? {
                                   name: name.innerText,
                                   value: link,
-                                  isSub: mainBoardSize < index,
+                                  type: mainBoardSize < index ? '소모임' : '커뮤니티',
                               }
                             : null;
                     })

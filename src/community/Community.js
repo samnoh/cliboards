@@ -104,13 +104,17 @@ class Community extends CLI {
                 case 'r':
                     this.crawler.deleteBoards();
                     this.crawler.boards.length = 0;
-                    await this.getBoards(false);
+                    await this.getBoards(0);
                     break;
                 case 'right':
-                    this.getCurrentBoards(this.crawler.hasSubBoards && true);
+                    this.currentBoardTypeIndex =
+                        (this.currentBoardTypeIndex + 1) % this.crawler.boardTypes.length;
+                    await this.getBoards(this.currentBoardTypeIndex);
                     break;
                 case 'left':
-                    this.getCurrentBoards(this.crawler.hasSubBoards && false);
+                    this.currentBoardTypeIndex =
+                        (this.currentBoardTypeIndex - 1) % this.crawler.boardTypes.length;
+                    await this.getBoards(this.currentBoardTypeIndex);
                     break;
             }
         });
@@ -252,7 +256,7 @@ class Community extends CLI {
             this.crawler.changeSortList(0);
             this.setTitleFooterContent(
                 this.crawler.title,
-                this.isSubBoard ? this.crawler.subBoardsTitle : this.crawler.mainBoardsTitle,
+                this.crawler.boardTypes[this.currentBoardTypeIndex],
                 'q: quit, r: refresh, left/right arrow: prev/next page'
             );
         });
@@ -336,23 +340,20 @@ class Community extends CLI {
         this.setBlurEvent();
     }
 
-    async getBoards(isSub) {
+    async getBoards(index) {
         try {
+            this.currentBoardTypeIndex = index;
+
             if (!this.crawler.boards.length) {
+                this.currentBoardTypeIndex = 0;
                 this.footerBox.focus();
                 await this.crawler.getBoards();
-
-                this.mainBoardsLength = this.crawler.boards.filter(({ isSub }) => !isSub).length;
             }
 
             this.resetScroll(this.boardsList);
 
-            this.isSubBoard = isSub;
-            this.boardsList.setItems(
-                this.crawler.boards
-                    .filter(({ isSub }) => isSub === this.isSubBoard)
-                    .map(({ name }) => name)
-            );
+            this.boardsList.setItems(this.getFilteredBoards().map(({ name }) => name));
+
             this.boardsList.focus();
         } catch (e) {
             this.boardsList.setItems([]);
@@ -360,29 +361,25 @@ class Community extends CLI {
         }
     }
 
-    async getCurrentBoards(isSub) {
-        this.resetScroll(this.boardsList);
-        isSub !== this.isSubBoard && (await this.getBoards(isSub));
+    getFilteredBoards() {
+        const currentBoardType = this.crawler.boardTypes[this.currentBoardTypeIndex];
+        return this.crawler.boards.filter(({ type }) => type === currentBoardType);
     }
 
     async getPosts(index) {
         try {
             this.footerBox.focus();
-
-            this.posts = await this.crawler.changeBoard(
-                this.crawler.boards[this.isSubBoard ? index + this.mainBoardsLength : index]
-            );
+            this.posts = await this.crawler.changeBoard(this.getFilteredBoards()[index]);
         } catch (e) {
             this.posts = [];
         }
     }
 
     async refreshPosts() {
-        await this.getPosts(
-            this.isSubBoard
-                ? this.crawler.currentBoardIndex - this.mainBoardsLength
-                : this.crawler.currentBoardIndex
+        const index = this.getFilteredBoards().indexOf(
+            this.crawler.boards[this.crawler.currentBoardIndex]
         );
+        await this.getPosts(index);
         this.currentPostIndex = 0;
         this.listList.focus();
     }

@@ -119,7 +119,7 @@ class CLI {
                 this.terminate();
             }
         } catch (e) {
-            this.terminate(1, e);
+            // this.terminate(1, e);
         }
     }
 
