@@ -100,6 +100,8 @@ class Community extends CLI {
         super.setKeyPressEvent();
 
         this.boardsList.on('keypress', async (_, { full }) => {
+            const boardTypesLength = this.crawler.boardTypes.length;
+
             switch (full) {
                 case 'r':
                     this.crawler.deleteBoards();
@@ -108,12 +110,16 @@ class Community extends CLI {
                     break;
                 case 'right':
                     this.currentBoardTypeIndex =
-                        (this.currentBoardTypeIndex + 1) % this.crawler.boardTypes.length;
+                        (this.currentBoardTypeIndex + 1) % boardTypesLength;
                     await this.getBoards(this.currentBoardTypeIndex);
                     break;
                 case 'left':
-                    this.currentBoardTypeIndex =
-                        (this.currentBoardTypeIndex - 1) % this.crawler.boardTypes.length;
+                    if (!this.currentBoardTypeIndex) {
+                        this.currentBoardTypeIndex = boardTypesLength - 1;
+                    } else {
+                        this.currentBoardTypeIndex =
+                            (this.currentBoardTypeIndex - 1) % boardTypesLength;
+                    }
                     await this.getBoards(this.currentBoardTypeIndex);
                     break;
             }

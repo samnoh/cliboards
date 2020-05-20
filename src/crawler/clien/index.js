@@ -1,5 +1,5 @@
 const Crawler = require('../Crawler');
-const { baseUrl, getUrl, sortUrls, ignoreBoards } = require('./constants');
+const { baseUrl, getUrl, sortUrls, boardTypes, ignoreBoards } = require('./constants');
 const { configstore } = require('../../helpers');
 
 class Clien extends Crawler {
@@ -8,7 +8,7 @@ class Clien extends Crawler {
 
         this.title = Clien.toString();
         this.boards = [];
-        this.boardTypes = ['커뮤니티', '소모임'];
+        this.boardTypes = boardTypes;
         this.currentBoardIndex = 0;
         this.currentPageNumber = 0;
         this.sortListIndex = 0;
@@ -41,7 +41,7 @@ class Clien extends Crawler {
                             ? {
                                   name: name.innerText,
                                   value: link,
-                                  type: mainBoardSize < index ? '소모임' : '커뮤니티',
+                                  type: this.boardTypes[mainBoardSize < index ? 1 : 0],
                               }
                             : null;
                     })

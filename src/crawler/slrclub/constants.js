@@ -6,5 +6,6 @@ module.exports = {
             name: 'test',
         },
     ],
+    boardTypes: ['커뮤니티'],
     ignoreBoards: [],
 };

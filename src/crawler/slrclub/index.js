@@ -1,5 +1,5 @@
 const Crawler = require('../Crawler');
-const { baseUrl, getUrl, sortUrls, ignoreBoards } = require('./constants');
+const { baseUrl, getUrl, sortUrls, boardTypes, ignoreBoards } = require('./constants');
 const { configstore } = require('../../helpers');
 
 class SLRClub extends Crawler {
@@ -8,7 +8,7 @@ class SLRClub extends Crawler {
 
         this.title = SLRClub.toString();
         this.boards = [];
-        this.boardTypes = ['커뮤니티', '포럼'];
+        this.boardTypes = boardTypes;
         this.currentBoardIndex = 0;
         this.currentPageNumber = 0;
         this.sortListIndex = 0;
