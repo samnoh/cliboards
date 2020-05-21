@@ -25,28 +25,32 @@ class Clien extends Crawler {
 
             await this.page.goto(baseUrl);
 
-            this.boards = await this.page.evaluate((ignoreBoards) => {
-                const main = Array.from(document.querySelectorAll('.navmenu a'));
-                const sub = Array.from(document.querySelectorAll('.menu_somoim a'));
+            this.boards = await this.page.evaluate(
+                (ignoreBoards, boardTypes) => {
+                    const main = Array.from(document.querySelectorAll('.navmenu a'));
+                    const sub = Array.from(document.querySelectorAll('.menu_somoim a'));
 
-                const mainBoardSize = main.length;
+                    const mainBoardSize = main.length;
 
-                return [...main, ...sub]
-                    .map((board, index) => {
-                        const name = board.querySelectorAll('span')[1];
-                        const link = board.getAttribute('href');
+                    return [...main, ...sub]
+                        .map((board, index) => {
+                            const name = board.querySelectorAll('span')[1];
+                            const link = board.getAttribute('href');
 
-                        return link.includes('/service/board') &&
-                            ignoreBoards.indexOf(name.innerText) === -1
-                            ? {
-                                  name: name.innerText,
-                                  value: link,
-                                  type: this.boardTypes[mainBoardSize < index ? 1 : 0],
-                              }
-                            : null;
-                    })
-                    .filter((board) => board);
-            }, ignoreBoards);
+                            return link.includes('/service/board') &&
+                                ignoreBoards.indexOf(name.innerText) === -1
+                                ? {
+                                      name: name.innerText,
+                                      value: link,
+                                      type: boardTypes[mainBoardSize < index ? 1 : 0],
+                                  }
+                                : null;
+                        })
+                        .filter((board) => board);
+                },
+                ignoreBoards,
+                this.boardTypes
+            );
 
             configstore.set(this.title, this.boards);
         } catch (e) {
@@ -57,7 +61,7 @@ class Clien extends Crawler {
 
     async getPosts() {
         await this.page.goto(
-            getUrl(this.boards[this.currentBoardIndex].value) +
+            getUrl(this.currentBoard.value) +
                 this.currentPageNumber +
                 this.sortUrls[this.sortListIndex].value
         );
@@ -192,13 +196,37 @@ class Clien extends Crawler {
     }
 
     async changeBoard(board) {
-        this.currentBoardIndex = this.boards.findIndex((_board) => _board.value === board.value);
+        this.currentBoard = board;
         return await this.getPosts();
     }
 
-    changeSortList(index) {
-        this.currentPageNumber = 0;
+    get pageNumber() {
+        return this.currentPageNumber;
+    }
+
+    set pageNumber(offset) {
+        this.currentPageNumber = offset;
+    }
+
+    get sortUrl() {
+        return this.sortUrls.length ? this.sortUrls[this.sortListIndex].name : '';
+    }
+
+    set sortUrl(index) {
         this.sortListIndex = index;
+    }
+
+    get currentBoard() {
+        return this.boards[this.currentBoardIndex];
+    }
+
+    set currentBoard(board) {
+        this.currentBoardIndex = this.boards.findIndex((_board) => _board.value === board.value);
+    }
+
+    changeSortList(index) {
+        this.pageNumber = 0;
+        this.sortUrl = index;
     }
 
     deleteBoards() {

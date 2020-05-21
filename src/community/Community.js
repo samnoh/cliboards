@@ -128,7 +128,7 @@ class Community extends CLI {
         this.listList.on('keypress', async (_, { full }) => {
             if (!this.posts.length) return;
 
-            const prevPaggeNumber = this.crawler.currentPageNumber;
+            const prevPaggeNumber = this.crawler.pageNumber;
             const prevPosts = this.posts;
             const prevPostIndex = this.currentPostIndex;
 
@@ -138,12 +138,12 @@ class Community extends CLI {
                 // 1 ^ this.crawler.sortListIndex: 1 -> 0 or 0 -> 1
                 this.crawler.changeSortList(1 ^ this.crawler.sortListIndex);
                 // this.listList.setItems([]);
-            } else if (full === 'left' && this.crawler.currentPageNumber) {
-                this.crawler.currentPageNumber -= 1;
+            } else if (full === 'left' && this.crawler.pageNumber) {
+                this.crawler.pageNumber -= 1;
             } else if (full === 'right') {
-                this.crawler.currentPageNumber += 1;
+                this.crawler.pageNumber += 1;
             } else if (!isNaN(parseInt(full))) {
-                this.crawler.currentPageNumber = full === '0' ? 9 : full - 1;
+                this.crawler.pageNumber = full === '0' ? 9 : full - 1;
             } else {
                 return;
             }
@@ -152,7 +152,7 @@ class Community extends CLI {
 
             if (!this.posts.length) {
                 // no more pages -> go back to the previous page
-                this.crawler.currentPageNumber = prevPaggeNumber;
+                this.crawler.pageNumber = prevPaggeNumber;
                 this.posts = prevPosts;
                 this.currentPostIndex = prevPostIndex;
                 this.listList.focus();
@@ -178,8 +178,8 @@ class Community extends CLI {
                         this.currentPostIndex -= 1;
                         this.posts[this.currentPostIndex].hasRead = true;
                         await this.refreshPostDetail();
-                    } else if (this.crawler.currentPageNumber) {
-                        this.crawler.currentPageNumber -= 1;
+                    } else if (this.crawler.pageNumber) {
+                        this.crawler.pageNumber -= 1;
                         await this.refreshPosts();
                         this.currentPostIndex = this.posts.length - 1;
                         this.posts[this.currentPostIndex].hasRead = true;
@@ -192,7 +192,7 @@ class Community extends CLI {
 
                     if (this.currentPostIndex === this.posts.length) {
                         const prevPosts = this.posts;
-                        this.crawler.currentPageNumber += 1;
+                        this.crawler.pageNumber += 1;
 
                         await this.refreshPosts();
 
@@ -200,7 +200,7 @@ class Community extends CLI {
                             this.currentPostIndex = 0;
                         } else {
                             // no more pages -> go back to the last page
-                            this.crawler.currentPageNumber -= 1;
+                            this.crawler.pageNumber -= 1;
                             this.currentPostIndex = prevPosts.length - 1;
                             this.posts = prevPosts;
                         }
@@ -222,7 +222,7 @@ class Community extends CLI {
             this.screen.title = this.crawler.title;
             await this.crawler.start();
 
-            await this.getBoards(false);
+            await this.getBoards(index);
             this.moveToWidget('next');
         });
 
@@ -294,8 +294,8 @@ class Community extends CLI {
 
             this.setTitleFooterContent(
                 this.crawler.boards[this.crawler.currentBoardIndex].name,
-                `${this.crawler.currentPageNumber + 1} 페이지 | ${
-                    this.crawler.sortUrls[this.crawler.sortListIndex].name
+                `${this.crawler.pageNumber + 1} 페이지${
+                    this.crawler.sortUrl ? ' | ' + this.crawler.sortUrl : ''
                 }`,
                 'q: back, r: refresh, s: sort, left/right arrow: prev/next page'
             );
