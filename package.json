@@ -21,9 +21,7 @@
     },
     "dependencies": {
         "blessed": "0.1.81",
-        "clear": "0.1.0",
         "configstore": "5.0.1",
-        "keytar": "5.6.0",
         "open": "7.0.3",
         "puppeteer": "2.1.1"
     },
