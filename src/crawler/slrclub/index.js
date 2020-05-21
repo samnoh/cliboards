@@ -1,10 +1,17 @@
 const Crawler = require('../Crawler');
-const { baseUrl, getUrl, sortUrls, boardTypes, ignoreBoards } = require('./constants');
+const {
+    baseUrl,
+    getUrl,
+    sortUrls,
+    boardTypes,
+    ignoreBoards,
+    ignoreRequests,
+} = require('./constants');
 const { configstore } = require('../../helpers');
 
 class SLRClub extends Crawler {
     constructor() {
-        super();
+        super(ignoreRequests);
 
         this.title = SLRClub.toString();
         this.boards = [];

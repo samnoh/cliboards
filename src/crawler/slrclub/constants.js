@@ -4,4 +4,5 @@ module.exports = {
     sortUrls: [],
     boardTypes: ['커뮤니티'],
     ignoreBoards: [],
+    ignoreRequests: ['image', 'stylesheet', 'media', 'font', 'imageset'],
 };

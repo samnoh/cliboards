@@ -1,10 +1,11 @@
 const puppeteer = require('puppeteer');
 
 class Crawler {
-    constructor() {
+    constructor(ignoreRequests) {
         if (this.constructor === Crawler) {
             throw new TypeError('Abstract class "Crawler" cannot be instantiated directly');
         }
+        this.ignoreRequests = ignoreRequests;
     }
 
     async start() {
@@ -24,9 +25,7 @@ class Crawler {
 
             this.page.on('request', (request) => {
                 if (
-                    ['image', 'stylesheet', 'media', 'font', 'imageset'].indexOf(
-                        request.resourceType()
-                    ) !== -1 ||
+                    this.ignoreRequests.indexOf(request.resourceType()) !== -1 ||
                     request.url().startsWith('https://www.youtube.com')
                 ) {
                     request.abort();
