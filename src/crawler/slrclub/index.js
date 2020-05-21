@@ -68,16 +68,12 @@ class SLRClub extends CommunityCrawler {
     async getPosts() {
         await this.page.goto(getUrl(this.currentBoard.value) + this.currentPageNumber || '');
 
-        const [posts, currPageNumber] = await this.page.evaluate((baseUrl) => {
+        const [posts, currentPageNumber] = await this.page.evaluate((baseUrl) => {
             const lists = document.querySelectorAll('.bbs_tbl_layout tr:not(#bhead)');
-
-            const currPageNumber =
-                parseInt(
-                    document
-                        .querySelector('.next1')
-                        .getAttribute('href')
-                        .replace(/[^0-9]/g, '')
-                ) + 1;
+            const nextPageNumber = document
+                .querySelector('.next1')
+                .getAttribute('href')
+                .replace(/[^0-9]/g, '');
 
             return [
                 Array.from(lists)
@@ -108,11 +104,11 @@ class SLRClub extends CommunityCrawler {
                             : null;
                     })
                     .filter((posts) => posts),
-                currPageNumber,
+                parseInt(nextPageNumber) + 1,
             ];
         }, baseUrl);
 
-        this.currentPageNumber = currPageNumber;
+        this.currentPageNumber = currentPageNumber;
 
         return posts.map((post) => ({ ...post, hasRead: this.postsRead.has(post.link) }));
     }
