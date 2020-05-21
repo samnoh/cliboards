@@ -26,6 +26,6 @@
         "puppeteer": "2.1.1"
     },
     "bin": {
-        "clien-terminal": "src/index.js"
+        "cliboards": "src/index.js"
     }
 }
