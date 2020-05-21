@@ -2,6 +2,4 @@
 
 const Community = require('./cli/Community');
 
-(async () => {
-    Community.start();
-})();
+Community.start();
