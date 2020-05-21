@@ -357,9 +357,7 @@ class Community extends CLI {
             }
 
             this.resetScroll(this.boardsList);
-
             this.boardsList.setItems(this.getFilteredBoards().map(({ name }) => name));
-
             this.boardsList.focus();
         } catch (e) {
             this.boardsList.setItems([]);
@@ -473,11 +471,6 @@ class Community extends CLI {
             commentBoxes.map((box) => box.destroy());
             commentBoxes.length = 0;
         }
-    }
-
-    resetScroll(widget, offset = 0) {
-        widget.scrollTo(offset);
-        widget.select(offset);
     }
 }
 

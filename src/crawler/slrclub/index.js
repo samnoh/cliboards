@@ -13,7 +13,6 @@ class SLRClub extends Crawler {
         this.currentPageNumber = 0;
         this.sortListIndex = 0;
         this.postsRead = new Set();
-        this.sortUrls = sortUrls;
     }
 
     async getBoards() {
@@ -65,7 +64,7 @@ class SLRClub extends Crawler {
     }
 
     async getPosts() {
-        await this.page.goto(getUrl(this.boards[this.currentBoardIndex].value));
+        await this.page.goto(getUrl(this.currentBoard.value));
 
         const posts = await this.page.evaluate((baseUrl) => {
             const lists = document.querySelectorAll('.bbs_tbl_layout tr:not(#bhead)');
@@ -193,14 +192,38 @@ class SLRClub extends Crawler {
         return postDetail;
     }
 
-    async changeBoard(board) {
+    get pageNumber() {
+        return this.currentPageNumber;
+    }
+
+    set pageNumber(offset) {
+        this.currentPageNumber = offset;
+    }
+
+    get sortUrl() {
+        return sortUrls.length ? sortUrls[this.sortListIndex] : '';
+    }
+
+    set sortUrl(index) {
+        this.sortListIndex = index;
+    }
+
+    get currentBoard() {
+        return this.boards[this.currentBoardIndex];
+    }
+
+    set currentBoard(board) {
         this.currentBoardIndex = this.boards.findIndex((_board) => _board.value === board.value);
+    }
+
+    async changeBoard(board) {
+        this.currentBoard = board;
         return await this.getPosts();
     }
 
     changeSortList(index) {
-        this.currentPageNumber = 0;
-        this.sortListIndex = index;
+        this.pageNumber = 0;
+        this.sortUrl = index;
     }
 
     deleteBoards() {

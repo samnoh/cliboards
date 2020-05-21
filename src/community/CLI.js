@@ -131,6 +131,11 @@ class CLI {
         this.screen.render();
     }
 
+    resetScroll(widget, offset = 0) {
+        widget.scrollTo(offset);
+        widget.select(offset);
+    }
+
     async terminate(exitCode = 0, message) {
         this.crawler && (await this.crawler.close());
         !exitCode && blessed.program().clear();

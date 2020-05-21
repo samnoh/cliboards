@@ -13,7 +13,6 @@ class Clien extends Crawler {
         this.currentPageNumber = 0;
         this.sortListIndex = 0;
         this.postsRead = new Set();
-        this.sortUrls = sortUrls;
     }
 
     async getBoards() {
@@ -61,9 +60,7 @@ class Clien extends Crawler {
 
     async getPosts() {
         await this.page.goto(
-            getUrl(this.currentBoard.value) +
-                this.currentPageNumber +
-                this.sortUrls[this.sortListIndex].value
+            getUrl(this.currentBoard.value) + this.currentPageNumber + this.sortUrl.value
         );
 
         const posts = await this.page.evaluate((baseUrl) => {
@@ -209,7 +206,7 @@ class Clien extends Crawler {
     }
 
     get sortUrl() {
-        return this.sortUrls.length ? this.sortUrls[this.sortListIndex].name : '';
+        return sortUrls.length ? sortUrls[this.sortListIndex] : '';
     }
 
     set sortUrl(index) {
