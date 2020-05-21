@@ -198,11 +198,15 @@ class Clien extends Crawler {
     }
 
     get pageNumber() {
-        return this.currentPageNumber;
+        return this.currentPageNumber + 1;
     }
 
-    set pageNumber(offset) {
-        this.currentPageNumber = offset;
+    set pageNumber(newPageNumber) {
+        this.currentPageNumber = newPageNumber;
+    }
+
+    set navigatePage(offset) {
+        this.currentPageNumber += offset;
     }
 
     get sortUrl() {
@@ -222,7 +226,7 @@ class Clien extends Crawler {
     }
 
     changeSortList(index) {
-        this.pageNumber = 0;
+        this.currentPageNumber = 0;
         this.sortUrl = index;
     }
 

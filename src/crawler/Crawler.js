@@ -24,7 +24,7 @@ class Crawler {
 
             this.page.on('request', (request) => {
                 if (
-                    ['image', 'stylesheet', 'media', 'font', 'imageset', 'script'].indexOf(
+                    ['image', 'stylesheet', 'media', 'font', 'imageset'].indexOf(
                         request.resourceType()
                     ) !== -1 ||
                     request.url().startsWith('https://www.youtube.com')

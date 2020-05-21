@@ -64,78 +64,84 @@ class SLRClub extends Crawler {
     }
 
     async getPosts() {
-        await this.page.goto(getUrl(this.currentBoard.value));
+        await this.page.goto(getUrl(this.currentBoard.value) + this.currentPageNumber || '');
 
-        const posts = await this.page.evaluate((baseUrl) => {
+        const [posts, currPageNumber] = await this.page.evaluate((baseUrl) => {
             const lists = document.querySelectorAll('.bbs_tbl_layout tr:not(#bhead)');
 
-            return Array.from(lists)
-                .slice(1)
-                .slice(0, -2)
-                .map((list) => {
-                    const title = list.querySelector('.sbj a');
-                    const author = list.querySelector('.list_name');
-                    const hit = list.querySelector('.list_click');
-                    const time = list.querySelector('.list_date');
-                    const upVotes = list.querySelector('.list_vote');
-                    const hasImages = list.querySelector('.sbj .li_ic');
-                    const numberOfComments = list.querySelector('.sbj').lastChild;
+            const currPageNumber =
+                parseInt(
+                    document
+                        .querySelector('.next1')
+                        .getAttribute('href')
+                        .replace(/[^0-9]/g, '')
+                ) + 1;
 
-                    return title && title.innerText
-                        ? {
-                              category: null,
-                              title: title.innerText.trim(),
-                              author: author.innerText.trim(),
-                              hit: hit.innerText.trim(),
-                              time: time.innerText.trim(),
-                              link: baseUrl + title.getAttribute('href'),
-                              upVotes: parseInt(upVotes.innerText),
-                              numberOfComments:
-                                  numberOfComments.textContent.replace(/[^0-9]/g, '') || 0,
-                              hasImages: !!hasImages,
-                          }
-                        : null;
-                })
-                .filter((posts) => posts);
+            return [
+                Array.from(lists)
+                    .slice(1)
+                    .slice(0, -2)
+                    .map((list) => {
+                        const title = list.querySelector('.sbj a');
+                        const author = list.querySelector('.list_name');
+                        const hit = list.querySelector('.list_click');
+                        const time = list.querySelector('.list_date');
+                        const upVotes = list.querySelector('.list_vote');
+                        const hasImages = list.querySelector('.sbj .li_ic');
+                        const numberOfComments = list.querySelector('.sbj').lastChild;
+
+                        return title && title.innerText
+                            ? {
+                                  category: null,
+                                  title: title.innerText.trim(),
+                                  author: author.innerText.trim(),
+                                  hit: hit.innerText.trim(),
+                                  time: time.innerText.trim(),
+                                  link: baseUrl + title.getAttribute('href'),
+                                  upVotes: parseInt(upVotes.innerText),
+                                  numberOfComments:
+                                      numberOfComments.textContent.replace(/[^0-9]/g, '') || 0,
+                                  hasImages: !!hasImages,
+                              }
+                            : null;
+                    })
+                    .filter((posts) => posts),
+                currPageNumber,
+            ];
         }, baseUrl);
+
+        this.currentPageNumber = currPageNumber;
 
         return posts.map((post) => ({ ...post, hasRead: this.postsRead.has(post.link) }));
     }
 
     async getPostDetail(link) {
         await this.page.goto(link);
-
+        await this.page.waitFor(300);
         const postDetail = await this.page.evaluate(() => {
-            const category = document.querySelector('.post_subject .post_category');
-            const title = document.querySelector('.post_subject span:not(.post_category)');
-            const author = document.querySelector('.post_info .contact_name');
-            const hit = document.querySelector('.view_info');
-            const body = document.querySelector('.post_article');
-            const upVotes = document.querySelector('.symph_count strong');
-            const comments = document.querySelectorAll('.comment_row');
-            const time = document.querySelector('.post_author span');
-            const images = Array.from(
-                document.querySelectorAll('.post_content img') || []
-            ).map((image) => image.getAttribute('src'));
-
-            const gifs = Array.from(body.querySelectorAll('.fr-video') || []);
-
-            // handle GIFs
-            gifs.map((gif, index) => {
-                const src = gif.querySelector('source').getAttribute('src');
-                gif.innerHTML = `GIF_${index} `;
-                images.push(src);
-            });
+            const title = document.querySelector('.first_part .sbj');
+            const author = document.querySelector('.nick span');
+            const hit = document.querySelector('.click.bbs_ct_small');
+            const body = document.querySelector('#userct');
+            const upVotes = document.querySelector('.vote.bbs_ct_small');
+            const comments = document.querySelectorAll('.comment_inbox .list li');
+            const time = document.querySelector('.date.bbs_ct_small span');
+            // const images = Array.from(body.querySelectorAll('img') || []).map((image) =>
+            //     image.getAttribute('src')
+            // );
 
             // handle images
             body.querySelectorAll('img').forEach((image, index) => {
-                image.textContent = `IMAGE_${index} `;
+                const src = image.getAttribute('src');
+                const isGif = src.slice(-3) === 'gif';
+
+                image.textContent = `${isGif ? 'GIF' : 'IMAGE'}_${index} `;
             });
 
             return {
-                category: category && category.innerText,
+                category: null,
                 title: title.innerText.trim(),
-                author: author.innerText.trim() || author.querySelector('img').getAttribute('alt'),
+                author: author.innerText.trim(),
                 hit: hit.innerText.trim(),
                 time: time.innerText.trim().split(' ')[1],
                 body: body.textContent
@@ -144,45 +150,20 @@ class SLRClub extends Crawler {
                     .join('\n')
                     .trim(),
                 upVotes: parseInt(upVotes.innerText),
-                images,
-                hasImages: images.length,
                 comments: Array.from(comments).map((comment) => {
-                    const isRemoved = comment.classList.contains('blocked');
-                    const isReply = comment.classList.contains('re');
-                    const body = comment.querySelector('.comment_content');
-                    const author = comment.querySelector('.contact_name');
-                    const time = comment.querySelector('.comment_time .timestamp');
-                    const upVotes = comment.querySelector('.comment_symph');
+                    const body = comment.querySelector('.cmt-contents');
+                    const author = comment.querySelector('.cname');
+                    const time = comment.querySelector('.cmt_date');
+                    const upVotes = comment.querySelector('.vote_cnt');
 
-                    // handle animated author name
-                    if (isReply && !isRemoved) {
-                        const replyTo = body.querySelector('.comment_view strong img');
-
-                        if (replyTo) {
-                            const nickId = document.createTextNode(
-                                replyTo.getAttribute('data-nick-id')
-                            );
-
-                            replyTo.parentNode.replaceChild(nickId, replyTo);
-                        }
-                    }
-
-                    return isRemoved
-                        ? {
-                              isReply,
-                              isRemoved,
-                              body: '삭제 되었습니다.',
-                          }
-                        : {
-                              isReply,
-                              isRemoved,
-                              author:
-                                  author.innerText ||
-                                  author.querySelector('img').getAttribute('alt'),
-                              time: time.innerText.split(' ')[1],
-                              body: body.innerText,
-                              upVotes: parseInt(upVotes.innerText.trim()),
-                          };
+                    return {
+                        isRemoved: false,
+                        isReply: false,
+                        author: author.innerText,
+                        time: time.innerText.split(' ')[1],
+                        body: body.innerText,
+                        upVotes: upVotes.innerText.replace(/[^0-9]/g, ''),
+                    };
                 }),
             };
         });
@@ -196,8 +177,12 @@ class SLRClub extends Crawler {
         return this.currentPageNumber;
     }
 
-    set pageNumber(offset) {
-        this.currentPageNumber = offset;
+    set pageNumber(newPageNumber) {
+        this.currentPageNumber = newPageNumber;
+    }
+
+    set navigatePage(offset) {
+        this.currentPageNumber -= offset;
     }
 
     get sortUrl() {
@@ -222,7 +207,7 @@ class SLRClub extends Crawler {
     }
 
     changeSortList(index) {
-        this.pageNumber = 0;
+        this.currentPageNumber = 0;
         this.sortUrl = index;
     }
 
