@@ -1,4 +1,4 @@
-const Crawler = require('../Crawler');
+const CommunityCrawler = require('../CommunityCrawler');
 const {
     baseUrl,
     getUrl,
@@ -9,17 +9,12 @@ const {
 } = require('./constants');
 const { configstore } = require('../../helpers');
 
-class SLRClub extends Crawler {
+class SLRClub extends CommunityCrawler {
     constructor() {
-        super(ignoreRequests);
+        super(sortUrls, ignoreRequests);
 
         this.title = SLRClub.toString();
-        this.boards = [];
         this.boardTypes = boardTypes;
-        this.currentBoardIndex = 0;
-        this.currentPageNumber = 0;
-        this.sortListIndex = 0;
-        this.postsRead = new Set();
     }
 
     async getBoards() {
@@ -184,42 +179,8 @@ class SLRClub extends Crawler {
         return this.currentPageNumber;
     }
 
-    set pageNumber(newPageNumber) {
-        this.currentPageNumber = newPageNumber;
-    }
-
     set navigatePage(offset) {
         this.currentPageNumber -= offset;
-    }
-
-    get sortUrl() {
-        return sortUrls.length ? sortUrls[this.sortListIndex] : '';
-    }
-
-    set sortUrl(index) {
-        this.sortListIndex = index;
-    }
-
-    get currentBoard() {
-        return this.boards[this.currentBoardIndex];
-    }
-
-    set currentBoard(board) {
-        this.currentBoardIndex = this.boards.findIndex((_board) => _board.value === board.value);
-    }
-
-    async changeBoard(board) {
-        this.currentBoard = board;
-        return await this.getPosts();
-    }
-
-    changeSortList(index) {
-        this.currentPageNumber = 0;
-        this.sortUrl = index;
-    }
-
-    deleteBoards() {
-        configstore.delete(this.title);
     }
 
     static toString() {
