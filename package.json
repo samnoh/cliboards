@@ -16,9 +16,7 @@
         "url": "https://github.com/samnoh/cli-boards/issues"
     },
     "homepage": "https://github.com/samnoh/cli-boards#readme",
-    "devDependencies": {
-        "nodemon": "2.0.2"
-    },
+    "devDependencies": {},
     "dependencies": {
         "blessed": "0.1.81",
         "configstore": "5.0.1",
