@@ -12,6 +12,6 @@ module.exports = {
         },
     ],
     boardTypes: ['커뮤니티', '소모임'],
-    ignoreBoards: ['사진게시판', '아무거나질문', '임시소모임'],
+    ignoreBoards: ['사진게시판', '아무거나질문', '알뜰구매', '임시소모임'],
     ignoreRequests: ['image', 'stylesheet', 'media', 'font', 'imageset', 'script'],
 };
