@@ -1,6 +1,6 @@
-# CLI-boards
+# cliboards
 
-> Surf online communities on CLI
+> Surf your online communities on CLI
 
 ### Why?
 
