@@ -1,13 +1,5 @@
 const CommunityCrawler = require('../CommunityCrawler');
-const {
-    baseUrl,
-    getUrl,
-    sortUrls,
-    boardTypes,
-    ignoreBoards,
-    ignoreRequests,
-} = require('./constants');
-const { configstore } = require('../../helpers');
+const { baseUrl, getUrl, sortUrls, boardTypes, boards, ignoreRequests } = require('./constants');
 
 class SLRClub extends CommunityCrawler {
     constructor() {
@@ -17,52 +9,8 @@ class SLRClub extends CommunityCrawler {
         this.boardTypes = boardTypes;
     }
 
-    async getBoards() {
-        try {
-            this.boards = [
-                {
-                    name: '자유게시판',
-                    value: 'free',
-                    type: this.boardTypes[0],
-                },
-            ];
-
-            return;
-            if (configstore.has(this.title)) {
-                this.boards = configstore.get(this.title);
-                return;
-            }
-
-            await this.page.goto(baseUrl);
-
-            this.boards = await this.page.evaluate((ignoreBoards) => {
-                const main = Array.from(document.querySelectorAll('.navmenu a'));
-                const sub = Array.from(document.querySelectorAll('.menu_somoim a'));
-
-                const mainBoardSize = main.length;
-
-                return [...main, ...sub]
-                    .map((board, index) => {
-                        const name = board.querySelectorAll('span')[1];
-                        const link = board.getAttribute('href');
-
-                        return link.includes('/service/board') &&
-                            ignoreBoards.indexOf(name.innerText) === -1
-                            ? {
-                                  name: name.innerText,
-                                  value: link,
-                                  isSub: mainBoardSize < index,
-                              }
-                            : null;
-                    })
-                    .filter((board) => board);
-            }, ignoreBoards);
-
-            configstore.set(this.title, this.boards);
-        } catch (e) {
-            this.deleteBoards();
-            throw new Error(e);
-        }
+    getBoards() {
+        this.boards = boards;
     }
 
     async getPosts() {

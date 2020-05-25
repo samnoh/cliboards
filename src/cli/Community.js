@@ -105,7 +105,7 @@ class Community extends CLI {
             switch (full) {
                 case 'r':
                     this.crawler.deleteBoards();
-                    this.crawler.boards.length = 0;
+                    this.crawler.boards = [];
                     await this.getBoards(0);
                     break;
                 case 'right':
@@ -252,7 +252,7 @@ class Community extends CLI {
         });
 
         this.boardsList.on('focus', () => {
-            if (!this.boardsList.getItem(0)) {
+            if (!this.crawler.boards.length) {
                 this.setTitleFooterContent('Error', '', 'q: quit, r: refresh');
                 return;
             }
@@ -261,7 +261,9 @@ class Community extends CLI {
             this.setTitleFooterContent(
                 this.crawler.title,
                 this.crawler.boardTypes[this.currentBoardTypeIndex],
-                'q: quit, r: refresh, left/right arrow: prev/next page'
+                `q: quit, r: refresh${
+                    this.crawler.boardTypes.length > 1 ? ', left/right arrow: prev/next page' : ''
+                }`
             );
         });
 
