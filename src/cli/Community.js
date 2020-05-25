@@ -253,7 +253,7 @@ class Community extends CLI {
 
         this.boardsList.on('focus', () => {
             if (!this.crawler.boards.length) {
-                this.setTitleFooterContent('Error', '', 'q: quit, r: refresh');
+                this.setTitleFooterContent('Error', '', 'q: back, r: refresh');
                 return;
             }
             this.currentPostIndex = 0;
@@ -261,7 +261,7 @@ class Community extends CLI {
             this.setTitleFooterContent(
                 this.crawler.title,
                 this.crawler.boardTypes[this.currentBoardTypeIndex],
-                `q: quit, r: refresh${
+                `q: back, r: refresh${
                     this.crawler.boardTypes.length > 1 ? ', left/right arrow: prev/next page' : ''
                 }`
             );
