@@ -12,7 +12,7 @@
 -   Communities: `Clien` and `SLRClub`
 -   Supports color customizations
 -   Loads faster with a slow Internect connection
--   Shurtcut for viewing images/gifs on web browser
+-   Shurtcut for viewing images on web browser
 
 ## Install
 

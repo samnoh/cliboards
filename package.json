@@ -1,6 +1,6 @@
 {
     "name": "cliboards",
-    "version": "1.0.0-beta.0",
+    "version": "1.0.0-beta.1",
     "description": "Surf your online communities on CLI",
     "scripts": {
         "start": "node src/index.js"
@@ -25,7 +25,8 @@
         "blessed": "0.1.81",
         "configstore": "5.0.1",
         "open": "7.0.3",
-        "puppeteer": "2.1.1"
+        "puppeteer": "2.1.1",
+        "update-notifier": "4.1.0"
     },
     "bin": {
         "cliboards": "src/index.js"

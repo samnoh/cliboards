@@ -12,7 +12,6 @@ class CLI {
             dockBorders: true,
             fastCSR: true,
             fullUnicode: true,
-            debug: true,
         });
         const box = blessed.box({
             parent: this.screen,
