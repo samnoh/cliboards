@@ -6,7 +6,7 @@
 
 -   Communities: `Clien` and `SLRClub`
 -   Supports color customizations
--   Loads faster on a slow Internect connection
+-   Loads faster with a slow Internect connection
 -   Shurtcut for viewing images/gifs on web browser
 
 ## Install
@@ -21,7 +21,7 @@ $ npm install cliboards -g
 $ cliboards
 ```
 
-## How to change colors
+## Change colors
 
 -   See `colors.example.json`
 -   Save the file as `colors.json` in the root folder
