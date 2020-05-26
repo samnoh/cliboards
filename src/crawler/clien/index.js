@@ -116,11 +116,10 @@ class Clien extends CommunityCrawler {
             const upVotes = document.querySelector('.symph_count strong');
             const comments = document.querySelectorAll('.comment_row');
             const time = document.querySelector('.post_author span');
+            const gifs = Array.from(body.querySelectorAll('.fr-video') || []);
             const images = Array.from(
                 document.querySelectorAll('.post_content img') || []
             ).map((image) => image.getAttribute('src'));
-
-            const gifs = Array.from(body.querySelectorAll('.fr-video') || []);
 
             // handle GIFs
             gifs.map((gif, index) => {

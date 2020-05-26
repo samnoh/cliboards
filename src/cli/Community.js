@@ -320,7 +320,7 @@ class Community extends CLI {
                 this.crawler.boards[this.crawler.currentBoardIndex].name,
                 `${this.crawler.pageNumber} 페이지${
                     this.crawler.sortUrl ? ' | ' + this.crawler.sortUrl.name : ''
-                }`,
+                } | ${this.crawler.boardTypes[this.currentBoardTypeIndex]}`,
                 'q: back, r: refresh, s: sort, left/right arrow: prev/next page'
             );
         });
