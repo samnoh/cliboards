@@ -215,11 +215,20 @@ class Community extends CLI {
         super.setSelectEvent();
 
         this.communityList.on('select', async (_, index) => {
-            this.crawler && (await this.crawler.close());
+            let postRead;
+
+            if (this.crawler) {
+                postRead = this.crawler.postsRead;
+                await this.crawler.close();
+            }
             this.crawler = getCrawler(index);
+
+            if (postRead) {
+                this.crawler.postsRead = postRead;
+            }
+
             this.screen.title = this.crawler.title;
             await this.crawler.start();
-
             await this.getBoards(index);
             this.moveToWidget('next');
         });

@@ -1,6 +1,8 @@
+const baseUrl = 'https://clien.net';
+
 module.exports = {
-    baseUrl: 'https://clien.net',
-    getUrl: (boardName) => `https://www.clien.net${boardName}?&po=`,
+    baseUrl,
+    getUrl: (boardName) => `${baseUrl}${boardName}?&po=`,
     sortUrls: [
         {
             name: '등록일순',
