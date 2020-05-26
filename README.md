@@ -9,7 +9,7 @@
 
 ### Why?
 
--   Communities: `Clien` and `SLRClub`
+-   Communities: `Clien`, `Ruliweb` and `SLRClub`
 -   Supports color customizations
 -   Loads faster with a slow Internect connection
 -   Shurtcut for viewing images on web browser
