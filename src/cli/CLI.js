@@ -51,6 +51,7 @@ class CLI {
             height: 1,
             padding: {
                 left: 2,
+                right: 2,
             },
             style: {
                 fg: this.colors.bottom_left_color,

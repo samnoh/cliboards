@@ -1,5 +1,6 @@
 const blessed = require('blessed');
 
+const { name, version, homepage } = require('../../package.json');
 const CLI = require('./CLI');
 const { openUrls } = require('../helpers');
 const { getCrawler, crawlers } = require('../crawler');
@@ -98,6 +99,16 @@ class Community extends CLI {
 
     setKeyPressEvent() {
         super.setKeyPressEvent();
+
+        this.communityList.on('keypress', (_, { full }) => {
+            switch (full) {
+                case 'o':
+                    openUrls(homepage);
+                    break;
+                case 'y':
+                    openUrls('https://www.youtube.com/watch?v=hpI2A4RTvhs');
+            }
+        });
 
         this.boardsList.on('keypress', async (_, { full }) => {
             const boardTypesLength = this.crawler.boardTypes.length;
@@ -257,7 +268,11 @@ class Community extends CLI {
 
         this.communityList.on('focus', () => {
             this.screen.title = '';
-            this.setTitleFooterContent('커뮤니티 목록', '', 'q: quit');
+            this.setTitleFooterContent(
+                '커뮤니티 목록',
+                '',
+                `q: quit, o: open GitHub{|}${name} ${version}`
+            );
         });
 
         this.boardsList.on('focus', () => {
