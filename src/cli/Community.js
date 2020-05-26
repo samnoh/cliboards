@@ -455,38 +455,42 @@ class Community extends CLI {
 
         let prevTop = this.detailBox.getScreenLines().length + 1;
 
-        this.commentBoxes = comments.map(({ body, isRemoved, isReply, author, time, upVotes }) => {
-            const info = `{${this.colors.comment_top_color}-fg}${author}{|} ${
-                upVotes
-                    ? `{${this.colors.comment_top_color_likes}-fg}${upVotes}{/${this.colors.comment_top_color_likes}-fg} | `
-                    : ''
-            }${time}{/}\n`;
+        this.commentBoxes = comments.map(
+            ({ body, isRemoved, isReply, author, time, upVotes, downVotes }) => {
+                const info = `{${this.colors.comment_top_color}-fg}${author}{|} ${
+                    upVotes ? `{${this.colors.comment_top_color_likes}-fg}${upVotes}{/} | ` : ''
+                }${
+                    downVotes
+                        ? `{${this.colors.comment_top_color_dislikes}-fg}${downVotes}{/} | `
+                        : ''
+                }${time}{/}\n`;
 
-            const commentBox = blessed.box({
-                parent: this.detailBox,
-                top: prevTop,
-                width: '100%-1',
-                height: parseInt(body.length / this.detailBox.width) + 5,
-                content: isRemoved ? body : info + body,
-                border: {
-                    type: 'line',
-                    fg: this.colors.comment_border_color,
-                },
-                style: {
-                    bg: this.colors.comment_bg,
-                    fg: this.colors.comment_bottom_color,
-                },
-                tags: true,
-                padding: {
-                    left: isReply ? 4 : 0,
-                },
-            });
+                const commentBox = blessed.box({
+                    parent: this.detailBox,
+                    top: prevTop,
+                    width: '100%-1',
+                    height: parseInt(body.length / this.detailBox.width) + 5,
+                    content: isRemoved ? body : info + body,
+                    border: {
+                        type: 'line',
+                        fg: this.colors.comment_border_color,
+                    },
+                    style: {
+                        bg: this.colors.comment_bg,
+                        fg: this.colors.comment_bottom_color,
+                    },
+                    tags: true,
+                    padding: {
+                        left: isReply ? 4 : 0,
+                    },
+                });
 
-            commentBox.height = commentBox.getScreenLines().length + 2;
-            prevTop += commentBox.height - 1;
+                commentBox.height = commentBox.getScreenLines().length + 2;
+                prevTop += commentBox.height - 1;
 
-            return commentBox;
-        });
+                return commentBox;
+            }
+        );
     }
 
     flushComments() {

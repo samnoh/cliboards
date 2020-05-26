@@ -106,11 +106,12 @@ class Ruliweb extends CommunityCrawler {
                     const author = comment.querySelector('.nick');
                     const time = comment.querySelector('.time');
                     const upVotes = comment.querySelector('.btn_like .num');
-                    const downVotes = comment.querySelector('btn_dislike .num');
+                    const downVotes = comment.querySelector('.btn_dislike .num');
                     const isReply = comment.classList.contains('child');
+                    const control_box = comment.querySelector('.control_box');
 
-                    if (isReply) {
-                        body.removeChild(comment.querySelector('.control_box'));
+                    if (isReply && control_box) {
+                        body.removeChild(control_box);
                     }
 
                     return {
@@ -119,7 +120,8 @@ class Ruliweb extends CommunityCrawler {
                         author: author.innerText,
                         time: time.innerText.split(' ')[1],
                         body: body.innerText,
-                        upVotes: parseInt(upVotes.innerText),
+                        upVotes: parseInt(upVotes.innerText) || 0,
+                        downVotes: parseInt(downVotes.innerText) || 0,
                     };
                 }),
             };

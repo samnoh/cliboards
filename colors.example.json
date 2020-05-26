@@ -21,6 +21,7 @@
         "comment_border_color": "",
         "comment_top_color": "",
         "comment_bottom_color": "",
-        "comment_top_color_likes": ""
+        "comment_top_color_likes": "",
+        "comment_top_color_dislikes": ""
     }
 }
