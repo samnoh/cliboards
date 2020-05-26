@@ -1,6 +1,6 @@
 const blessed = require('blessed');
 
-const { getTheme } = require('../helpers');
+const { checkUpdate, getTheme } = require('../helpers');
 
 class CLI {
     constructor() {
@@ -58,6 +58,8 @@ class CLI {
                 bg: this.colors.bottom_bg,
             },
         });
+
+        process.on('exit', checkUpdate);
     }
 
     setKeyPressEvent() {
