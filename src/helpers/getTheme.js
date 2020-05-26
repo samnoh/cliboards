@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const defaultColors = JSON.parse(fs.readFileSync(__dirname + '/../cli/colors.default.json'));
+const defaultColors = require('../cli/theme/default');
 
 let customColors;
 

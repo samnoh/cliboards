@@ -101,10 +101,11 @@ class SLRClub extends CommunityCrawler {
                     const author = comment.querySelector('.cname');
                     const time = comment.querySelector('.cmt_date');
                     const upVotes = comment.querySelector('.vote_cnt');
+                    const isReply = comment.classList.contains('reply');
 
                     return {
                         isRemoved: false,
-                        isReply: false,
+                        isReply,
                         author: author.innerText,
                         time: time.innerText.split(' ')[1],
                         body: body.innerText,
