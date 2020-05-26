@@ -1,6 +1,6 @@
 {
     "name": "cliboards",
-    "version": "1.0.0-beta.3",
+    "version": "1.0.0-beta.4",
     "description": "Surf your online communities on CLI",
     "scripts": {
         "start": "node src/index.js"
@@ -30,11 +30,5 @@
     },
     "bin": {
         "cliboards": "src/index.js"
-    },
-    "files": [
-        "src",
-        "README.md",
-        "LICENSE",
-        "colors.example.json"
-    ]
+    }
 }
