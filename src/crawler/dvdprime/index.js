@@ -66,12 +66,14 @@ class DVDPrime extends CommunityCrawler {
 
         const postDetail = await this.page.evaluate(() => {
             const title = document.querySelector('#writeSubject');
-            const author = document.querySelector('#view_nickname .member');
+            const author = document.querySelector('#view_nickname');
             const hit = document.querySelector('#view_hit');
             const body = document.querySelector('.resContents');
             const upVotes = document.querySelector('#view_recommend_num');
             const comments = document.querySelectorAll('.comment_container');
-            const time = document.querySelector('#view_datetime').innerText.split(' ');
+            const time = document
+                .querySelector('#view_datetime')
+                .innerText.match(/[0-9]{2}:[0-9]{2}:[0-9]{2}/)[0];
             const images = Array.from(body.querySelectorAll('img') || []).map((image) =>
                 image.getAttribute('src')
             );
@@ -85,7 +87,7 @@ class DVDPrime extends CommunityCrawler {
                 title: title.innerText,
                 author: author.innerText.trim(),
                 hit: hit.innerText.trim(),
-                time: time[time.length - 1],
+                time,
                 body: body.textContent
                     .split('\n')
                     .map((b) => b.trim())
@@ -97,7 +99,9 @@ class DVDPrime extends CommunityCrawler {
                 comments: Array.from(comments).map((comment) => {
                     const body = comment.querySelector('.comment_content');
                     const author = comment.querySelector('.sideview_a');
-                    const time = comment.querySelector('.comment_time').innerText.split(' ');
+                    const time = comment
+                        .querySelector('.comment_time')
+                        .innerText.match(/[0-9]{2}:[0-9]{2}:[0-9]{2}/)[0];
                     const upVotes = comment.querySelector('.comment_title_right .c_r_num');
                     const isReply = comment.querySelector('.comment_reply_line');
                     const spoilerWarning = body.querySelector('.view_warning_div');
@@ -114,7 +118,7 @@ class DVDPrime extends CommunityCrawler {
                         isReply: !!isReply,
                         isRemoved: false,
                         author: author.innerText,
-                        time: time[time.length - 1],
+                        time,
                         body: body.textContent.trim(),
                         upVotes: parseInt(upVotes.innerText),
                     };
