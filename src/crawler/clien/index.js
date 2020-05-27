@@ -75,25 +75,26 @@ class Clien extends CommunityCrawler {
                     const numberOfComments = list.querySelector('.rSymph05');
                     const hasImages = list.querySelector('.fa-picture-o');
 
-                    return title && title.innerText
-                        ? {
-                              category: category && category.innerText,
-                              title: title.innerText.trim(),
-                              author:
-                                  author.innerText.trim() ||
-                                  author.querySelector('img').getAttribute('alt'),
-                              hit: hit.innerText.trim(),
-                              time: time.innerText.trim(),
-                              link: baseUrl + link.getAttribute('href'),
-                              upVotes: parseInt(upVotes.innerText),
-                              numberOfComments: numberOfComments
-                                  ? parseInt(numberOfComments.innerText)
-                                  : 0,
-                              hasImages: !!hasImages,
-                          }
-                        : null;
+                    return (
+                        title &&
+                        title.innerText && {
+                            category: category && category.innerText,
+                            title: title.innerText.trim(),
+                            author:
+                                author.innerText.trim() ||
+                                author.querySelector('img').getAttribute('alt'),
+                            hit: hit.innerText.trim(),
+                            time: time.innerText.trim(),
+                            link: baseUrl + link.getAttribute('href'),
+                            upVotes: parseInt(upVotes.innerText),
+                            numberOfComments: numberOfComments
+                                ? parseInt(numberOfComments.innerText)
+                                : 0,
+                            hasImages: !!hasImages,
+                        }
+                    );
                 })
-                .filter((posts) => posts);
+                .filter((post) => post);
         }, baseUrl);
 
         return posts.map((post) => ({ ...post, hasRead: this.postsRead.has(post.link) }));

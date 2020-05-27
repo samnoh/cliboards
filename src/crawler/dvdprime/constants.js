@@ -17,7 +17,7 @@ module.exports = {
         },
         {
             name: '블루레이‧DVD',
-            value: '/g2/bbs/board.php?bo_table=blue_ray',
+            value: '/g2/bbs/board.php?bo_table=blu_ray',
             type: boardTypes[0],
         },
         {
@@ -58,11 +58,6 @@ module.exports = {
         {
             name: '못웃기면맞는다',
             value: '/g2/bbs/board.php?bo_table=humor',
-            type: boardTypes[2],
-        },
-        {
-            name: '중고장터',
-            value: '/g2/bbs/board.php?bo_table=market',
             type: boardTypes[2],
         },
     ],

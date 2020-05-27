@@ -27,28 +27,35 @@ class DVDPrime extends CommunityCrawler {
         const posts = await this.page.evaluate((baseUrl) => {
             const lists = document.querySelectorAll('.list_table_row');
 
-            return Array.from(lists).map((list) => {
-                const category = list.querySelector('.list_category_text');
-                const title = list.querySelector('.list_subject_span_pc');
-                const author = list.querySelector('.list_table_col_name');
-                const hit = list.querySelector('.list_table_col_hit');
-                const time = list.querySelector('.list_table_dates');
-                const link = list.querySelector('.list_subject_a').getAttribute('href');
-                const upVotes = list.querySelector('.list_table_col_recommend');
-                const numberOfComments = list.querySelector('.list_comment_new');
+            return Array.from(lists)
+                .map((list) => {
+                    const category = list.querySelector('.list_category_text');
+                    const title = list.querySelector('.list_subject_span_pc');
+                    const author = list.querySelector('.list_table_col_name');
+                    const hit = list.querySelector('.list_table_col_hit');
+                    const time = list.querySelector('.list_table_dates');
+                    const link = list.querySelector('.list_subject_a').getAttribute('href');
+                    const upVotes = list.querySelector('.list_table_col_recommend');
+                    const numberOfComments = list.querySelector('.list_comment_new');
 
-                return {
-                    category: category.innerText,
-                    title: title.innerText.trim(),
-                    author: author.innerText.trim(),
-                    hit: hit.innerText.trim(),
-                    time: time.innerText.trim(),
-                    link: baseUrl + link,
-                    upVotes: parseInt(upVotes.innerText) || 0,
-                    numberOfComments: numberOfComments ? parseInt(numberOfComments.innerText) : 0,
-                    hasImages: false,
-                };
-            });
+                    return (
+                        title &&
+                        title.innerText && {
+                            category: category.innerText,
+                            title: title.innerText.trim(),
+                            author: author.innerText.trim(),
+                            hit: hit.innerText.trim(),
+                            time: time.innerText.trim(),
+                            link: baseUrl + link,
+                            upVotes: parseInt(upVotes.innerText) || 0,
+                            numberOfComments: numberOfComments
+                                ? parseInt(numberOfComments.innerText)
+                                : 0,
+                            hasImages: false,
+                        }
+                    );
+                })
+                .filter((post) => post);
         }, baseUrl);
 
         return posts.map((post) => ({ ...post, hasRead: this.postsRead.has(post.link) }));

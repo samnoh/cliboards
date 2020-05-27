@@ -49,22 +49,22 @@ class SLRClub extends CommunityCrawler {
 
                         const isNotice = list.querySelector('.list_notice');
 
-                        return !isNotice
-                            ? {
-                                  category: null,
-                                  title: title.innerText.trim(),
-                                  author: author.innerText.trim(),
-                                  hit: hit.innerText.trim(),
-                                  time: time.innerText.trim(),
-                                  link: baseUrl + title.getAttribute('href'),
-                                  upVotes: parseInt(upVotes.innerText),
-                                  numberOfComments:
-                                      numberOfComments.textContent.replace(/[^0-9]/g, '') || 0,
-                                  hasImages: !!hasImages,
-                              }
-                            : null;
+                        return (
+                            !isNotice && {
+                                category: null,
+                                title: title.innerText.trim(),
+                                author: author.innerText.trim(),
+                                hit: hit.innerText.trim(),
+                                time: time.innerText.trim(),
+                                link: baseUrl + title.getAttribute('href'),
+                                upVotes: parseInt(upVotes.innerText),
+                                numberOfComments:
+                                    numberOfComments.textContent.replace(/[^0-9]/g, '') || 0,
+                                hasImages: !!hasImages,
+                            }
+                        );
                     })
-                    .filter((posts) => posts),
+                    .filter((post) => post),
                 parseInt(nextPageNumber) + 1,
             ];
         }, baseUrl);

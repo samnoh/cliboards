@@ -40,23 +40,24 @@ class Ruliweb extends CommunityCrawler {
                     const numberOfComments = list.querySelector('.subject .num_reply .num');
                     const hasImages = list.querySelector('.icon-picture');
 
-                    return title && title.innerText
-                        ? {
-                              category: category && category.innerText,
-                              title: title.innerText.trim(),
-                              author: author.innerText.trim(),
-                              hit: hit.innerText.trim(),
-                              time: time.innerText.trim(),
-                              link: title.getAttribute('href'),
-                              upVotes: parseInt(upVotes.innerText) || 0,
-                              numberOfComments: numberOfComments
-                                  ? parseInt(numberOfComments.innerText)
-                                  : 0,
-                              hasImages: !!hasImages,
-                          }
-                        : null;
+                    return (
+                        title &&
+                        title.innerText && {
+                            category: category && category.innerText,
+                            title: title.innerText.trim(),
+                            author: author.innerText.trim(),
+                            hit: hit.innerText.trim(),
+                            time: time.innerText.trim(),
+                            link: title.getAttribute('href'),
+                            upVotes: parseInt(upVotes.innerText) || 0,
+                            numberOfComments: numberOfComments
+                                ? parseInt(numberOfComments.innerText)
+                                : 0,
+                            hasImages: !!hasImages,
+                        }
+                    );
                 })
-                .filter((posts) => posts);
+                .filter((post) => post);
         });
 
         return posts.map((post) => ({ ...post, hasRead: this.postsRead.has(post.link) }));
