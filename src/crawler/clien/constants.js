@@ -1,4 +1,4 @@
-const baseUrl = 'https://clien.net';
+const baseUrl = 'https://www.clien.net';
 
 const boardTypes = ['커뮤니티', '소모임'];
 
