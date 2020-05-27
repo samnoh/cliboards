@@ -146,13 +146,15 @@ class Community extends CLI {
             if (full === 'r') {
                 // refresh
             } else if (full === 's') {
-                this.crawler.changeSortList(1 ^ this.crawler.sortListIndex);
+                if (this.crawler.sortUrl) {
+                    this.crawler.changeSortList(1 ^ this.crawler.sortListIndex);
+                } else {
+                    return;
+                }
             } else if (full === 'left' && this.crawler.pageNumber > 1) {
                 this.crawler.navigatePage = -1;
-                this.screen.debug(this.crawler.pageNumber);
             } else if (full === 'right') {
                 this.crawler.navigatePage = 1;
-                this.screen.debug(this.crawler.pageNumber);
             } else {
                 return;
             }
@@ -317,11 +319,15 @@ class Community extends CLI {
             this.resetScroll(this.listList, this.currentPostIndex);
 
             this.setTitleFooterContent(
-                this.crawler.boards[this.crawler.currentBoardIndex].name,
+                `${this.crawler.boards[this.crawler.currentBoardIndex].name} {gray-fg}${
+                    this.crawler.boardTypes[this.currentBoardTypeIndex]
+                }{/}`,
                 `${this.crawler.pageNumber} 페이지${
-                    this.crawler.sortUrl ? ' | ' + this.crawler.sortUrl.name : ''
-                } | ${this.crawler.boardTypes[this.currentBoardTypeIndex]}`,
-                'q: back, r: refresh, s: sort, left/right arrow: prev/next page'
+                    this.crawler.sortUrl ? '‧' + this.crawler.sortUrl.name : ''
+                }`,
+                `q: back, r: refresh, ${
+                    this.crawler.sortUrl ? 's: sort, ' : ''
+                }left/right arrow: prev/next page`
             );
         });
 
@@ -349,7 +355,7 @@ class Community extends CLI {
                 `${
                     category ? `{${this.colors.top_info_color}-fg}` + category + '{/} ' : ''
                 }${title} {${this.colors.top_info_color}-fg}${comments.length}{/}`,
-                `${author} | ${hit} | ${upVotes} | ${time}`,
+                `${author}‧${hit}‧${upVotes}‧${time}`,
                 `q: back, r: refresh, o: open, ${
                     hasImages
                         ? `i: view ${images.length} image${images.length !== 1 ? 's' : ''}, `
@@ -450,7 +456,6 @@ class Community extends CLI {
         this.flushComments();
 
         const { comments } = this.post;
-        this.screen.debug(this.post);
         if (!comments || !comments.length) return;
 
         let prevTop = this.detailBox.getScreenLines().length + 1;
@@ -459,11 +464,11 @@ class Community extends CLI {
             ({ body, isRemoved, isReply, author, time, upVotes, downVotes }) => {
                 const info = `{${this.colors.comment_top_color}-fg}${author}{|} ${
                     upVotes
-                        ? `{${this.colors.comment_top_color_likes}-fg}${upVotes}{/${this.colors.comment_top_color_likes}-fg} | `
+                        ? `{${this.colors.comment_top_color_likes}-fg}${upVotes}{/${this.colors.comment_top_color_likes}-fg}‧`
                         : ''
                 }${
                     downVotes
-                        ? `{${this.colors.comment_top_color_dislikes}-fg}${downVotes}{/${this.colors.comment_top_color_dislikes}-fg} | `
+                        ? `{${this.colors.comment_top_color_dislikes}-fg}${downVotes}{/${this.colors.comment_top_color_dislikes}-fg}‧`
                         : ''
                 }${time}{/}\n`;
 
