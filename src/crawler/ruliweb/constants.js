@@ -1,6 +1,6 @@
 const baseUrl = 'https://bbs.ruliweb.com';
 
-const boardTypes = ['PS4/5', 'SWITCH', 'XBO/SX'];
+const boardTypes = ['PS4/5', 'SWITCH', 'XBO/SX', 'PC', '취미갤'];
 
 module.exports = {
     baseUrl,
@@ -39,6 +39,21 @@ module.exports = {
             name: '게임 이야기',
             value: '/xbox/board/300047',
             type: boardTypes[2],
+        },
+        {
+            name: 'PC 정보',
+            value: '/pc/board/300006',
+            type: boardTypes[3],
+        },
+        {
+            name: 'PC 게임 정보',
+            value: '/pc/board/300007',
+            type: boardTypes[3],
+        },
+        {
+            name: '영상기기 갤러리',
+            value: '/hobby/board/320033',
+            type: boardTypes[4],
         },
     ],
 };

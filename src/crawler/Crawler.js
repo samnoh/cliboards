@@ -18,9 +18,12 @@ class Crawler {
             });
 
             this.page = await this.browser.newPage();
+            this.page.setDefaultNavigationTimeout(10000);
+
             await this.page.setUserAgent(
-                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.122 Safari/537.36'
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36'
             );
+
             await this.page.setRequestInterception(true);
 
             this.page.on('request', (request) => {

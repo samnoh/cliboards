@@ -32,11 +32,11 @@ class SLRClub extends CommunityCrawler {
             const nextPageNumber = document
                 .querySelector('.next1')
                 .getAttribute('href')
-                .replace(/[^0-9]/g, '');
+                .split('&page=')
+                .pop();
 
             return [
                 Array.from(lists)
-                    .slice(1)
                     .slice(0, -2)
                     .map((list) => {
                         const title = list.querySelector('.sbj a');
@@ -47,7 +47,9 @@ class SLRClub extends CommunityCrawler {
                         const hasImages = list.querySelector('.sbj .li_ic');
                         const numberOfComments = list.querySelector('.sbj').lastChild;
 
-                        return title && title.innerText
+                        const isNotice = list.querySelector('.list_notice');
+
+                        return !isNotice
                             ? {
                                   category: null,
                                   title: title.innerText.trim(),
