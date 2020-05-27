@@ -5,3 +5,14 @@ build
 !colors.default.json
 !colors.example.json
 *.tgz
+
+### Docker ###
+Dockerfile
+.dockerignore
+
+### VisualStudioCode ###
+.vscode/*
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+.history
+
