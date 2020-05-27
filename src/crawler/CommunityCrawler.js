@@ -13,6 +13,14 @@ class CommunityCrawler extends Crawler {
         this.postsRead = new Set();
     }
 
+    getBoards(boards, ignoreBoards) {
+        if (ignoreBoards && ignoreBoards.length) {
+            this.boards = boards.filter((board) => ignoreBoards.indexOf(board) === -1);
+        } else {
+            this.boards = boards;
+        }
+    }
+
     async changeBoard(board) {
         this.currentBoard = board;
         return await this.getPosts();

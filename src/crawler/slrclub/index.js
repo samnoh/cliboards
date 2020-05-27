@@ -1,5 +1,13 @@
 const CommunityCrawler = require('../CommunityCrawler');
-const { baseUrl, getUrl, sortUrls, boardTypes, boards, ignoreRequests } = require('./constants');
+const {
+    baseUrl,
+    getUrl,
+    sortUrls,
+    boardTypes,
+    ignoreRequests,
+    ignoreBoards,
+    boards,
+} = require('./constants');
 
 class SLRClub extends CommunityCrawler {
     constructor() {
@@ -9,8 +17,11 @@ class SLRClub extends CommunityCrawler {
         this.boardTypes = boardTypes;
     }
 
-    getBoards() {
-        this.boards = boards;
+    async getBoards() {
+        return new Promise((resolve, reject) => {
+            super.getBoards(boards, ignoreBoards);
+            resolve();
+        });
     }
 
     async getPosts() {

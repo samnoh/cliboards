@@ -1,5 +1,12 @@
 const CommunityCrawler = require('../CommunityCrawler');
-const { getUrl, sortUrls, boardTypes, ignoreRequests, boards } = require('./constants');
+const {
+    getUrl,
+    sortUrls,
+    boardTypes,
+    ignoreRequests,
+    ignoreBoards,
+    boards,
+} = require('./constants');
 
 class Ruliweb extends CommunityCrawler {
     constructor() {
@@ -10,11 +17,10 @@ class Ruliweb extends CommunityCrawler {
     }
 
     async getBoards() {
-        try {
-            this.boards = boards;
-        } catch (e) {
-            throw new Error(e);
-        }
+        return new Promise((resolve, reject) => {
+            super.getBoards(boards, ignoreBoards);
+            resolve();
+        });
     }
 
     async getPosts() {

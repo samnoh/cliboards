@@ -6,7 +6,6 @@ const {
     boardTypes,
     ignoreBoards,
     ignoreRequests,
-    boards,
 } = require('./constants');
 const { configstore } = require('../../helpers');
 
@@ -19,41 +18,40 @@ class Clien extends CommunityCrawler {
     }
 
     async getBoards() {
-        this.boards = boards.filter((board) => ignoreBoards.indexOf(board) === -1);
-        // try {
-        //     if (configstore.has(this.title)) {
-        //         this.boards = configstore.get(this.title);
-        //         return;
-        //     }
-        //     await this.page.goto(baseUrl);
-        //     this.boards = await this.page.evaluate(
-        //         (ignoreBoards, boardTypes) => {
-        //             const main = Array.from(document.querySelectorAll('.navmenu a'));
-        //             const sub = Array.from(document.querySelectorAll('.menu_somoim a'));
-        //             const mainBoardSize = main.length;
-        //             return [...main, ...sub]
-        //                 .map((board, index) => {
-        //                     const name = board.querySelectorAll('span')[1];
-        //                     const link = board.getAttribute('href');
-        //                     return link.includes('/service/board') &&
-        //                         ignoreBoards.indexOf(name.innerText) === -1
-        //                         ? {
-        //                               name: name.innerText,
-        //                               value: link,
-        //                               type: boardTypes[mainBoardSize < index ? 1 : 0],
-        //                           }
-        //                         : null;
-        //                 })
-        //                 .filter((board) => board);
-        //         },
-        //         ignoreBoards,
-        //         this.boardTypes
-        //     );
-        //     configstore.set(this.title, this.boards);
-        // } catch (e) {
-        //     this.deleteBoards();
-        //     throw new Error(e);
-        // }
+        try {
+            if (configstore.has(this.title)) {
+                this.boards = configstore.get(this.title);
+                return;
+            }
+            await this.page.goto(baseUrl);
+            this.boards = await this.page.evaluate(
+                (ignoreBoards, boardTypes) => {
+                    const main = Array.from(document.querySelectorAll('.navmenu a'));
+                    const sub = Array.from(document.querySelectorAll('.menu_somoim a'));
+                    const mainBoardSize = main.length;
+                    return [...main, ...sub]
+                        .map((board, index) => {
+                            const name = board.querySelectorAll('span')[1];
+                            const link = board.getAttribute('href');
+                            return link.includes('/service/board') &&
+                                ignoreBoards.indexOf(name.innerText) === -1
+                                ? {
+                                      name: name.innerText,
+                                      value: link,
+                                      type: boardTypes[mainBoardSize < index ? 1 : 0],
+                                  }
+                                : null;
+                        })
+                        .filter((board) => board);
+                },
+                ignoreBoards,
+                this.boardTypes
+            );
+            configstore.set(this.title, this.boards);
+        } catch (e) {
+            this.deleteBoards();
+            throw new Error(e);
+        }
     }
 
     async getPosts() {
