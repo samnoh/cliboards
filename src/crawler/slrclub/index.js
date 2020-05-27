@@ -81,7 +81,7 @@ class SLRClub extends CommunityCrawler {
                 const src = image.getAttribute('src');
                 const isGif = src.slice(-3) === 'gif';
 
-                image.textContent = `${isGif ? 'GIF' : 'IMAGE'}_${index} `;
+                image.textContent = `${isGif ? 'GIF' : 'IMAGE'}_${index + 1} `;
             });
 
             return {

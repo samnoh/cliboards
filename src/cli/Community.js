@@ -458,10 +458,12 @@ class Community extends CLI {
         this.commentBoxes = comments.map(
             ({ body, isRemoved, isReply, author, time, upVotes, downVotes }) => {
                 const info = `{${this.colors.comment_top_color}-fg}${author}{|} ${
-                    upVotes ? `{${this.colors.comment_top_color_likes}-fg}${upVotes}{/} | ` : ''
+                    upVotes
+                        ? `{${this.colors.comment_top_color_likes}-fg}${upVotes}{/${this.colors.comment_top_color_likes}-fg} | `
+                        : ''
                 }${
                     downVotes
-                        ? `{${this.colors.comment_top_color_dislikes}-fg}${downVotes}{/} | `
+                        ? `{${this.colors.comment_top_color_dislikes}-fg}${downVotes}{/${this.colors.comment_top_color_dislikes}-fg} | `
                         : ''
                 }${time}{/}\n`;
 
@@ -470,7 +472,9 @@ class Community extends CLI {
                     top: prevTop,
                     width: '100%-1',
                     height: parseInt(body.length / this.detailBox.width) + 5,
-                    content: isRemoved ? body : info + body,
+                    content: isRemoved
+                        ? body
+                        : info + body.replace(/(GIF_\d+|IMAGE_\d+)/g, '{inverse}$&{/inverse}'),
                     border: {
                         type: 'line',
                         fg: this.colors.comment_border_color,

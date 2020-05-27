@@ -120,13 +120,13 @@ class Clien extends CommunityCrawler {
             // handle GIFs
             gifs.map((gif, index) => {
                 const src = gif.querySelector('source').getAttribute('src');
-                gif.innerHTML = `GIF_${index} `;
+                gif.innerHTML = `GIF_${index + 1} `;
                 images.push(src);
             });
 
             // handle images
             body.querySelectorAll('img').forEach((image, index) => {
-                image.textContent = `IMAGE_${index} `;
+                image.textContent = `IMAGE_${index + 1} `;
             });
 
             return {

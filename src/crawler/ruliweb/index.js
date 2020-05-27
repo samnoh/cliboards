@@ -1,5 +1,5 @@
 const CommunityCrawler = require('../CommunityCrawler');
-const { baseUrl, getUrl, sortUrls, boardTypes, ignoreRequests, boards } = require('./constants');
+const { getUrl, sortUrls, boardTypes, ignoreRequests, boards } = require('./constants');
 
 class Ruliweb extends CommunityCrawler {
     constructor() {
@@ -75,19 +75,19 @@ class Ruliweb extends CommunityCrawler {
             // handle gifs
             gifs.map((gif, index) => {
                 const src = gif.querySelector('video').getAttribute('src');
-                gif.innerHTML = `GIF_${index} `;
+                gif.innerHTML = `GIF_${index + 1} `;
                 images.push(src);
             });
 
             // handle images
             body.querySelectorAll('img').forEach((image, index) => {
-                image.textContent = `IMAGE_${index} `;
+                image.textContent = `IMAGE_${index + 1} `;
             });
 
             return {
                 category: title.innerText.trim().match(/\[([^)]+)\]\s/)[1],
                 title: title.innerText.trim().replace(/\[([^)]+)\]\s/, ''),
-                author: author.innerText.trim() || author.querySelector('img').getAttribute('alt'),
+                author: author.innerText.trim(),
                 hit: hit[hit.length - 1],
                 time: time.innerText
                     .trim()
