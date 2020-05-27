@@ -279,7 +279,7 @@ class Community extends CLI {
 
         this.boardsList.on('focus', () => {
             if (!this.crawler.boards.length) {
-                this.setTitleFooterContent('Error', '', 'q: back, r: refresh');
+                this.setTitleFooterContent('Error', '', 'q: back');
                 return;
             }
             this.currentPostIndex = 0;
@@ -287,7 +287,7 @@ class Community extends CLI {
             this.setTitleFooterContent(
                 this.crawler.title,
                 this.crawler.boardTypes[this.currentBoardTypeIndex],
-                `q: back, r: refresh${
+                `q: back${this.crawler.canRefreshBoards ? ', r: refresh' : ''}${
                     this.crawler.boardTypes.length > 1 ? ', left/right arrow: prev/next page' : ''
                 }`
             );
@@ -325,9 +325,9 @@ class Community extends CLI {
                 `${this.crawler.pageNumber} 페이지${
                     this.crawler.sortUrl ? '‧' + this.crawler.sortUrl.name : ''
                 }`,
-                `q: back, r: refresh, ${
-                    this.crawler.sortUrl ? 's: sort, ' : ''
-                }left/right arrow: prev/next page`
+                `q: back, r: refresh${
+                    this.crawler.sortUrl ? ', s: sort' : ''
+                }, left/right arrow: prev/next page`
             );
         });
 

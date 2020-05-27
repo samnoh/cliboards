@@ -7,6 +7,7 @@ class DVDPrime extends CommunityCrawler {
 
         this.title = DVDPrime.toString();
         this.boardTypes = boardTypes;
+        this.canRefreshBoards = true;
     }
 
     async getBoards() {
