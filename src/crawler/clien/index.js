@@ -11,7 +11,7 @@ const { configstore } = require('../../helpers');
 
 class Clien extends CommunityCrawler {
     constructor() {
-        super(sortUrls, ignoreRequests);
+        super(sortUrls, ignoreRequests, baseUrl);
 
         this.title = Clien.toString();
         this.boardTypes = boardTypes;
@@ -20,6 +20,8 @@ class Clien extends CommunityCrawler {
 
     async getBoards() {
         try {
+            await this.changeUserAgent();
+
             if (configstore.has(this.title)) {
                 this.boards = configstore.get(this.title);
                 return;

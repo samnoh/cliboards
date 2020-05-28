@@ -11,15 +11,16 @@ const {
 
 class SLRClub extends CommunityCrawler {
     constructor() {
-        super(sortUrls, ignoreRequests);
+        super(sortUrls, ignoreRequests, baseUrl);
 
         this.title = SLRClub.toString();
         this.boardTypes = boardTypes;
     }
 
     async getBoards() {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             super.getBoards(boards, ignoreBoards);
+            await this.changeUserAgent();
             resolve();
         });
     }

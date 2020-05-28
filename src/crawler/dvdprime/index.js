@@ -3,7 +3,7 @@ const { baseUrl, getUrl, sortUrls, boardTypes, ignoreRequests, boards } = requir
 
 class DVDPrime extends CommunityCrawler {
     constructor() {
-        super(sortUrls, ignoreRequests);
+        super(sortUrls, ignoreRequests, baseUrl);
 
         this.title = DVDPrime.toString();
         this.boardTypes = boardTypes;
@@ -12,6 +12,7 @@ class DVDPrime extends CommunityCrawler {
 
     async getBoards() {
         try {
+            await this.changeUserAgent();
             await this.page.goto(baseUrl); // to get author names
             this.boards = boards;
         } catch (e) {
