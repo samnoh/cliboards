@@ -93,6 +93,13 @@ class Dcinside extends CommunityCrawler {
                 scripts.map((script) => script.parentNode.removeChild(script));
             }
 
+            // handle gifs
+            body.querySelectorAll('video source[type^=video]').forEach((gif, index) => {
+                const text = document.createElement('span');
+                text.innerText = `GIF_${index + 1} `;
+                gif.parentNode.insertAdjacentElement('afterend', text);
+            });
+
             // handle images
             body.querySelectorAll('img.lazy').forEach((image, index) => {
                 const text = document.createElement('span');
@@ -118,19 +125,21 @@ class Dcinside extends CommunityCrawler {
                         const time = comment.querySelector('.date');
                         const isReply = comment.classList.contains('comment-add');
 
+                        if (!body) {
+                            return null;
+                        }
+
                         body.querySelectorAll('img').forEach((image, index) => {
                             image.textContent = `IMAGE_${index + 1} `;
                         });
 
-                        return (
-                            body && {
-                                isReply: !!isReply,
-                                isRemoved: false,
-                                author: author.innerText,
-                                time: time.innerText.match(/[0-9]{2}:[0-9]{2}/)[0],
-                                body: body.textContent.trim(),
-                            }
-                        );
+                        return {
+                            isReply: !!isReply,
+                            isRemoved: false,
+                            author: author.innerText,
+                            time: time.innerText.match(/[0-9]{2}:[0-9]{2}/)[0],
+                            body: body.textContent.trim(),
+                        };
                     })
                     .filter((comment) => comment),
             };
