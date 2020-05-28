@@ -9,11 +9,11 @@ const {
     boards,
 } = require('./constants');
 
-class DCInside extends CommunityCrawler {
+class Dcinside extends CommunityCrawler {
     constructor() {
         super(sortUrls, ignoreRequests, baseUrl);
 
-        this.title = DCInside.toString();
+        this.title = Dcinside.toString();
         this.boardTypes = boardTypes;
         this.canRefreshBoards = true;
     }
@@ -36,24 +36,33 @@ class DCInside extends CommunityCrawler {
                 .map((list) => {
                     const link = list.querySelector('a.lt').getAttribute('href');
                     const title = list.querySelector('.detail-txt');
-                    const category = list.querySelector('.ginfo li:nth-child(1)');
-                    const author = list.querySelector('.ginfo li:nth-child(2)');
-                    const time = list.querySelector('.ginfo li:nth-child(3)');
-                    const hit = list.querySelector('.ginfo li:nth-child(4)');
-                    const upVotes = list.querySelector('.ginfo li:nth-child(5)');
+                    const infoEl = list.querySelectorAll('.ginfo li');
+
+                    let infoIndex = -1;
+
+                    // has category
+                    if (infoEl.length === 5) {
+                        infoIndex += 1;
+                    }
+
+                    const category = infoEl[infoIndex++];
+                    const author = infoEl[infoIndex++];
+                    const time = infoEl[infoIndex++];
+                    const hit = infoEl[infoIndex++];
+                    const upVotes = infoEl[infoIndex++];
                     const numberOfComments = list.querySelector('.ct');
                     const hasImages = list.querySelector('.sp-lst-img');
 
                     return (
                         title &&
                         title.innerText && {
-                            category: category.innerText,
+                            category: category && category.innerText,
                             title: title.innerText.trim(),
                             author: author.innerText.trim(),
                             hit: hit.innerText.trim().replace(/[^0-9]/),
                             time: time.innerText.trim(),
                             link,
-                            upVotes: parseInt(upVotes.innerText.replace(/[^0-9]/)) || 0,
+                            upVotes: parseInt(upVotes && upVotes.innerText.replace(/[^0-9]/)) || 0,
                             numberOfComments: numberOfComments.innerText,
                             hasImages,
                         }
@@ -79,9 +88,6 @@ class DCInside extends CommunityCrawler {
             const _time = document
                 .querySelector('.btm .ginfo2 li:nth-child(2)')
                 .innerText.match(/[0-9]{2}:[0-9]{2}/)[0];
-            const images = Array.from(body.querySelectorAll('img.txc-image') || []).map((image) =>
-                image.getAttribute('src')
-            );
 
             if (body) {
                 const scripts = Array.from(body.querySelectorAll('script'));
@@ -90,7 +96,7 @@ class DCInside extends CommunityCrawler {
             }
 
             // handle images
-            body.querySelectorAll('img.txc-image').forEach((image, index) => {
+            body.querySelectorAll('img.lazy').forEach((image, index) => {
                 image.textContent = `IMAGE_${index + 1} `;
             });
 
@@ -99,14 +105,13 @@ class DCInside extends CommunityCrawler {
                 author: author.innerText.trim(),
                 hit: hit.innerText.replace(/[^0-9]/g, ''),
                 time: _time,
-                body: body.innerText
+                body: body.textContent
                     .split('\n')
                     .map((b) => b.trim())
                     .join('\n')
                     .trim(),
                 upVotes: parseInt(upVotes.innerText.replace(/[^0-9]/g, '')),
-                images,
-                hasImages: images.length,
+
                 comments: Array.from(comments)
                     .map((comment) => {
                         const body = comment.querySelector('.txt');
@@ -138,8 +143,8 @@ class DCInside extends CommunityCrawler {
     }
 
     static toString() {
-        return 'DCInside';
+        return 'dcinside';
     }
 }
 
-module.exports = DCInside;
+module.exports = Dcinside;
