@@ -20,52 +20,45 @@ class SLRClub extends CommunityCrawler {
     async getBoards() {
         return new Promise(async (resolve, reject) => {
             super.getBoards(boards, ignoreBoards);
-            await this.changeUserAgent();
+            await this.changeUserAgent('mobile');
             resolve();
         });
     }
 
     async getPosts() {
-        await this.page.goto(getUrl(this.currentBoard.value) + this.currentPageNumber || '');
+        await this.page.goto(getUrl(this.currentBoard.value) + (this.currentPageNumber || ''));
 
         const [posts, currentPageNumber] = await this.page.evaluate((baseUrl) => {
-            const lists = document.querySelectorAll('.bbs_tbl_layout tr:not(#bhead)');
+            const lists = document.querySelectorAll('.list li:not(.notice)');
             const nextPageNumber = document
-                .querySelector('.next1')
+                .querySelector('.paging #actpg + a')
                 .getAttribute('href')
-                .split('&page=')
+                .split('/')
                 .pop();
 
             return [
-                Array.from(lists)
-                    .slice(0, -2)
-                    .map((list) => {
-                        const title = list.querySelector('.sbj a');
-                        const author = list.querySelector('.list_name');
-                        const hit = list.querySelector('.list_click');
-                        const time = list.querySelector('.list_date');
-                        const upVotes = list.querySelector('.list_vote');
-                        const hasImages = list.querySelector('.sbj .li_ic');
-                        const numberOfComments = list.querySelector('.sbj').lastChild;
+                Array.from(lists).map((list) => {
+                    const title = list.querySelector('.subject a');
+                    const author = list.querySelector('.article-info span');
+                    const infoEl = list.querySelector('.article-info').innerText.split('|');
+                    const time = infoEl[1];
+                    const hit = infoEl[2].replace(/[^0-9]/g, '');
+                    const upVotes = infoEl[3] ? infoEl[3].replace(/[^0-9]/g, '') : 0;
+                    const hasImages = list.querySelector('.subject .li_ic');
+                    const numberOfComments = list.querySelector('.cmt2');
 
-                        const isNotice = list.querySelector('.list_notice');
-
-                        return (
-                            !isNotice && {
-                                category: null,
-                                title: title.innerText.trim(),
-                                author: author.innerText.trim(),
-                                hit: hit.innerText.trim(),
-                                time: time.innerText.trim(),
-                                link: baseUrl + title.getAttribute('href'),
-                                upVotes: parseInt(upVotes.innerText),
-                                numberOfComments:
-                                    numberOfComments.textContent.replace(/[^0-9]/g, '') || 0,
-                                hasImages: !!hasImages,
-                            }
-                        );
-                    })
-                    .filter((post) => post),
+                    return {
+                        category: null,
+                        title: title.innerText.trim(),
+                        author: author.innerText.trim(),
+                        hit: hit,
+                        time: time,
+                        link: baseUrl + title.getAttribute('href'),
+                        upVotes: parseInt(upVotes),
+                        numberOfComments: numberOfComments.innerText,
+                        hasImages: !!hasImages,
+                    };
+                }),
                 parseInt(nextPageNumber) + 1,
             ];
         }, baseUrl);
@@ -77,18 +70,16 @@ class SLRClub extends CommunityCrawler {
 
     async getPostDetail(link) {
         await this.page.goto(link);
-        await this.page.waitFor(300);
+
         const postDetail = await this.page.evaluate(() => {
-            const title = document.querySelector('.first_part .sbj');
-            const author = document.querySelector('.nick span');
-            const hit = document.querySelector('.click.bbs_ct_small');
+            const title = document.querySelector('.subject');
             const body = document.querySelector('#userct');
-            const upVotes = document.querySelector('.vote.bbs_ct_small');
-            const comments = document.querySelectorAll('.comment_inbox .list li');
-            const time = document.querySelector('.date.bbs_ct_small span');
-            // const images = Array.from(body.querySelectorAll('img') || []).map((image) =>
-            //     image.getAttribute('src')
-            // );
+            const author = document.querySelector('.info-wrap span');
+            const infoEl = document.querySelector('.info-wrap').innerText.split('|');
+            const time = infoEl[1].replace(/[^0-9]/g, '');
+            const hit = infoEl[2].replace(/[^0-9]/g, '');
+            const upVotes = infoEl[3].replace(/[^0-9]/g, '');
+            const numberOfComments = document.querySelector('#cmcnt');
 
             // handle images
             body.querySelectorAll('img').forEach((image, index) => {
@@ -101,37 +92,53 @@ class SLRClub extends CommunityCrawler {
             return {
                 category: null,
                 title: title.innerText.trim(),
-                author: author.innerText.trim(),
-                hit: hit.innerText.trim(),
-                time: time.innerText.trim().split(' ')[1],
                 body: body.textContent
                     .split('\n')
                     .map((b) => b.trim())
                     .join('\n')
                     .trim(),
-                upVotes: parseInt(upVotes.innerText),
-                comments: Array.from(comments).map((comment) => {
-                    const body = comment.querySelector('.cmt-contents');
-                    const author = comment.querySelector('.cname');
-                    const time = comment.querySelector('.cmt_date');
-                    const upVotes = comment.querySelector('.vote_cnt');
-                    const isReply = comment.classList.contains('reply');
-
-                    return {
-                        isRemoved: false,
-                        isReply,
-                        author: author.innerText,
-                        time: time.innerText.split(' ')[1],
-                        body: body.innerText,
-                        upVotes: upVotes.innerText.replace(/[^0-9]/g, ''),
-                    };
-                }),
+                author: author.innerText.trim(),
+                hit,
+                time,
+                upVotes: parseInt(upVotes),
+                comments: [],
+                numberOfComments: parseInt(numberOfComments.innerText),
             };
         });
 
-        this.postsRead.add(link); // set post that you read
+        if (postDetail.numberOfComments) {
+            postDetail.comments = await this.getComments();
+        }
 
+        this.postsRead.add(link); // set post that you read
         return postDetail;
+    }
+
+    async getComments() {
+        await this.page.waitFor(100);
+
+        const comments = await this.page.evaluate(() => {
+            const comments = document.querySelectorAll('.comment_inbox .list li');
+
+            return Array.from(comments).map((comment) => {
+                const body = comment.querySelector('.cmt-contents');
+                const author = comment.querySelector('.cname');
+                const time = comment.querySelector('.cmt_date');
+                const upVotes = comment.querySelector('.vote_cnt');
+                const isReply = comment.classList.contains('reply');
+
+                return {
+                    isRemoved: false,
+                    isReply,
+                    author: author.innerText,
+                    time: time.innerText,
+                    body: body.innerText,
+                    upVotes: upVotes.innerText.replace(/[^0-9]/g, ''),
+                };
+            });
+        });
+
+        return !comments.length ? await this.getComments() : comments;
     }
 
     get pageNumber() {

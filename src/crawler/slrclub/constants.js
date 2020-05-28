@@ -1,10 +1,10 @@
-const baseUrl = 'http://www.slrclub.com';
+const baseUrl = 'http://m.slrclub.com';
 
 const boardTypes = ['커뮤니티', '포럼'];
 
 module.exports = {
     baseUrl,
-    getUrl: (boardName) => `${baseUrl}/bbs/zboard.php?id=${boardName}&page=`,
+    getUrl: (boardName) => `${baseUrl}/l/${boardName}/`,
     sortUrls: [],
     boardTypes,
     ignoreBoards: [],
