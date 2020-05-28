@@ -4,7 +4,7 @@ const boardTypes = ['영화‧드라마‧음악', '홈시어터', '커뮤니티
 
 module.exports = {
     baseUrl,
-    getUrl: (board) => `${baseUrl}${board}&page=`,
+    getUrl: (board) => `${baseUrl}/g2/bbs/board.php?bo_table=${board}&page=`,
     sortUrls: [],
     boardTypes,
     ignoreBoards: [],
@@ -12,52 +12,52 @@ module.exports = {
     boards: [
         {
             name: '영화이야기',
-            value: '/g2/bbs/board.php?bo_table=movie',
+            value: 'movie',
             type: boardTypes[0],
         },
         {
             name: '블루레이‧DVD',
-            value: '/g2/bbs/board.php?bo_table=blu_ray',
+            value: 'blu_ray',
             type: boardTypes[0],
         },
         {
             name: '넷플릭스‧OTT',
-            value: '/g2/bbs/board.php?bo_table=netflix',
+            value: 'netflix',
             type: boardTypes[0],
         },
         {
             name: 'LP‧CD',
-            value: '/g2/bbs/board.php?bo_table=lpcd',
+            value: 'lpcd',
             type: boardTypes[0],
         },
         {
             name: '디스플레이',
-            value: '/g2/bbs/board.php?bo_table=display',
+            value: 'display',
             type: boardTypes[1],
         },
         {
             name: 'A/V‧하이파이',
-            value: '/g2/bbs/board.php?bo_table=hometheater',
+            value: 'hometheater',
             type: boardTypes[1],
         },
         {
             name: '사운드바',
-            value: '/g2/bbs/board.php?bo_table=soundbar',
+            value: 'soundbar',
             type: boardTypes[1],
         },
         {
             name: '플레이어‧HTPC',
-            value: '/g2/bbs/board.php?bo_table=pc_players',
+            value: 'pc_players',
             type: boardTypes[1],
         },
         {
             name: '프라임차한잔',
-            value: '/g2/bbs/board.php?bo_table=comm',
+            value: 'comm',
             type: boardTypes[2],
         },
         {
             name: '못웃기면맞는다',
-            value: '/g2/bbs/board.php?bo_table=humor',
+            value: 'humor',
             type: boardTypes[2],
         },
     ],
