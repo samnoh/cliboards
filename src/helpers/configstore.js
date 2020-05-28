@@ -1,7 +1,7 @@
 const Configstore = require('configstore');
 
-const pagkageJson = require('../../package.json');
+const { name } = require('../../package.json');
 
-const config = new Configstore(pagkageJson.name, null);
+const config = new Configstore(name, null);
 
 module.exports = config;

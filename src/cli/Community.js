@@ -5,6 +5,8 @@ const CLI = require('./CLI');
 const { openUrls } = require('../helpers');
 const { getCrawler, crawlers } = require('../crawler');
 
+let autoRefreshTimer;
+
 class Community extends CLI {
     constructor() {
         super();
@@ -137,7 +139,14 @@ class Community extends CLI {
         });
 
         this.listList.on('keypress', async (_, { full }) => {
-            if (!this.posts.length) return;
+            if (autoRefreshTimer) {
+                clearTimeout(autoRefreshTimer);
+                autoRefreshTimer = null;
+            }
+
+            if (!this.posts.length) {
+                return;
+            }
 
             const prevPaggeNumber = this.crawler.pageNumber;
             const prevPosts = this.posts;
@@ -145,6 +154,12 @@ class Community extends CLI {
 
             if (full === 'r') {
                 // refresh
+            } else if (full === 'a') {
+                if (!autoRefreshTimer) {
+                    autoRefreshTimer = setInterval(async () => {
+                        await this.refreshPosts();
+                    }, 10000); // repeat every 10 seconds; do not make it too low
+                }
             } else if (full === 's') {
                 if (this.crawler.sortUrl) {
                     this.crawler.changeSortList(1 ^ this.crawler.sortListIndex);
@@ -325,7 +340,7 @@ class Community extends CLI {
                 `${this.crawler.pageNumber} 페이지${
                     this.crawler.sortUrl ? '‧' + this.crawler.sortUrl.name : ''
                 }`,
-                `q: back, r: refresh${
+                `q: back, r: refresh, a: auto refresh${
                     this.crawler.sortUrl ? ', s: sort' : ''
                 }, left/right arrow: prev/next page`
             );
