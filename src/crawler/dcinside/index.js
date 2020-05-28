@@ -111,13 +111,12 @@ class Dcinside extends CommunityCrawler {
                     .join('\n')
                     .trim(),
                 upVotes: parseInt(upVotes.innerText.replace(/[^0-9]/g, '')),
-
                 comments: Array.from(comments)
                     .map((comment) => {
                         const body = comment.querySelector('.txt');
                         const author = comment.querySelector('.nick');
                         const time = comment.querySelector('.date');
-                        const isReply = comment.classList.contains('.comment-add');
+                        const isReply = comment.classList.contains('comment-add');
 
                         body.querySelectorAll('img').forEach((image, index) => {
                             image.textContent = `IMAGE_${index + 1} `;
