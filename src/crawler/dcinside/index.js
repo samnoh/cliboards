@@ -78,7 +78,6 @@ class Dcinside extends CommunityCrawler {
         await this.page.goto(link);
 
         const postDetail = await this.page.evaluate(() => {
-            window.stop();
             const _title = document.querySelector('.gallview-tit-box .tit');
             const author = document.querySelector('.btm .ginfo2 li:nth-child(1)');
             const hit = document.querySelector('.gall-thum-btm .ginfo2 li:nth-child(1)');
@@ -91,13 +90,14 @@ class Dcinside extends CommunityCrawler {
 
             if (body) {
                 const scripts = Array.from(body.querySelectorAll('script'));
-
                 scripts.map((script) => script.parentNode.removeChild(script));
             }
 
             // handle images
             body.querySelectorAll('img.lazy').forEach((image, index) => {
-                image.textContent = `IMAGE_${index + 1} `;
+                const text = document.createElement('span');
+                text.innerText = `IMAGE_${index + 1} `;
+                image.insertAdjacentElement('afterend', text);
             });
 
             return {
@@ -105,7 +105,7 @@ class Dcinside extends CommunityCrawler {
                 author: author.innerText.trim(),
                 hit: hit.innerText.replace(/[^0-9]/g, ''),
                 time: _time,
-                body: body.textContent
+                body: body.innerText
                     .split('\n')
                     .map((b) => b.trim())
                     .join('\n')
