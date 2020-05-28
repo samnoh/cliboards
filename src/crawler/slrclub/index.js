@@ -76,7 +76,7 @@ class SLRClub extends CommunityCrawler {
             const body = document.querySelector('#userct');
             const author = document.querySelector('.info-wrap span');
             const infoEl = document.querySelector('.info-wrap').innerText.split('|');
-            const time = infoEl[1].replace(/[^0-9]/g, '');
+            const time = infoEl[1].replace(/[^0-9:]/g, '');
             const hit = infoEl[2].replace(/[^0-9]/g, '');
             const upVotes = infoEl[3].replace(/[^0-9]/g, '');
             const numberOfComments = document.querySelector('#cmcnt');
