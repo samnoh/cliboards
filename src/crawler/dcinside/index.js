@@ -162,7 +162,7 @@ class Dcinside extends CommunityCrawler {
         return postDetail;
     }
 
-    async addBoards(link) {
+    async addBoard(link) {
         let boardId = '';
 
         if (link.includes('javascript:')) {

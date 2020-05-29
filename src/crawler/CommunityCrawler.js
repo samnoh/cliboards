@@ -61,7 +61,7 @@ class CommunityCrawler extends Crawler {
         this.sortUrl = index;
     }
 
-    emptyConfigstore() {
+    resetBoards() {
         configstore.delete(this.title);
     }
 }

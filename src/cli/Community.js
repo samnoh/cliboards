@@ -146,7 +146,7 @@ class Community extends CLI {
                         this.footerBox.focus();
 
                         try {
-                            await this.crawler.addBoards(input);
+                            await this.crawler.addBoard(input);
                             this.inputBox.destroy();
                             const index = this.crawler.boards.length;
                             this.crawler.boards = [];
