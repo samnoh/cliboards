@@ -163,36 +163,33 @@ class Dcinside extends CommunityCrawler {
     }
 
     async addBoard(link, type) {
-        let boardId;
+        let value;
 
         if (link.includes('javascript:')) {
             throw new Error('Invalid input');
         }
 
         if (!link.includes(baseUrl + '/board/')) {
-            boardId = querystring.parse(link.split('?').pop()).id || link;
+            value = querystring.parse(link.split('?').pop()).id || link;
         } else {
-            boardId = link.replace(/\?.*$/, '').split('/').pop();
+            value = link.replace(/\?.*$/, '').split('/').pop();
         }
 
         try {
-            const response = await this.page.goto(getUrl(boardId));
+            const response = await this.page.goto(getUrl(value));
 
             if (response.status() >= 300) {
                 throw new Error(`Response status is ${response.status}`);
             }
 
-            const newBoardName = await this.page.evaluate(
+            const name = await this.page.evaluate(
                 () => document.querySelector('.gall-tit-lnk').innerText
             );
 
-            const isDuplicate = this.boards.filter((board) => board.value === boardId).length;
+            const isDuplicate = this.boards.filter((board) => board.value === value).length;
 
             if (!isDuplicate) {
-                configstore.set(this.title, [
-                    ...this.boards,
-                    { name: newBoardName, value: boardId, type },
-                ]);
+                configstore.set(this.title, [...this.boards, { name, value, type }]);
             } else {
                 throw new Error('input is a duplicate');
             }
@@ -201,8 +198,8 @@ class Dcinside extends CommunityCrawler {
         }
     }
 
-    deleteBoard(boardId, type) {
-        const index = this.boards.map((board) => board.value).indexOf(boardId);
+    deleteBoard(value) {
+        const index = this.boards.map(({ value }) => value).indexOf(value);
         this.boards.splice(index, 1);
         configstore.set(this.title, this.boards);
     }
