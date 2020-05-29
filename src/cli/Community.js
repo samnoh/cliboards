@@ -5,8 +5,6 @@ const CLI = require('./CLI');
 const { openUrls } = require('../helpers');
 const { getCrawler, crawlers } = require('../crawler');
 
-let autoRefreshTimer;
-
 class Community extends CLI {
     constructor() {
         super();
@@ -85,7 +83,7 @@ class Community extends CLI {
                 fg: this.colors.post_color,
             },
         });
-
+        this.autoRefreshTimer = null;
         this.widgets = [this.communityList, this.boardsList, this.listList, this.detailBox];
     }
 
@@ -146,9 +144,9 @@ class Community extends CLI {
                         this.footerBox.focus();
 
                         try {
+                            const index = this.crawler.boards.length;
                             await this.crawler.addBoard(input);
                             this.inputBox.destroy();
-                            const index = this.crawler.boards.length;
                             this.crawler.boards = [];
                             await this.getBoards(index);
                         } catch (e) {
@@ -162,12 +160,12 @@ class Community extends CLI {
                     this.screen.render();
                     break;
                 case 'd':
-                    if (!this.crawler.canAddBoards) {
-                        return;
-                    }
+                    if (!this.crawler.canAddBoards) return;
+
+                    const index = this.boardsList.getScroll();
                     this.crawler.deleteBoard(this.boardsList.getScroll());
                     this.crawler.boards = [];
-                    await this.getBoards(0);
+                    await this.getBoards(index - 1);
                     break;
                 case 'r':
                     if (!this.crawler.canRefreshBoards) return;
@@ -175,11 +173,15 @@ class Community extends CLI {
                     await this.getBoards(0);
                     break;
                 case 'right':
+                    if (this.crawler.boardTypes.length < 2) return;
+
                     this.currentBoardTypeIndex =
                         (this.currentBoardTypeIndex + 1) % boardTypesLength;
                     await this.getBoards(this.currentBoardTypeIndex);
                     break;
                 case 'left':
+                    if (this.crawler.boardTypes.length < 2) return;
+
                     if (!this.currentBoardTypeIndex) {
                         this.currentBoardTypeIndex = boardTypesLength - 1;
                     } else {
@@ -192,14 +194,12 @@ class Community extends CLI {
         });
 
         this.listList.on('keypress', async (_, { full }) => {
-            if (autoRefreshTimer) {
-                clearTimeout(autoRefreshTimer);
-                autoRefreshTimer = null;
+            if (this.autoRefreshTimer) {
+                clearTimeout(this.autoRefreshTimer);
+                this.autoRefreshTimer = null;
             }
 
-            if (!this.posts.length) {
-                return;
-            }
+            if (!this.posts.length) return;
 
             const prevPaggeNumber = this.crawler.pageNumber;
             const prevPosts = this.posts;
@@ -208,11 +208,9 @@ class Community extends CLI {
             if (full === 'r') {
                 // refresh
             } else if (full === 'a') {
-                if (!autoRefreshTimer) {
-                    autoRefreshTimer = setInterval(async () => {
-                        await this.refreshPosts();
-                    }, 10000); // repeat every 10 seconds; do not make it too low
-                }
+                this.autoRefreshTimer = setInterval(async () => {
+                    await this.refreshPosts();
+                }, 10000); // refresh every 10 seconds; do not make it too low
             } else if (full === 's') {
                 if (this.crawler.sortUrl) {
                     this.crawler.changeSortList(1 ^ this.crawler.sortListIndex);
