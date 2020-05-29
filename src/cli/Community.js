@@ -116,8 +116,61 @@ class Community extends CLI {
             const boardTypesLength = this.crawler.boardTypes.length;
 
             switch (full) {
+                case 'a':
+                    if (!this.crawler.canAddBoards) {
+                        return;
+                    }
+
+                    this.inputBox = blessed.textbox({
+                        parent: this.footerBox,
+                        height: 1,
+                        width: '100%',
+                        top: '100%-1',
+                        left: -2,
+                        keys: true,
+                        inputOnFocus: true,
+                        style: {
+                            fg: 'inverse',
+                        },
+                        input: true,
+                    });
+                    this.inputBox.on('cancel', () => {
+                        this.inputBox.destroy();
+                        this.boardsList.focus();
+                    });
+                    this.inputBox.on('submit', async (input) => {
+                        if (!input) return;
+
+                        this.inputBox.style.bg = 'green';
+                        this.inputBox.style.fg = 'black';
+                        this.footerBox.focus();
+
+                        try {
+                            await this.crawler.addBoards(input);
+                            this.inputBox.destroy();
+                            const index = this.crawler.boards.length;
+                            this.crawler.boards = [];
+                            await this.getBoards(index);
+                        } catch (e) {
+                            this.inputBox.focus();
+                            this.inputBox.style.bg = 'red';
+                            this.inputBox.style.fg = 'white';
+                            this.screen.render();
+                        }
+                    });
+                    this.inputBox.focus();
+                    this.screen.render();
+                    break;
+                case 'd':
+                    if (!this.crawler.canAddBoards) {
+                        return;
+                    }
+                    this.crawler.deleteBoard(this.boardsList.getScroll());
+                    this.crawler.boards = [];
+                    await this.getBoards(0);
+                    break;
                 case 'r':
-                    this.crawler.deleteBoards();
+                    if (!this.crawler.canRefreshBoards) return;
                     this.crawler.boards = [];
                     await this.getBoards(0);
                     break;
@@ -262,6 +315,7 @@ class Community extends CLI {
         });
 
         this.boardsList.on('select', async (_, index) => {
+            if (!this.crawler.boards.length) return;
             await this.getPosts(index);
             this.moveToWidget('next');
         });
@@ -293,18 +347,14 @@ class Community extends CLI {
         });
 
         this.boardsList.on('focus', () => {
-            if (!this.crawler.boards.length) {
-                this.setTitleFooterContent('Error', '', 'q: back');
-                return;
-            }
             this.currentPostIndex = 0;
             this.crawler.changeSortList(0);
             this.setTitleFooterContent(
                 this.crawler.title,
                 this.crawler.boardTypes[this.currentBoardTypeIndex],
                 `q: back${this.crawler.canRefreshBoards ? ', r: refresh' : ''}${
-                    this.crawler.boardTypes.length > 1 ? ', left/right arrow: prev/next page' : ''
-                }`
+                    this.crawler.canAddBoards ? ', a: add board, d: delete board' : ''
+                }${this.crawler.boardTypes.length > 1 ? ', left/right arrow: prev/next page' : ''}`
             );
         });
 
@@ -401,8 +451,8 @@ class Community extends CLI {
                 await this.crawler.getBoards();
             }
 
-            this.resetScroll(this.boardsList);
             this.boardsList.setItems(this.getFilteredBoards().map(({ name }) => name));
+            this.resetScroll(this.boardsList, index);
             this.boardsList.focus();
         } catch (e) {
             this.boardsList.setItems([]);

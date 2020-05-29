@@ -12,6 +12,7 @@ class CommunityCrawler extends Crawler {
         this.sortListIndex = 0;
         this.postsRead = new Set();
         this.canRefreshBoards = false;
+        this.canAddBoards = false;
     }
 
     getBoards(boards, ignoreBoards) {
@@ -60,7 +61,7 @@ class CommunityCrawler extends Crawler {
         this.sortUrl = index;
     }
 
-    deleteBoards() {
+    emptyConfigstore() {
         configstore.delete(this.title);
     }
 }

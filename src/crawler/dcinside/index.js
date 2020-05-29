@@ -1,3 +1,6 @@
+const querystring = require('querystring');
+
+const { configstore } = require('../../helpers');
 const CommunityCrawler = require('../CommunityCrawler');
 const {
     baseUrl,
@@ -15,19 +18,28 @@ class Dcinside extends CommunityCrawler {
 
         this.title = Dcinside.toString();
         this.boardTypes = boardTypes;
-        this.canRefreshBoards = true;
+        this.canRefreshBoards = false;
+        this.canAddBoards = true;
     }
 
     getBoards() {
         return new Promise(async (resolve) => {
-            super.getBoards(boards, ignoreBoards);
+            let _boards = boards;
+
+            if (configstore.has(this.title)) {
+                _boards = configstore.get(this.title);
+            } else {
+                configstore.set(this.title, boards);
+            }
+
+            super.getBoards(_boards, ignoreBoards);
             await this.changeUserAgent('mobile');
             resolve();
         });
     }
 
     async getPosts() {
-        await this.page.goto(getUrl(this.currentBoard) + this.pageNumber);
+        await this.page.goto(getUrl(this.currentBoard.value) + this.pageNumber);
 
         const posts = await this.page.evaluate(() => {
             const lists = document.querySelectorAll('.gall-detail-lst li .gall-detail-lnktb');
@@ -148,6 +160,50 @@ class Dcinside extends CommunityCrawler {
         this.postsRead.add(link); // set post that you read
 
         return postDetail;
+    }
+
+    async addBoards(link) {
+        let boardId = '';
+
+        if (link.includes('javascript:')) {
+            throw new Error('Invalid input');
+        }
+
+        if (!link.includes(baseUrl + '/board/')) {
+            boardId = querystring.parse(link.split('?').pop()).id || link;
+        } else {
+            boardId = link.replace(/\?.*$/, '').split('/').pop();
+        }
+
+        try {
+            const response = await this.page.goto(getUrl(boardId));
+
+            if (response.status() >= 300) {
+                throw new Error(`Response status is ${response.status}`);
+            }
+
+            const newBoardName = await this.page.evaluate(
+                () => document.querySelector('.gall-tit-lnk').innerText
+            );
+
+            const isDuplicate = this.boards.filter((board) => board.value === boardId).length;
+
+            if (!isDuplicate) {
+                configstore.set(this.title, [
+                    ...this.boards,
+                    { name: newBoardName, value: boardId, type: this.boardTypes[0] },
+                ]);
+            } else {
+                throw new Error('input is a duplicate');
+            }
+        } catch (e) {
+            throw new Error(e);
+        }
+    }
+
+    deleteBoard(index) {
+        this.boards.splice(index, 1);
+        configstore.set(this.title, this.boards);
     }
 
     static toString() {

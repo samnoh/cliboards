@@ -52,7 +52,7 @@ class Clien extends CommunityCrawler {
             );
             configstore.set(this.title, this.boards);
         } catch (e) {
-            this.deleteBoards();
+            this.emptyConfigstore();
             throw new Error(e);
         }
     }
