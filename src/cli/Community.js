@@ -144,11 +144,14 @@ class Community extends CLI {
                         this.footerBox.focus();
 
                         try {
-                            const index = this.crawler.boards.length;
-                            await this.crawler.addBoard(input);
+                            const scrollOffset = this.crawler.boards.length;
+                            await this.crawler.addBoard(
+                                input,
+                                this.crawler.boardTypes[this.currentBoardTypeIndex]
+                            );
                             this.inputBox.destroy();
-                            this.crawler.boards = [];
-                            await this.getBoards(index);
+                            await this.crawler.getBoards();
+                            await this.getBoards(this.currentBoardTypeIndex, scrollOffset);
                         } catch (e) {
                             this.inputBox.focus();
                             this.inputBox.style.bg = 'red';
@@ -160,12 +163,11 @@ class Community extends CLI {
                     this.screen.render();
                     break;
                 case 'd':
-                    if (!this.crawler.canAddBoards) return;
+                    if (!this.crawler.canAddBoards || !this.getFilteredBoards().length) return;
 
                     const index = this.boardsList.getScroll();
-                    this.crawler.deleteBoard(this.boardsList.getScroll());
-                    this.crawler.boards = [];
-                    await this.getBoards(index - 1);
+                    this.crawler.deleteBoard(this.getFilteredBoards()[index].value);
+                    await this.getBoards(this.currentBoardTypeIndex, index);
                     break;
                 case 'r':
                     if (!this.crawler.canRefreshBoards) return;
@@ -313,7 +315,7 @@ class Community extends CLI {
         });
 
         this.boardsList.on('select', async (_, index) => {
-            if (!this.crawler.boards.length) return;
+            if (!this.getFilteredBoards().length) return;
             await this.getPosts(index);
             this.moveToWidget('next');
         });
@@ -439,7 +441,7 @@ class Community extends CLI {
         this.setBlurEvent();
     }
 
-    async getBoards(index) {
+    async getBoards(index, scrollOffset) {
         try {
             this.currentBoardTypeIndex = index;
 
@@ -450,7 +452,7 @@ class Community extends CLI {
             }
 
             this.boardsList.setItems(this.getFilteredBoards().map(({ name }) => name));
-            this.resetScroll(this.boardsList, index);
+            this.resetScroll(this.boardsList, scrollOffset);
             this.boardsList.focus();
         } catch (e) {
             this.boardsList.setItems([]);

@@ -1,6 +1,6 @@
 const baseUrl = 'https://m.dcinside.com';
 
-const boardTypes = ['갤러리 & m.갤러리'];
+const boardTypes = ['1 페이지', '2 페이지', '3 페이지'];
 
 module.exports = {
     baseUrl,

@@ -162,8 +162,8 @@ class Dcinside extends CommunityCrawler {
         return postDetail;
     }
 
-    async addBoard(link) {
-        let boardId = '';
+    async addBoard(link, type) {
+        let boardId;
 
         if (link.includes('javascript:')) {
             throw new Error('Invalid input');
@@ -191,7 +191,7 @@ class Dcinside extends CommunityCrawler {
             if (!isDuplicate) {
                 configstore.set(this.title, [
                     ...this.boards,
-                    { name: newBoardName, value: boardId, type: this.boardTypes[0] },
+                    { name: newBoardName, value: boardId, type },
                 ]);
             } else {
                 throw new Error('input is a duplicate');
@@ -201,7 +201,8 @@ class Dcinside extends CommunityCrawler {
         }
     }
 
-    deleteBoard(index) {
+    deleteBoard(boardId, type) {
+        const index = this.boards.map((board) => board.value).indexOf(boardId);
         this.boards.splice(index, 1);
         configstore.set(this.title, this.boards);
     }
