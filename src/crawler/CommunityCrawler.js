@@ -96,6 +96,25 @@ class CommunityCrawler extends Crawler {
         configstore.set(this.title, this.boards);
     }
 
+    sortBoards(type, index, targetIndex) {
+        const currentBoard = this.boards.filter((board) => board.type === type);
+
+        const selectedBoardIndex = this.boards.findIndex((board) => {
+            return currentBoard[index] && board.name === currentBoard[index].name;
+        });
+        const targetBoardIndex = this.boards.findIndex(
+            (board) => currentBoard[targetIndex] && board.name === currentBoard[targetIndex].name
+        );
+
+        if (selectedBoardIndex === -1 || targetBoardIndex === -1) return false;
+
+        const temp = this.boards[selectedBoardIndex];
+        this.boards[selectedBoardIndex] = this.boards[targetBoardIndex];
+        this.boards[targetBoardIndex] = temp;
+
+        return true;
+    }
+
     resetBoards() {
         configstore.delete(this.title);
     }

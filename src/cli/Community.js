@@ -118,7 +118,7 @@ class Community extends CLI {
 
             switch (full) {
                 case 'a':
-                    if (!this.crawler.canAddBoards) {
+                    if (!this.crawler.canAddBoards || this.sortBoardsMode) {
                         return;
                     }
 
@@ -155,7 +155,8 @@ class Community extends CLI {
                         this.currItemContent = null;
                         this.crawler.saveBoards();
                     } else {
-                        this.currItemContent = this.getFilteredBoards()[index].name;
+                        const board = this.getFilteredBoards()[index];
+                        this.currItemContent = board && board.name;
                     }
                     this.boardsList.focus();
                     break;
@@ -168,13 +169,18 @@ class Community extends CLI {
                     this.boardsList.focus();
                     break;
                 case 'd':
-                    if (!this.crawler.canAddBoards || !this.getFilteredBoards().length) return;
+                    if (
+                        !this.crawler.canAddBoards ||
+                        !this.getFilteredBoards().length ||
+                        this.sortBoardsMode
+                    )
+                        return;
 
                     this.crawler.deleteBoard(this.getFilteredBoards()[index].value);
                     await this.getBoards(this.currentBoardTypeIndex, index);
                     break;
                 case 'r':
-                    if (!this.crawler.canRefreshBoards) return;
+                    if (!this.crawler.canRefreshBoards || this.sortBoardsMode) return;
                     this.crawler.boards = [];
                     await this.getBoards(0);
                     break;
@@ -200,6 +206,7 @@ class Community extends CLI {
                 case 'down':
                     if (
                         !this.sortBoardsMode ||
+                        !this.getFilteredBoards().length ||
                         this.currItemContent === this.getFilteredBoards()[index].name
                     )
                         return;
