@@ -119,24 +119,8 @@ class Community extends CLI {
                         return;
                     }
 
-                    this.inputBox = blessed.textbox({
-                        parent: this.footerBox,
-                        height: 1,
-                        width: '100%',
-                        top: '100%-1',
-                        left: -2,
-                        keys: true,
-                        inputOnFocus: true,
-                        style: {
-                            fg: 'inverse',
-                        },
-                        input: true,
-                    });
-                    this.inputBox.on('cancel', () => {
-                        this.inputBox.destroy();
-                        this.boardsList.focus();
-                    });
-                    this.inputBox.on('submit', async (input) => {
+                    this.setTitleFooterContent('링크나 갤러리 ID를 입력하세요');
+                    this.showInputBox(async (input) => {
                         if (!input) return;
 
                         this.inputBox.style.bg = 'green';
@@ -144,23 +128,24 @@ class Community extends CLI {
                         this.footerBox.focus();
 
                         try {
-                            const scrollOffset = this.crawler.boards.length;
                             await this.crawler.addBoard(
                                 input,
                                 this.crawler.boardTypes[this.currentBoardTypeIndex]
                             );
                             this.inputBox.destroy();
                             await this.crawler.getBoards();
-                            await this.getBoards(this.currentBoardTypeIndex, scrollOffset);
+                            await this.getBoards(
+                                this.currentBoardTypeIndex,
+                                this.crawler.boards.length
+                            );
                         } catch (e) {
                             this.inputBox.focus();
                             this.inputBox.style.bg = 'red';
                             this.inputBox.style.fg = 'white';
-                            this.screen.render();
+                            this.setTitleFooterContent('잘못된 입력입니다');
                         }
                     });
-                    this.inputBox.focus();
-                    this.screen.render();
+
                     break;
                 case 'd':
                     if (!this.crawler.canAddBoards || !this.getFilteredBoards().length) return;
@@ -574,6 +559,29 @@ class Community extends CLI {
             commentBoxes.map((box) => box.destroy());
             commentBoxes.length = 0;
         }
+    }
+
+    showInputBox(onSubmit) {
+        this.inputBox = blessed.textbox({
+            parent: this.footerBox,
+            height: 1,
+            width: '100%',
+            top: '100%-1',
+            left: -2,
+            keys: true,
+            inputOnFocus: true,
+            style: { fg: 'inverse' },
+            input: true,
+        });
+
+        this.inputBox.on('cancel', () => {
+            this.inputBox.destroy();
+            this.widgets[this.currentWidgetIndex].focus();
+        });
+        this.inputBox.on('submit', onSubmit);
+
+        this.inputBox.focus();
+        this.screen.render();
     }
 }
 
