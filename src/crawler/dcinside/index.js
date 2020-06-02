@@ -163,45 +163,23 @@ class Dcinside extends CommunityCrawler {
     }
 
     async addBoard(link, type) {
-        let value;
-
-        if (link.includes('javascript:')) {
-            throw new Error('Invalid input');
-        }
-
-        if (!link.includes(baseUrl + '/board/')) {
-            value = querystring.parse(link.split('?').pop()).id || link;
-        } else {
-            value = link.replace(/\?.*$/, '').split('/').pop();
-        }
-
         try {
-            const response = await this.page.goto(getUrl(value));
+            if (!link) return;
 
-            if (response.status() >= 300) {
-                throw new Error(`Response status is ${response.status}`);
-            }
+            let value = '';
 
-            const name = await this.page.evaluate(
-                () => document.querySelector('.gall-tit-lnk').innerText
-            );
-
-            const isDuplicate = this.boards.filter((board) => board.value === value).length;
-
-            if (!isDuplicate) {
-                configstore.set(this.title, [...this.boards, { name, value, type }]);
+            if (!link.includes(baseUrl + '/board/')) {
+                value = querystring.parse(link.split('?').pop()).id || link;
             } else {
-                throw new Error('input is a duplicate');
+                value = link.replace(/\?.*$/, '').split('/').pop();
             }
-        } catch (e) {
-            throw new Error(e);
-        }
-    }
 
-    deleteBoard(value) {
-        const index = this.boards.map(({ value }) => value).indexOf(value);
-        this.boards.splice(index, 1);
-        configstore.set(this.title, this.boards);
+            const getNameCallback = () => document.querySelector('.gall-tit-lnk').innerText;
+
+            await super.addBoard(getUrl(value), value, type, getNameCallback);
+        } catch (e) {
+            throw new Error(e.message);
+        }
     }
 
     static toString() {

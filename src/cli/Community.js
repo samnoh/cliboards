@@ -142,7 +142,7 @@ class Community extends CLI {
                             this.inputBox.focus();
                             this.inputBox.style.bg = 'red';
                             this.inputBox.style.fg = 'white';
-                            this.setTitleFooterContent('잘못된 입력입니다');
+                            this.setTitleFooterContent('잘못된 입력입니다: ' + e.message);
                         }
                     });
 

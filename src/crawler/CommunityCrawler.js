@@ -61,6 +61,38 @@ class CommunityCrawler extends Crawler {
         this.sortUrl = index;
     }
 
+    async addBoard(link, value, type, callback) {
+        try {
+            if (link.includes('javascript:')) {
+                throw new Error('Invalid input');
+            }
+
+            const response = await this.page.goto(link);
+
+            if (response.status() >= 300) {
+                throw new Error(`Response status is ${response.status()}`);
+            }
+
+            const name = await this.page.evaluate(callback);
+
+            const isDuplicate = this.boards.filter((board) => board.value === value).length;
+
+            if (!isDuplicate || !name) {
+                configstore.set(this.title, [...this.boards, { name, value, type }]);
+            } else {
+                throw new Error('Duplicated input');
+            }
+        } catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    deleteBoard(value) {
+        const index = this.boards.map(({ value }) => value).indexOf(value);
+        this.boards.splice(index, 1);
+        configstore.set(this.title, this.boards);
+    }
+
     resetBoards() {
         configstore.delete(this.title);
     }
