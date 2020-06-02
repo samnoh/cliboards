@@ -12,6 +12,7 @@ class CLI {
             dockBorders: true,
             fastCSR: true,
             fullUnicode: true,
+            debug: true,
         });
         const box = blessed.box({
             parent: this.screen,
@@ -125,12 +126,21 @@ class CLI {
         }
     }
 
-    setTitleFooterContent(leftTitleText = '', rightTitleText = '', footerText = '') {
+    setTitleContent(leftTitleText, rightTitleText) {
         this.titleBox.setContent(
-            `${leftTitleText} {|}{${this.colors.top_right_color}-fg}${rightTitleText}{/}`
+            `${leftTitleText} {|}{${this.colors.top_right_color}-fg}${rightTitleText || ''}{/}`
         );
+        this.screen.render();
+    }
+
+    setFoooterContent(footerText) {
         this.footerBox.setContent(footerText);
         this.screen.render();
+    }
+
+    setTitleFooterContent(leftTitleText = '', rightTitleText = '', footerText = '') {
+        this.setTitleContent(leftTitleText, rightTitleText);
+        this.setFoooterContent(footerText);
     }
 
     resetScroll(widget, offset = 0) {

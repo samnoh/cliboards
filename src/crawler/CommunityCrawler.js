@@ -74,7 +74,6 @@ class CommunityCrawler extends Crawler {
             }
 
             const name = await this.page.evaluate(callback);
-
             const isDuplicate = this.boards.filter((board) => board.value === value).length;
 
             if (!isDuplicate || !name) {
@@ -90,6 +89,10 @@ class CommunityCrawler extends Crawler {
     deleteBoard(value) {
         const index = this.boards.map(({ value }) => value).indexOf(value);
         this.boards.splice(index, 1);
+        this.saveBoards();
+    }
+
+    saveBoards() {
         configstore.set(this.title, this.boards);
     }
 

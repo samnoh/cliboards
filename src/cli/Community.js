@@ -5,6 +5,8 @@ const CLI = require('./CLI');
 const { openUrls } = require('../helpers');
 const { getCrawler, crawlers } = require('../crawler');
 
+let currItemContent;
+
 class Community extends CLI {
     constructor() {
         super();
@@ -112,6 +114,7 @@ class Community extends CLI {
 
         this.boardsList.on('keypress', async (_, { full }) => {
             const boardTypesLength = this.crawler.boardTypes.length;
+            const index = this.boardsList.getScroll();
 
             switch (full) {
                 case 'a':
@@ -145,12 +148,28 @@ class Community extends CLI {
                             this.setTitleFooterContent('잘못된 입력입니다: ' + e.message);
                         }
                     });
-
+                    break;
+                case 's':
+                    this.sortBoardsMode = !this.sortBoardsMode;
+                    if (!this.sortBoardsMode) {
+                        this.currItemContent = null;
+                        this.crawler.saveBoards();
+                    } else {
+                        this.currItemContent = this.getFilteredBoards()[index].name;
+                    }
+                    this.boardsList.focus();
+                    break;
+                case 'c':
+                    if (!this.sortBoardsMode) return;
+                    await this.crawler.getBoards();
+                    await this.getBoards(this.currentBoardTypeIndex);
+                    this.sortBoardsMode = false;
+                    this.currItemContent = null;
+                    this.boardsList.focus();
                     break;
                 case 'd':
                     if (!this.crawler.canAddBoards || !this.getFilteredBoards().length) return;
 
-                    const index = this.boardsList.getScroll();
                     this.crawler.deleteBoard(this.getFilteredBoards()[index].value);
                     await this.getBoards(this.currentBoardTypeIndex, index);
                     break;
@@ -160,14 +179,14 @@ class Community extends CLI {
                     await this.getBoards(0);
                     break;
                 case 'right':
-                    if (this.crawler.boardTypes.length < 2) return;
+                    if (this.crawler.boardTypes.length < 2 || this.sortBoardsMode) return;
 
                     this.currentBoardTypeIndex =
                         (this.currentBoardTypeIndex + 1) % boardTypesLength;
                     await this.getBoards(this.currentBoardTypeIndex);
                     break;
                 case 'left':
-                    if (this.crawler.boardTypes.length < 2) return;
+                    if (this.crawler.boardTypes.length < 2 || this.sortBoardsMode) return;
 
                     if (!this.currentBoardTypeIndex) {
                         this.currentBoardTypeIndex = boardTypesLength - 1;
@@ -176,6 +195,29 @@ class Community extends CLI {
                             (this.currentBoardTypeIndex - 1) % boardTypesLength;
                     }
                     await this.getBoards(this.currentBoardTypeIndex);
+                    break;
+                case 'up':
+                case 'down':
+                    if (
+                        !this.sortBoardsMode ||
+                        this.currItemContent === this.getFilteredBoards()[index].name
+                    )
+                        return;
+
+                    const offset = full === 'up' ? 1 : -1;
+
+                    const isSwaped = this.crawler.sortBoards(
+                        this.crawler.boardTypes[this.currentBoardTypeIndex],
+                        index + offset,
+                        index
+                    );
+
+                    if (!isSwaped) return;
+
+                    this.boardsList.move(offset);
+                    this.boardsList.setItems(this.getFilteredBoards().map(({ name }) => name));
+                    this.screen.render();
+
                     break;
             }
         });
@@ -287,6 +329,7 @@ class Community extends CLI {
                 postRead = this.crawler.postsRead;
                 await this.crawler.close();
             }
+
             this.crawler = getCrawler(index);
 
             if (postRead) {
@@ -323,6 +366,8 @@ class Community extends CLI {
         super.setFocusEvent();
 
         this.communityList.on('focus', () => {
+            this.sortBoardsMode = false;
+            this.currItemContent = null;
             this.screen.title = '';
             this.setTitleFooterContent(
                 '커뮤니티 목록',
@@ -332,15 +377,29 @@ class Community extends CLI {
         });
 
         this.boardsList.on('focus', () => {
-            this.currentPostIndex = 0;
-            this.crawler.changeSortList(0);
-            this.setTitleFooterContent(
-                this.crawler.title,
-                this.crawler.boardTypes[this.currentBoardTypeIndex],
-                `q: back${this.crawler.canRefreshBoards ? ', r: refresh' : ''}${
-                    this.crawler.canAddBoards ? ', a: add board, d: delete board' : ''
-                }${this.crawler.boardTypes.length > 1 ? ', left/right arrow: prev/next page' : ''}`
-            );
+            if (this.sortBoardsMode) {
+                this.setTitleFooterContent(
+                    this.crawler.title,
+                    '정렬하기',
+                    'c: cancel, s: save, up/down arrow: move board'
+                );
+            } else {
+                this.currentPostIndex = 0;
+                this.crawler.changeSortList(0);
+                this.setTitleFooterContent(
+                    this.crawler.title,
+                    this.crawler.boardTypes[this.currentBoardTypeIndex],
+                    `q: back${this.crawler.canRefreshBoards ? ', r: refresh' : ''}${
+                        this.crawler.canAddBoards
+                            ? ', a: add board, d: delete board, s: sort board'
+                            : ''
+                    }${
+                        this.crawler.boardTypes.length > 1
+                            ? ', left/right arrow: prev/next page'
+                            : ''
+                    }`
+                );
+            }
         });
 
         this.listList.on('focus', () => {
@@ -426,7 +485,7 @@ class Community extends CLI {
         this.setBlurEvent();
     }
 
-    async getBoards(index, scrollOffset) {
+    async getBoards(index, scrollOffset = 0) {
         try {
             this.currentBoardTypeIndex = index;
 
