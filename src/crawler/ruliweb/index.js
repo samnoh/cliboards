@@ -118,20 +118,27 @@ class Ruliweb extends CommunityCrawler {
                     const downVotes = comment.querySelector('.btn_dislike .num');
                     const isReply = comment.classList.contains('child');
                     const control_box = comment.querySelector('.control_box');
+                    const isRemoved = !comment.getAttribute('id');
 
                     if (isReply && control_box) {
                         body.removeChild(control_box);
                     }
 
-                    return {
-                        isReply,
-                        isRemoved: false,
-                        author: author.innerText,
-                        time: time.innerText.split(' ')[1],
-                        body: body.innerText,
-                        upVotes: parseInt(upVotes.innerText) || 0,
-                        downVotes: parseInt(downVotes.innerText) || 0,
-                    };
+                    return isRemoved
+                        ? {
+                              isReply,
+                              isRemoved,
+                              body: body.innerText.trim(),
+                          }
+                        : {
+                              isReply,
+                              isRemoved,
+                              author: author.innerText,
+                              time: time.innerText.split(' ')[1],
+                              body: body.innerText.trim(),
+                              upVotes: parseInt(upVotes.innerText) || 0,
+                              downVotes: parseInt(downVotes.innerText) || 0,
+                          };
                 }),
             };
         });
