@@ -160,6 +160,7 @@ class Community extends CLI {
                     }
                     this.boardsList.focus();
                     break;
+                case 'enter':
                 case 'c':
                     if (!this.sortBoardsMode) return;
                     await this.crawler.getBoards();
