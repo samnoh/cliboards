@@ -161,6 +161,7 @@ class Community extends CLI {
                 case 'enter':
                 case 'c':
                     if (!this.sortBoardsMode) return;
+                    this.footerBox.focus();
                     await this.crawler.getBoards();
                     await this.getBoards(this.currentBoardTypeIndex);
                     this.sortBoardsMode = false;
