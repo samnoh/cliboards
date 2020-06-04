@@ -19,8 +19,8 @@ class SLRClub extends CommunityCrawler {
 
     async getBoards() {
         return new Promise(async (resolve, reject) => {
-            super.getBoards(boards, ignoreBoards);
             await this.changeUserAgent('mobile');
+            super.getBoards(boards, ignoreBoards);
             resolve();
         });
     }
