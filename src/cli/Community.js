@@ -249,7 +249,8 @@ class Community extends CLI {
                 }, 10000); // refresh every 10 seconds; do not make it too low
             } else if (full === 's') {
                 if (this.crawler.sortUrl) {
-                    this.crawler.changeSortList(1 ^ this.crawler.sortListIndex);
+                    const sortUrlsLength = this.crawler.sortUrls.length;
+                    this.crawler.changeSortList((this.crawler.sortListIndex + 1) % sortUrlsLength);
                 } else {
                     return;
                 }
