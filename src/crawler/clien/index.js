@@ -6,6 +6,7 @@ const {
     boardTypes,
     ignoreBoards,
     ignoreRequests,
+    boards,
 } = require('./constants');
 const { configstore } = require('../../helpers');
 
@@ -27,7 +28,8 @@ class Clien extends CommunityCrawler {
                 return;
             }
             await this.page.goto(baseUrl);
-            this.boards = await this.page.evaluate(
+
+            const newBoards = await this.page.evaluate(
                 (ignoreBoards, boardTypes) => {
                     const main = Array.from(document.querySelectorAll('.navmenu a'));
                     const sub = Array.from(document.querySelectorAll('.menu_somoim a'));
@@ -50,6 +52,9 @@ class Clien extends CommunityCrawler {
                 ignoreBoards,
                 this.boardTypes
             );
+
+            this.boards = [...newBoards, ...boards];
+
             configstore.set(this.title, this.boards);
         } catch (e) {
             this.resetBoards();

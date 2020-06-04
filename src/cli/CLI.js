@@ -95,6 +95,13 @@ class CLI {
         });
     }
 
+    setAllEvents() {
+        this.setKeyPressEvent();
+        this.setSelectEvent();
+        this.setFocusEvent();
+        this.setBlurEvent();
+    }
+
     // direction: 'prev' || 'next'
     moveToWidget(direction, callback) {
         try {

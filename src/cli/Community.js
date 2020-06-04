@@ -5,8 +5,6 @@ const CLI = require('./CLI');
 const { openUrls } = require('../helpers');
 const { getCrawler, crawlers } = require('../crawler');
 
-let currItemContent;
-
 class Community extends CLI {
     constructor() {
         super();
@@ -183,6 +181,7 @@ class Community extends CLI {
                 case 'r':
                     if (!this.crawler.canRefreshBoards || this.sortBoardsMode) return;
                     this.crawler.boards = [];
+                    this.crawler.resetBoards();
                     await this.getBoards(0);
                     break;
                 case 'right':
@@ -332,6 +331,8 @@ class Community extends CLI {
 
         this.communityList.on('select', async (_, index) => {
             let postRead;
+
+            this.footerBox.focus();
 
             if (this.crawler) {
                 postRead = this.crawler.postsRead;
@@ -484,13 +485,6 @@ class Community extends CLI {
 
     setBlurEvent() {
         super.setBlurEvent();
-    }
-
-    setAllEvents() {
-        this.setKeyPressEvent();
-        this.setSelectEvent();
-        this.setFocusEvent();
-        this.setBlurEvent();
     }
 
     async getBoards(index, scrollOffset = 0) {
