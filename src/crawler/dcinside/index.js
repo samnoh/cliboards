@@ -38,8 +38,12 @@ class Dcinside extends CommunityCrawler {
         });
     }
 
-    async getSortUrls() {
-        this.sortUrls = await this.page.evaluate(() => {
+    async getPosts() {
+        await this.page.goto(
+            getUrl(this.currentBoard.value) + this.pageNumber + this.sortUrl.value
+        );
+
+        await this.getSortUrls(() => {
             const sortsEl = document.querySelectorAll('.mal-lst li a');
 
             return Array.from(sortsEl).map((sort) => {
@@ -49,14 +53,6 @@ class Dcinside extends CommunityCrawler {
                 return { value, name };
             });
         });
-    }
-
-    async getPosts() {
-        await this.page.goto(
-            getUrl(this.currentBoard.value) + this.pageNumber + this.sortUrl.value
-        );
-
-        await this.getSortUrls();
 
         const posts = await this.page.evaluate(() => {
             const lists = document.querySelectorAll('.gall-detail-lst li .gall-detail-lnktb');

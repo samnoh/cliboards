@@ -250,7 +250,7 @@ class Community extends CLI {
             } else if (full === 's') {
                 if (this.crawler.sortUrl) {
                     const sortUrlsLength = this.crawler.sortUrls.length;
-                    this.crawler.changeSortList((this.crawler.sortListIndex + 1) % sortUrlsLength);
+                    this.crawler.changeSortUrl((this.crawler.sortListIndex + 1) % sortUrlsLength);
                 } else {
                     return;
                 }
@@ -395,7 +395,7 @@ class Community extends CLI {
                 );
             } else {
                 this.currentPostIndex = 0;
-                this.crawler.changeSortList(0);
+                this.crawler.changeSortUrl(0);
                 this.setTitleFooterContent(
                     this.crawler.title,
                     this.crawler.boardTypes[this.currentBoardTypeIndex],
