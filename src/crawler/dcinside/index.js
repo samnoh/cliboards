@@ -24,16 +24,8 @@ class Dcinside extends CommunityCrawler {
 
     getBoards() {
         return new Promise(async (resolve) => {
-            let _boards = boards;
-
-            if (configstore.has(this.title)) {
-                _boards = configstore.get(this.title);
-            } else {
-                configstore.set(this.title, boards);
-            }
-
-            super.getBoards(_boards, ignoreBoards);
             await this.changeUserAgent('mobile');
+            super.getBoards(_boards, ignoreBoards);
             resolve();
         });
     }

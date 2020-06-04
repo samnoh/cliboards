@@ -400,12 +400,10 @@ class Community extends CLI {
                     this.crawler.title,
                     this.crawler.boardTypes[this.currentBoardTypeIndex],
                     `q: back${this.crawler.canRefreshBoards ? ', r: refresh' : ''}${
-                        this.crawler.canAddBoards
-                            ? ', a: add board, d: delete board, s: sort board'
-                            : ''
+                        this.crawler.canAddBoards ? ', a: add board, d: delete board' : ''
                     }${
                         this.crawler.boardTypes.length > 1
-                            ? ', left/right arrow: prev/next page'
+                            ? ', s: sort board, left/right arrow: prev/next page'
                             : ''
                     }`
                 );

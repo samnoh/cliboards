@@ -1,5 +1,14 @@
+const { configstore } = require('../../helpers');
 const CommunityCrawler = require('../CommunityCrawler');
-const { baseUrl, getUrl, sortUrls, boardTypes, ignoreRequests, boards } = require('./constants');
+const {
+    baseUrl,
+    getUrl,
+    sortUrls,
+    boardTypes,
+    ignoreRequests,
+    boards,
+    ignoreBoards,
+} = require('./constants');
 
 class DVDPrime extends CommunityCrawler {
     constructor() {
@@ -7,14 +16,14 @@ class DVDPrime extends CommunityCrawler {
 
         this.title = DVDPrime.toString();
         this.boardTypes = boardTypes;
-        this.canRefreshBoards = true;
     }
 
     async getBoards() {
         try {
             await this.changeUserAgent();
             await this.page.goto(baseUrl); // to get author names
-            this.boards = boards;
+
+            super.getBoards(boards, ignoreBoards);
         } catch (e) {
             throw new Error(e);
         }

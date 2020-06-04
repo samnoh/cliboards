@@ -17,10 +17,18 @@ class CommunityCrawler extends Crawler {
     }
 
     getBoards(boards, ignoreBoards) {
-        if (ignoreBoards && ignoreBoards.length) {
-            this.boards = boards.filter((board) => ignoreBoards.indexOf(board) === -1);
+        let _boards = boards;
+
+        if (configstore.has(this.title)) {
+            _boards = configstore.get(this.title);
         } else {
-            this.boards = boards;
+            configstore.set(this.title, boards);
+        }
+
+        if (ignoreBoards && ignoreBoards.length) {
+            this.boards = _boards.filter((board) => ignoreBoards.indexOf(board) === -1);
+        } else {
+            this.boards = _boards;
         }
     }
 
