@@ -163,10 +163,10 @@ class Community extends CLI {
                     if (!this.sortBoardsMode) return;
 
                     this.footerBox.focus();
+                    await this.crawler.getBoards();
                     const _index = this.getFilteredBoards().findIndex(
                         (board) => board.name === this.currItemContent
                     );
-                    await this.crawler.getBoards();
                     await this.getBoards(this.currentBoardTypeIndex, _index);
                     this.sortBoardsMode = false;
                     this.currItemContent = null;
