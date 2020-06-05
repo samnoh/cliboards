@@ -9,7 +9,7 @@ class CLI {
         process.on('exit', updateNotifier.notifyUpdate);
 
         // theme
-        const [colors, isError] = getTheme('default');
+        const [colors, isError] = getTheme();
         this.colors = colors;
         this.isColorsError = isError;
 

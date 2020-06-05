@@ -1,41 +1,38 @@
 const fs = require('fs');
 
+const configstore = require('./configstore');
 const defaultColors = require('../cli/theme');
 
-module.exports = (title) => {
+module.exports = () => {
     try {
+        const configstoreKey = 'theme';
         const fileName = __dirname + '/../cli/theme/customTheme.txt';
-
         const exists = fs.existsSync(fileName);
 
-        if (!exists) {
-            fs.writeFileSync(
-                fileName,
-                JSON.stringify(defaultColors, null, '\t'),
-                { flag: 'wx' },
-                null
-            );
+        let customColors = {};
+
+        if (exists) {
+            customColors = JSON.parse(fs.readFileSync(fileName));
+        } else {
+            if (configstore.has(configstoreKey)) {
+                customColors = configstore.get(configstoreKey);
+            }
         }
 
-        const customColors = JSON.parse(fs.readFileSync(fileName));
-
-        const defaultColorsTitle = defaultColors[title];
-        const customColorsTitle = customColors[title];
-
-        if (!customColorsTitle) {
-            return defaultColorsTitle;
-        }
-
-        Object.keys(defaultColorsTitle).map((key) => {
-            const value = customColorsTitle[key];
-
-            if (!value) {
-                customColorsTitle[key] = defaultColorsTitle[key];
+        Object.keys(defaultColors).map((key) => {
+            if (!customColors[key]) {
+                customColors[key] = defaultColors[key];
             }
         });
 
-        return [customColorsTitle, false];
+        if (!exists) {
+            fs.writeFileSync(fileName, JSON.stringify(customColors, null, '\t'));
+        }
+
+        configstore.set(configstoreKey, customColors);
+
+        return [customColors, false];
     } catch (e) {
-        return [defaultColors[title], true];
+        return [defaultColors, true];
     }
 };
