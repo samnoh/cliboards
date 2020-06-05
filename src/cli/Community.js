@@ -255,15 +255,16 @@ class Community extends CLI {
                     await this.refreshPosts();
                 }, 10000); // refresh every 10 seconds; do not make it too low
             } else if (full === 's') {
-                if (this.crawler.sortUrl) {
+                if (this.crawler.currentBoard.noSortUrl || !this.crawler.sortUrl) return;
+                else {
                     const sortUrlsLength = this.crawler.sortUrls.length;
                     this.crawler.changeSortUrl((this.crawler.sortListIndex + 1) % sortUrlsLength);
-                } else {
-                    return;
                 }
             } else if (full === 'left' && this.crawler.pageNumber > 1) {
+                if (this.crawler.currentBoard.singlePage) return;
                 this.crawler.navigatePage = -1;
             } else if (full === 'right') {
+                if (this.crawler.currentBoard.singlePage) return;
                 this.crawler.navigatePage = 1;
             } else {
                 return;
@@ -312,6 +313,11 @@ class Community extends CLI {
                     this.currentPostIndex += 1;
 
                     if (this.currentPostIndex === this.posts.length) {
+                        if (this.crawler.currentBoard.singlePage) {
+                            this.currentPostIndex -= 1;
+                            return;
+                        }
+
                         const prevPosts = this.posts;
                         this.crawler.navigatePage = 1;
 
@@ -450,8 +456,12 @@ class Community extends CLI {
                 `${this.crawler.boards[this.crawler.currentBoardIndex].name} {gray-fg}${
                     this.crawler.boardTypes[this.currentBoardTypeIndex]
                 }{/}`,
-                `${this.crawler.pageNumber} 페이지${
-                    this.crawler.sortUrl ? '‧' + this.crawler.sortUrl.name : ''
+                `${
+                    this.crawler.currentBoard.singlePage ? '' : this.crawler.pageNumber + ' 페이지'
+                }${
+                    this.crawler.sortUrl && !this.crawler.currentBoard.noSortUrl
+                        ? '‧' + this.crawler.sortUrl.name
+                        : ''
                 }`,
                 `q: back, r: refresh, a: auto refresh${
                     this.crawler.sortUrl ? ', s: sort' : ''

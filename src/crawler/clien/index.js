@@ -68,7 +68,7 @@ class Clien extends CommunityCrawler {
         );
 
         const posts = await this.page.evaluate((baseUrl) => {
-            const lists = document.querySelectorAll('.list_content .list_item');
+            const lists = document.querySelectorAll('.list_item');
 
             return Array.from(lists)
                 .map((list) => {

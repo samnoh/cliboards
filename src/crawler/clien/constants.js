@@ -24,5 +24,12 @@ module.exports = {
             name: '톺아보기',
             type: boardTypes[0],
         },
+        {
+            value: '/service/recommend',
+            name: '추천글',
+            type: boardTypes[0],
+            singlePage: true,
+            noSortUrl: true,
+        },
     ],
 };
