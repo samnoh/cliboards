@@ -25,8 +25,3 @@ $ npm install cliboards -g
 ```bash
 $ cliboards
 ```
-
-## Change colors
-
--   See `colors.example.json`
--   Save the file as `colors.json` in the root folder
