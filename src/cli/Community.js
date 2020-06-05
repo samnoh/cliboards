@@ -79,7 +79,7 @@ class Community extends CLI {
                 inverse: true,
             },
             style: {
-                bg: this.colors.post__bg,
+                bg: this.colors.post_bg,
                 fg: this.colors.post_color,
             },
         });
@@ -100,13 +100,15 @@ class Community extends CLI {
     setKeyPressEvent() {
         super.setKeyPressEvent();
 
-        this.communityList.on('keypress', (_, { full }) => {
+        this.communityList.on('keypress', async (_, { full }) => {
             switch (full) {
                 case 'o':
-                    openUrls(homepage);
+                    await openUrls(homepage);
                     break;
-                case 'y':
-                    openUrls('https://www.youtube.com/watch?v=hpI2A4RTvhs');
+                case 'e':
+                    await openUrls(__dirname + '/../cli/theme/custom.txt');
+                    await this.terminate();
+                    break;
             }
         });
 
@@ -387,7 +389,7 @@ class Community extends CLI {
             this.setTitleFooterContent(
                 '커뮤니티 목록',
                 '',
-                `q: quit, o: open GitHub{|}${name} ${version}`
+                `q: quit, o: open GitHub, e: edit theme{|}${name} ${version}`
             );
         });
 

@@ -157,7 +157,6 @@ class CLI {
 
     async terminate(exitCode = 0, message) {
         this.crawler && (await this.crawler.close());
-        !exitCode && blessed.program().clear();
         message && console[exitCode ? 'error' : 'log'](message);
         return process.exit(exitCode);
     }

@@ -1,13 +1,14 @@
 const fs = require('fs');
 
-const defaultColors = require('../cli/theme/default');
+const defaultColors = require('../cli/theme');
 
 let customColors;
 
 module.exports = (title) => {
     try {
+        console.log(__dirname);
         if (!customColors) {
-            customColors = JSON.parse(fs.readFileSync(__dirname + '/../../colors.json'));
+            customColors = JSON.parse(fs.readFileSync(__dirname + '/../cli/theme/custom.txt'));
         }
 
         const defaultColorsTitle = defaultColors[title];
