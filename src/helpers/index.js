@@ -1,10 +1,10 @@
-const checkUpdate = require('./checkUpdate');
+const updateNotifier = require('./updateNotifier');
 const configstore = require('./configstore');
 const getTheme = require('./getTheme');
 const openUrls = require('./openUrls');
 
 module.exports = {
-    checkUpdate,
+    updateNotifier,
     configstore,
     getTheme,
     openUrls,

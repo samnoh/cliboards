@@ -1,15 +1,20 @@
 const blessed = require('blessed');
 
-const { checkUpdate, getTheme } = require('../helpers');
+const { updateNotifier, getTheme } = require('../helpers');
 
 class CLI {
     constructor() {
-        this.isSubBoard = false;
-        this.currentWidgetIndex = 0;
+        // update
+        this.shouldUpdatePackage = updateNotifier.shouldUpdatePackage;
+        process.on('exit', updateNotifier.notifyUpdate);
+
+        // theme
         const [colors, isError] = getTheme('default');
         this.colors = colors;
         this.isColorsError = isError;
 
+        // cli
+        this.currentWidgetIndex = 0;
         this.screen = blessed.screen({
             dockBorders: true,
             fastCSR: true,
@@ -61,8 +66,6 @@ class CLI {
                 bg: this.colors.bottom_bg,
             },
         });
-
-        process.on('exit', checkUpdate);
     }
 
     setKeyPressEvent() {

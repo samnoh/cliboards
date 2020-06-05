@@ -8,11 +8,13 @@ const notifier = updateNotifier({
     shouldNotifyInNpmScript: true,
 });
 
-module.exports = () => {
+const notifyUpdate = () => {
     if (notifier.update) {
-        notifier.notify({
-            isGlobal: true,
-            defer: false,
-        });
+        notifier.notify({ isGlobal: true, defer: false });
     }
+};
+
+module.exports = {
+    notifyUpdate,
+    shouldUpdatePackage: notifier.update,
 };

@@ -8,4 +8,7 @@ const crawlers = [Clien, Dcinside, Ruliweb, DVDPrime, SLRClub];
 
 const getCrawler = (index) => new crawlers[index]();
 
-module.exports = { getCrawler, crawlers: crawlers.map((c) => c.toString()) };
+module.exports = {
+    getCrawler,
+    crawlers: crawlers.map((c) => c.toString()),
+};
