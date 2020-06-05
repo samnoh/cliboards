@@ -2,13 +2,26 @@ const fs = require('fs');
 
 const defaultColors = require('../cli/theme');
 
-let customColors;
-
 module.exports = (title) => {
     try {
-        if (!customColors) {
-            customColors = JSON.parse(fs.readFileSync(__dirname + '/../cli/theme/customTheme.txt'));
-        }
+        const fileName = __dirname + '/../cli/theme/customTheme.txt';
+
+        let customColors;
+
+        fs.exists(fileName, (exists) => {
+            if (exists) {
+                customColors = JSON.parse(fs.readFileSync(fileName));
+            } else {
+                fs.writeFileSync(
+                    fileName,
+                    JSON.stringify(defaultColors, null, '\t'),
+                    { flag: 'wx' },
+                    () => {
+                        customColors = JSON.parse(fs.readFileSync(fileName));
+                    }
+                );
+            }
+        });
 
         const defaultColorsTitle = defaultColors[title];
         const customColorsTitle = customColors[title];
