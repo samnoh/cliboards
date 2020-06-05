@@ -6,22 +6,18 @@ module.exports = (title) => {
     try {
         const fileName = __dirname + '/../cli/theme/customTheme.txt';
 
-        let customColors;
+        const exists = fs.existsSync(fileName);
 
-        fs.exists(fileName, (exists) => {
-            if (exists) {
-                customColors = JSON.parse(fs.readFileSync(fileName));
-            } else {
-                fs.writeFileSync(
-                    fileName,
-                    JSON.stringify(defaultColors, null, '\t'),
-                    { flag: 'wx' },
-                    () => {
-                        customColors = JSON.parse(fs.readFileSync(fileName));
-                    }
-                );
-            }
-        });
+        if (!exists) {
+            fs.writeFileSync(
+                fileName,
+                JSON.stringify(defaultColors, null, '\t'),
+                { flag: 'wx' },
+                null
+            );
+        }
+
+        const customColors = JSON.parse(fs.readFileSync(fileName));
 
         const defaultColorsTitle = defaultColors[title];
         const customColorsTitle = customColors[title];
