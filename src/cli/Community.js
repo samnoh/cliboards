@@ -106,7 +106,7 @@ class Community extends CLI {
                     await openUrls(homepage);
                     break;
                 case 'e':
-                    await openUrls(__dirname + '/../cli/theme/custom.txt');
+                    await openUrls(__dirname + '/../cli/theme/customTheme.txt');
                     await this.terminate();
                     break;
             }
@@ -388,7 +388,9 @@ class Community extends CLI {
             this.screen.title = '';
             this.setTitleFooterContent(
                 '커뮤니티 목록',
-                '',
+                this.isColorsError
+                    ? '{red-fg}Invalid JSON format for color theme - It is using default theme now{/}'
+                    : '',
                 `q: quit, o: open GitHub, e: edit theme{|}${name} ${version}`
             );
         });

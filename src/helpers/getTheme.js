@@ -6,9 +6,8 @@ let customColors;
 
 module.exports = (title) => {
     try {
-        console.log(__dirname);
         if (!customColors) {
-            customColors = JSON.parse(fs.readFileSync(__dirname + '/../cli/theme/custom.txt'));
+            customColors = JSON.parse(fs.readFileSync(__dirname + '/../cli/theme/customTheme.txt'));
         }
 
         const defaultColorsTitle = defaultColors[title];
@@ -26,8 +25,8 @@ module.exports = (title) => {
             }
         });
 
-        return customColorsTitle;
+        return [customColorsTitle, false];
     } catch (e) {
-        return defaultColors[title];
+        return [defaultColors[title], true];
     }
 };
