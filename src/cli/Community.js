@@ -397,9 +397,7 @@ class Community extends CLI {
                 this.isColorsError
                     ? '{red-fg}Invalid JSON format for color theme - It is using default theme now{/}'
                     : '',
-                `q: quit, o: open GitHub, e: edit theme{|}${
-                    this.shouldUpdatePackage ? '{blue-fg}' : ''
-                }${name} ${version}`
+                `q: quit, o: open GitHub, e: edit theme{|}${name} ${version}`
             );
         });
 

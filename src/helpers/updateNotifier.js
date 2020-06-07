@@ -16,5 +16,4 @@ const notifyUpdate = () => {
 
 module.exports = {
     notifyUpdate,
-    shouldUpdatePackage: notifier.update,
 };

@@ -4,10 +4,6 @@ const { updateNotifier, getTheme } = require('../helpers');
 
 class CLI {
     constructor() {
-        // update
-        this.shouldUpdatePackage = updateNotifier.shouldUpdatePackage;
-        process.on('exit', updateNotifier.notifyUpdate);
-
         // theme
         const [colors, isError] = getTheme();
         this.colors = colors;
@@ -66,6 +62,9 @@ class CLI {
                 bg: this.colors.bottom_bg,
             },
         });
+
+        // update
+        process.on('exit', updateNotifier.notifyUpdate);
     }
 
     setKeyPressEvent() {
