@@ -395,7 +395,7 @@ class Community extends CLI {
             this.setTitleFooterContent(
                 '커뮤니티 목록',
                 this.isColorsError
-                    ? '{red-fg}Invalid JSON format for color theme - It is using default theme now{/}'
+                    ? '{gray-fg}Invalid JSON format for color theme - default theme now{/}'
                     : '',
                 `q: quit, o: open GitHub, e: edit theme{|}${name} ${version}`
             );
