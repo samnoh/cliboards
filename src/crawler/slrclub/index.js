@@ -1,6 +1,10 @@
+const axios = require('axios');
+const FormData = require('form-data');
+
 const CommunityCrawler = require('../CommunityCrawler');
 const {
     baseUrl,
+    commentsUrl,
     getUrl,
     sortUrls,
     boardTypes,
@@ -80,6 +84,7 @@ class SLRClub extends CommunityCrawler {
             const hit = infoEl[2].replace(/[^0-9]/g, '');
             const upVotes = infoEl[3].replace(/[^0-9]/g, '');
             const numberOfComments = document.querySelector('#cmcnt');
+            const commentsFormData = document.querySelector('#comment_box').dataset;
 
             // handle images
             body.querySelectorAll('img').forEach((image, index) => {
@@ -103,42 +108,53 @@ class SLRClub extends CommunityCrawler {
                 upVotes: parseInt(upVotes),
                 comments: [],
                 numberOfComments: parseInt(numberOfComments.innerText),
+                commentsFormData: { ...commentsFormData },
             };
         });
 
-        if (postDetail.numberOfComments) {
-            postDetail.comments = await this.getComments();
+        if (postDetail.numberOfComments && postDetail.commentsFormData) {
+            postDetail.comments = await this.getComments(link, postDetail.commentsFormData);
         }
 
         this.postsRead.add(link); // set post that you read
         return postDetail;
     }
 
-    async getComments() {
-        await this.page.waitFor(100);
+    async getComments(Referer, data) {
+        const form = new FormData();
 
-        const comments = await this.page.evaluate(() => {
-            const comments = document.querySelectorAll('.comment_inbox .list li');
+        form.append('id', data.bbsid);
+        form.append('tos', data.tos);
+        form.append('no', data.cmrno);
+        form.append('sno', '1');
+        form.append('spl', data.splno);
 
-            return Array.from(comments).map((comment) => {
-                const body = comment.querySelector('.cmt-contents');
-                const author = comment.querySelector('.cname');
-                const time = comment.querySelector('.cmt_date');
-                const upVotes = comment.querySelector('.vote_cnt');
-                const isReply = comment.classList.contains('reply');
-
-                return {
-                    isRemoved: false,
-                    isReply,
-                    author: author.innerText,
-                    time: time.innerText,
-                    body: body.innerText,
-                    upVotes: upVotes.innerText.replace(/[^0-9]/g, ''),
-                };
+        try {
+            const response = await axios({
+                method: 'post',
+                url: commentsUrl,
+                data: form,
+                headers: { Referer, ...form.getHeaders() },
             });
-        });
 
-        return !comments.length ? await this.getComments() : comments;
+            if (!response.data.c) {
+                throw new Error();
+            }
+
+            return response.data.c.map((comment) => ({
+                isRemoved: !!comment.del,
+                isReply: !!comment.th,
+                author: comment.name,
+                body: comment.memo
+                    .trim()
+                    .replace(/<br \/>/g, '\n')
+                    .replace(/<[^>]*>/g, 'IMAGE_1'),
+                time: comment.dt,
+                upVotes: comment.vt,
+            }));
+        } catch (e) {
+            return [];
+        }
     }
 
     get pageNumber() {

@@ -4,11 +4,12 @@ const boardTypes = ['커뮤니티', '포럼'];
 
 module.exports = {
     baseUrl,
+    commentsUrl: `${baseUrl}/bbs/comment_db/load.php`,
     getUrl: (boardName) => `${baseUrl}/l/${boardName}/`,
     sortUrls: [],
     boardTypes,
     ignoreBoards: [],
-    ignoreRequests: ['image', 'stylesheet', 'media', 'font', 'imageset'],
+    ignoreRequests: ['image', 'stylesheet', 'media', 'font', 'imageset', 'script'],
     boards: [
         {
             name: '자유게시판',
