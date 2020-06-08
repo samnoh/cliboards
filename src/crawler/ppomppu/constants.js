@@ -33,11 +33,11 @@ module.exports = {
             name: '정치자유게시판',
             type: boardTypes[0],
         },
-        // {
-        //     value: 'humor',
-        //     name: '유머/감동',
-        //     type: boardTypes[0],
-        // },
+        {
+            value: 'humor',
+            name: '유머/감동',
+            type: boardTypes[0],
+        },
         {
             value: 'help',
             name: '질문/요청',

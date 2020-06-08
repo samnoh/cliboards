@@ -44,16 +44,21 @@ class Ppomppu extends CommunityCrawler {
                             .querySelector('.hi')
                             .innerText.split('/')
                             .map((el) => el.replace(/[^0-9]/g, ''));
-
                         const hit = infoEl[0];
                         const upVotes = infoEl[1];
                         const downVotes = infoEl[2];
+
+                        let link = list.getAttribute('href');
+
+                        if (link && !link.includes('/new/')) {
+                            link = '/new/' + link;
+                        }
 
                         return (
                             author &&
                             author.innerText && {
                                 title: title.innerText.trim(),
-                                link: baseUrl + '/new/' + list.getAttribute('href'),
+                                link: baseUrl + link,
                                 author: author.innerText.trim(),
                                 hit,
                                 time: time.innerText.trim(),
@@ -86,10 +91,16 @@ class Ppomppu extends CommunityCrawler {
                     const upVotes = infoEl[1];
                     const downVotes = infoEl[2];
 
+                    let link = list.getAttribute('href');
+
+                    if (!link.startsWith('/new/')) {
+                        link = '/new/' + link;
+                    }
+
                     return {
                         category: category.innerText,
                         title: title.innerText.trim(),
-                        link: baseUrl + '/new/' + list.getAttribute('href'),
+                        link: baseUrl + link,
                         time: time.innerText,
                         author: author.innerText,
                         hit,
@@ -118,40 +129,63 @@ class Ppomppu extends CommunityCrawler {
             const _title = infoEl[0];
             const author = infoEl[1].split(' ')[0];
 
-            const hi = document.querySelector('.hi').innerText.split('|');
+            const hi = document.querySelector('.hi').innerText;
 
             let category;
 
-            if (hi.length === 2) {
-                category = hi[0].trim();
+            if (hi.split('|').length === 2) {
+                category = hi.split('|')[0].trim();
             }
 
-            const time = document.querySelector('.hi').innerText.match(/[0-9]{2}:[0-9]{2}/)[0];
+            const time = hi.match(/[0-9]{2}:[0-9]{2}/)[0];
 
-            const otherInfoEl = infoEl[1].trim().split(' ');
-            const hit = otherInfoEl[otherInfoEl.indexOf('조회') + 2];
-            const upVotes = otherInfoEl[otherInfoEl.indexOf('추천') + 2];
+            let otherInfoEl = infoEl[1].trim().split(' ');
+            let hit = otherInfoEl[otherInfoEl.indexOf('조회') + 2];
+
+            if (!hit) {
+                otherInfoEl = infoEl[2].trim().split(' ');
+                hit = otherInfoEl[otherInfoEl.indexOf('조회') + 2];
+            }
+
+            let upVotes = otherInfoEl[otherInfoEl.indexOf('추천') + 2];
 
             const body = document.querySelector('#KH_Content');
-            const images = body.querySelectorAll('img');
+            const images = Array.from(body.querySelectorAll('img, video source'))
+                .filter((item) => item.getAttribute('alt') !== '다운로드 버튼')
+                .map((item) => 'http:' + item.getAttribute('src'));
             const comments = document.querySelectorAll('.cmAr .sect-cmt');
 
             // handle images
-            images.forEach((image, index) => {
-                const text = document.createElement('span');
-                text.innerText = `IMAGE_${index + 1} `;
-                image.insertAdjacentElement('afterend', text);
+            Array.from(body.querySelectorAll('video, img'))
+                .filter((item) => item.getAttribute('alt') !== '다운로드 버튼')
+                .forEach((item, index) => {
+                    const text = document.createElement('span');
+
+                    if (item.tagName === 'VIDEO') {
+                        const videoDiv = item.parentNode.parentNode;
+
+                        text.innerText = `GIF_${index + 1} `;
+                        videoDiv.insertAdjacentElement('afterend', text);
+                        videoDiv.removeChild(item.parentNode);
+                    } else {
+                        text.innerText = `IMAGE_${index + 1} `;
+                        item.insertAdjacentElement('afterend', text);
+                    }
+                });
+
+            body.querySelectorAll('a.noeffect').forEach((link) => {
+                const href = link.getAttribute('href');
+                link.innerText = link.innerText.replace(link.innerText, href);
             });
 
-            body.querySelectorAll('a:not(.noeffect)').forEach((link) => {
-                const text = document.createElement('span');
-                text.innerText = link.getAttribute('href');
-                link.parentNode.insertAdjacentElement('afterend', text);
-                body.removeChild(link.parentNode);
-            });
+            const link = h4.querySelector('a.noeffect');
+
+            if (link) {
+                body.innerText = '링크: ' + link.getAttribute('href') + '\n\n' + body.innerText;
+            }
 
             return {
-                title: _title,
+                title: _title.trim(),
                 category,
                 author,
                 hit: parseInt(hit),
@@ -162,59 +196,62 @@ class Ppomppu extends CommunityCrawler {
                     .join('\n')
                     .trim(),
                 upVotes: parseInt(upVotes),
-                images: Array.from(images).map((image) => 'http:' + image.getAttribute('src')),
+                images,
                 hasImages: images.length,
-                comments: Array.from(comments).map((comment) => {
-                    const body = comment.querySelector('.comment_memo td');
-                    const author = comment.querySelector('.com_name span');
-                    const time = comment.querySelector('.cin_02 span');
-                    const isReply = parseInt(comment.classList[0].replace('sect', ''));
+                comments: Array.from(comments)
+                    .map((comment) => {
+                        const body = comment.querySelector('.comment_memo td');
+                        const author = comment.querySelector('.com_name span');
+                        const time = comment.querySelector('.cin_02 span');
+                        const isReply = parseInt(comment.classList[0].replace('sect', ''));
+                        const isHot = comment.parentNode.classList.contains('hot-comment-preview');
 
-                    body.querySelectorAll('img').forEach((image, index) => {
-                        image.textContent = `IMAGE_${index + 1} `;
-                    });
+                        const votesEl = comment.querySelectorAll('.com_name > span');
+                        let upVotes, downVotes;
 
-                    body.querySelectorAll('a:not(.noeffect)').forEach((link) => {
-                        const text = document.createElement('span');
-                        text.innerText = link.getAttribute('href');
-                        link.parentNode.insertAdjacentElement('afterend', text);
-                        body.removeChild(link.parentNode);
-                    });
+                        if (votesEl.length === 3) {
+                            upVotes = votesEl[2].innerText;
+                            downVotes = votesEl[1].innerText;
+                        }
 
-                    return {
-                        isReply,
-                        isRemoved: false,
-                        author: author.innerText.trim(),
-                        time: time.innerText.match(/[0-9]{2}:[0-9]{2}/)[0],
-                        body: body.textContent.trim(),
-                    };
-                }),
+                        body.querySelectorAll('img, video').forEach((item, index) => {
+                            const text = document.createElement('span');
+                            if (item.tagName === 'VIDEO') {
+                                const videoDiv = item.parentNode.parentNode;
+
+                                text.innerText = `GIF_${index + 1} `;
+                                videoDiv.insertAdjacentElement('afterend', text);
+                                videoDiv.removeChild(item.parentNode);
+                            } else {
+                                text.innerText = `IMAGE_${index + 1} `;
+                                item.insertAdjacentElement('afterend', text);
+                            }
+                        });
+
+                        body.querySelectorAll('a.noeffect').forEach((link) => {
+                            const href = link.getAttribute('href');
+                            link.innerText = link.innerText.replace(link.innerText, href);
+                        });
+
+                        return (
+                            !isHot && {
+                                isReply,
+                                isRemoved: false,
+                                author: author.innerText.trim(),
+                                time: time.innerText.match(/[0-9]{2}:[0-9]{2}/)[0],
+                                body: body.textContent.trim(),
+                                upVotes: upVotes ? parseInt(upVotes.trim()) : 0,
+                                downVotes: downVotes ? parseInt(downVotes.trim()) : 0,
+                            }
+                        );
+                    })
+                    .filter((comment) => comment),
             };
         });
 
         this.postsRead.add(link); // set post that you read
 
         return postDetail;
-    }
-
-    async addBoard(link, type) {
-        try {
-            if (!link) return;
-
-            let value = '';
-
-            if (!link.includes(baseUrl + '/board/')) {
-                value = querystring.parse(link.split('?').pop()).id || link;
-            } else {
-                value = link.replace(/\?.*$/, '').split('/').pop();
-            }
-
-            const getNameCallback = () => document.querySelector('.gall-tit-lnk').innerText;
-
-            await super.addBoard(getUrl(value), value, type, getNameCallback);
-        } catch (e) {
-            throw new Error(e.message);
-        }
     }
 
     static toString() {
