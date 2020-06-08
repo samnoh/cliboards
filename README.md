@@ -9,7 +9,7 @@
 
 ### Why?
 
--   Communities: `Clien`, `dcinside`, `DVDPrime`, `Ruliweb` and `SLRClub`
+-   Communities: `Clien`, `dcinside`, `DVDPrime`, `Ruliweb`, `PPOMPPU` and `SLRClub`
 -   Supports color customizations
 -   Loads faster with a slow Internect connection
 -   Shurtcut for viewing images on web browser
