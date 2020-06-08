@@ -35,33 +35,61 @@ class Ppomppu extends CommunityCrawler {
             if (lists.length) {
                 return Array.from(lists)
                     .map((list) => {
-                        const title = list.querySelector('strong');
-                        const author = list.querySelector('.ct');
-                        const time = list.querySelector('.b');
+                        const author = list.querySelector('.ct') || list.querySelector('.name');
                         const numberOfComments = list.querySelector('.rp');
 
-                        const infoEl = list
-                            .querySelector('.hi')
-                            .innerText.split('/')
-                            .map((el) => el.replace(/[^0-9]/g, ''));
-                        const hit = infoEl[0];
-                        const upVotes = infoEl[1];
-                        const downVotes = infoEl[2];
+                        const title = list.querySelector('strong') || list.querySelector('.title');
+
+                        try {
+                            numberOfComments && title.removeChild(numberOfComments);
+                        } catch (e) {}
+
+                        let time = list.querySelector('.b');
+                        let category, hit, upVotes, downVotes;
+
+                        if (time) {
+                            const infoEl = list
+                                .querySelector('.hi')
+                                .innerText.split('/')
+                                .map((el) => el.replace(/[^0-9]/g, ''));
+                            hit = infoEl[0];
+                            upVotes = infoEl[1];
+                            downVotes = infoEl[2];
+                        } else {
+                            const timeEl = list.querySelector('.time');
+
+                            const infoEl = timeEl.innerText
+                                .replace(/[^0-9:\-]/g, '/')
+                                .split('/')
+                                .filter((a) => a);
+
+                            timeEl.removeChild(timeEl.querySelector('time'));
+                            category = timeEl.innerText.replace('|', '').trim();
+                            time = infoEl[0];
+                            hit = infoEl[1];
+                            upVotes = infoEl[2];
+                            downVotes = infoEl[3];
+                        }
 
                         let link = list.getAttribute('href');
 
                         if (link && !link.includes('/new/')) {
-                            link = '/new/' + link;
+                            if (link.includes('ppomppu2')) {
+                                link = '/new/bbs_view.php' + link;
+                            } else {
+                                link = '/new/' + link;
+                            }
                         }
 
                         return (
                             author &&
                             author.innerText && {
+                                category,
                                 title: title.innerText.trim(),
                                 link: baseUrl + link,
                                 author: author.innerText.trim(),
                                 hit,
-                                time: time.innerText.trim(),
+                                time: time,
                                 upVotes: parseInt(upVotes),
                                 downVotes: parseInt(downVotes),
                                 numberOfComments: numberOfComments
