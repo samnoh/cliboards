@@ -34,11 +34,6 @@ module.exports = {
             type: boardTypes[0],
         },
         // {
-        //     value: 'f1020',
-        //     name: '1020게시판',
-        //     type: boardTypes[0],
-        // },
-        // {
         //     value: 'humor',
         //     name: '유머/감동',
         //     type: boardTypes[0],
