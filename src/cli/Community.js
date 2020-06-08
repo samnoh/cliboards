@@ -618,11 +618,9 @@ class Community extends CLI {
                         fg: this.colors.comment_bottom_color,
                     },
                     tags: true,
-                    padding: {
-                        left: isReply ? 4 : 0,
-                    },
                 });
 
+                commentBox.padding.left = isReply * 4;
                 commentBox.height = commentBox.getScreenLines().length + 2;
                 prevTop += commentBox.height - 1;
 

@@ -19,10 +19,11 @@ class Crawler {
             });
 
             this.page = await this.browser.newPage();
+
+            // page settings
             this.page.setDefaultNavigationTimeout(10000);
-
             await this.changeUserAgent();
-
+            await this.page.setJavaScriptEnabled(false);
             await this.page.setRequestInterception(true);
 
             this.page.on('request', (request) => {

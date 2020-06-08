@@ -15,6 +15,7 @@ class Ruliweb extends CommunityCrawler {
 
         this.title = Ruliweb.toString();
         this.boardTypes = boardTypes;
+        this.canRefreshBoards = true;
     }
 
     async getBoards() {

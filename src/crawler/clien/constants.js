@@ -4,7 +4,7 @@ const boardTypes = ['커뮤니티', '소모임'];
 
 module.exports = {
     baseUrl,
-    getUrl: (boardName) => `${baseUrl}${boardName}?&po=`,
+    getUrl: (board) => `${baseUrl}${board}?&po=`,
     sortUrls: [
         {
             name: '등록일순',
