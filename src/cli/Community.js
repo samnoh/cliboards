@@ -414,7 +414,7 @@ class Community extends CLI {
                 this.setTitleFooterContent(
                     this.crawler.title,
                     this.crawler.boardTypes[this.currentBoardTypeIndex],
-                    `q: back${this.crawler.canRefreshBoards ? ', r: refresh' : ''}${
+                    `q: back${this.crawler.canRefreshBoards ? ', r: refresh/reset' : ''}${
                         this.crawler.canAddBoards ? ', a: add board, d: delete board' : ''
                     }${
                         this.crawler.boardTypes.length > 1

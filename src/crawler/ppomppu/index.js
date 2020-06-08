@@ -15,7 +15,6 @@ class Ppomppu extends CommunityCrawler {
 
         this.title = Ppomppu.toString();
         this.boardTypes = boardTypes;
-        this.canRefreshBoards = true;
         this.canAddBoards = true;
     }
 

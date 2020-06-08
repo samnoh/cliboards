@@ -16,7 +16,6 @@ class Clien extends CommunityCrawler {
 
         this.title = Clien.toString();
         this.boardTypes = boardTypes;
-        this.canRefreshBoards = true;
     }
 
     async getBoards() {

@@ -17,7 +17,6 @@ class Dcinside extends CommunityCrawler {
 
         this.title = Dcinside.toString();
         this.boardTypes = boardTypes;
-        this.canRefreshBoards = false;
         this.canAddBoards = true;
     }
 

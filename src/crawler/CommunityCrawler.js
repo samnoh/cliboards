@@ -12,7 +12,7 @@ class CommunityCrawler extends Crawler {
         this.currentPageNumber = 0;
         this.sortListIndex = 0;
         this.postsRead = new Set();
-        this.canRefreshBoards = false;
+        this.canRefreshBoards = true;
         this.canAddBoards = false;
     }
 
