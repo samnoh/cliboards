@@ -83,6 +83,7 @@ class Community extends CLI {
                 fg: this.colors.post_color,
             },
         });
+        this.autoRefreshInterval = 10; // refresh every 10 seconds; do not make it too low
         this.autoRefreshTimer = null;
         this.widgets = [this.communityList, this.boardsList, this.listList, this.detailBox];
     }
@@ -246,8 +247,8 @@ class Community extends CLI {
 
         this.listList.on('keypress', async (_, { full }) => {
             if (this.autoRefreshTimer) {
-                clearTimeout(this.autoRefreshTimer);
-                this.autoRefreshTimer = null;
+                this.autoRefreshTimer = clearTimeout(this.autoRefreshTimer);
+                this.listList.focus();
             }
 
             if (!this.posts.length) return;
@@ -261,7 +262,7 @@ class Community extends CLI {
             } else if (full === 'a') {
                 this.autoRefreshTimer = setInterval(async () => {
                     await this.refreshPosts();
-                }, 10000); // refresh every 10 seconds; do not make it too low
+                }, this.autoRefreshInterval * 1000);
             } else if (full === 's') {
                 if (this.crawler.currentBoard.noSortUrl || !this.crawler.sortUrl) return;
                 else {
@@ -410,6 +411,10 @@ class Community extends CLI {
         });
 
         this.boardsList.on('focus', () => {
+            if (this.autoRefreshTimer) {
+                this.autoRefreshTimer = clearTimeout(this.autoRefreshTimer);
+            }
+
             if (this.sortBoardsMode) {
                 this.setTitleFooterContent(
                     this.crawler.title,
@@ -469,9 +474,11 @@ class Community extends CLI {
                         ? '‧' + this.crawler.sortUrl.name
                         : ''
                 }`,
-                `q: back, r: refresh, a: auto refresh${
-                    this.crawler.sortUrl ? ', s: sort' : ''
-                }, left/right arrow: prev/next page`
+                this.autoRefreshTimer
+                    ? `q: back, any key: cancel auto refresh{|}Refresh every ${this.autoRefreshInterval} sec..`
+                    : `q: back, r: refresh, a: auto refresh${
+                          this.crawler.sortUrl ? ', s: sort' : ''
+                      }, left/right arrow: prev/next page`
             );
         });
 
