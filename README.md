@@ -2,6 +2,8 @@
 
 > Surf your online communities on CLI
 
+![screenshot](img/screenshot-01.png)
+
 ## Features
 
 -   Communities: `Clien`, `dcinside`, `DVDPrime`, `Ruliweb`, `PPOMPPU` and `SLRClub`
@@ -11,10 +13,10 @@
 
 ## Installation
 
-Use the package manager [npm](https://www.npmjs.com) to install `clibaords`.
+Use the package manager [npm](https://www.npmjs.com) to install `cliboards`.
 
 ```bash
-$ npm install cliboards -g
+$ npm i -g cliboards
 ```
 
 ## Usage
