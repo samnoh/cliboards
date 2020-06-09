@@ -92,7 +92,9 @@ class Dcinside extends CommunityCrawler {
     async getPostDetail(link) {
         await this.page.goto(link);
 
-        const postDetail = await this.page.evaluate(() => {
+        this.postsRead.add(link); // set post that you read
+
+        return await this.page.evaluate(() => {
             const _title = document.querySelector('.gallview-tit-box .tit');
             const author = document.querySelector('.btm .ginfo2 li:nth-child(1)');
             const hit = document.querySelector('.gall-thum-btm .ginfo2 li:nth-child(1)');
@@ -159,10 +161,6 @@ class Dcinside extends CommunityCrawler {
                     .filter((comment) => comment),
             };
         });
-
-        this.postsRead.add(link); // set post that you read
-
-        return postDetail;
     }
 
     async addBoard(link, type) {

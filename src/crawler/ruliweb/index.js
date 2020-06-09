@@ -68,7 +68,9 @@ class Ruliweb extends CommunityCrawler {
     async getPostDetail(link) {
         await this.page.goto(link);
 
-        const postDetail = await this.page.evaluate(() => {
+        this.postsRead.add(link); // set post that you read
+
+        return await this.page.evaluate(() => {
             const title = document.querySelector('.subject_text');
             const author = document.querySelector('.nick');
             const hit = document.querySelector('.user_info p:nth-child(5)').innerText.split(' ');
@@ -142,10 +144,6 @@ class Ruliweb extends CommunityCrawler {
                 }),
             };
         });
-
-        this.postsRead.add(link); // set post that you read
-
-        return postDetail;
     }
 
     static toString() {

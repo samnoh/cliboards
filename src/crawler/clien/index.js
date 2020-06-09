@@ -109,7 +109,9 @@ class Clien extends CommunityCrawler {
     async getPostDetail(link) {
         await this.page.goto(link);
 
-        const postDetail = await this.page.evaluate(() => {
+        this.postsRead.add(link); // set post that you read
+
+        return await this.page.evaluate(() => {
             const category = document.querySelector('.post_subject .post_category');
             const title = document.querySelector('.post_subject span:not(.post_category)');
             const author = document.querySelector('.post_info .contact_name');
@@ -189,10 +191,6 @@ class Clien extends CommunityCrawler {
                 }),
             };
         });
-
-        this.postsRead.add(link); // set post that you read
-
-        return postDetail;
     }
 
     static toString() {

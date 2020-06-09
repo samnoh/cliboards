@@ -71,7 +71,9 @@ class DVDPrime extends CommunityCrawler {
     async getPostDetail(link) {
         await this.page.goto(link);
 
-        const postDetail = await this.page.evaluate(() => {
+        this.postsRead.add(link); // set post that you read
+
+        return await this.page.evaluate(() => {
             const title = document.querySelector('#writeSubject');
             const author = document.querySelector('#view_nickname');
             const hit = document.querySelector('#view_hit');
@@ -132,10 +134,6 @@ class DVDPrime extends CommunityCrawler {
                 }),
             };
         });
-
-        this.postsRead.add(link); // set post that you read
-
-        return postDetail;
     }
 
     static toString() {

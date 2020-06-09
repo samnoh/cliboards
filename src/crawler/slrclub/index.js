@@ -75,6 +75,8 @@ class SLRClub extends CommunityCrawler {
     async getPostDetail(link) {
         await this.page.goto(link);
 
+        this.postsRead.add(link); // set post that you read
+
         const postDetail = await this.page.evaluate(() => {
             const title = document.querySelector('.subject');
             const body = document.querySelector('#userct');
@@ -116,7 +118,6 @@ class SLRClub extends CommunityCrawler {
             postDetail.comments = await this.getComments(link, postDetail.commentsFormData);
         }
 
-        this.postsRead.add(link); // set post that you read
         return postDetail;
     }
 
