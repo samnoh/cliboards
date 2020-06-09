@@ -26,6 +26,14 @@ $ npm install cliboards -g
 $ cliboards
 ```
 
-## Changelog
+## Contributing
 
--   [https://github.com/samnoh/cliboards/tags](changelog)
+Please do contribute! Issues and pull requests are all welcome.
+
+### [Code of Conduct](CODE_OF_CONDUCT.md)
+
+Please read the [full text](CODE_OF_CONDUCT.md) so that you can understand what actions will and will not be tolerated.
+
+### Licnese
+
+[MIT licensed](LICENSE)
