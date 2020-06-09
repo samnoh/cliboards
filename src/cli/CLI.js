@@ -133,7 +133,7 @@ class CLI {
                 this.terminate();
             }
         } catch (e) {
-            // this.terminate(1, e);
+            this.terminate(1, e);
         }
     }
 
@@ -159,10 +159,12 @@ class CLI {
         widget.select(offset);
     }
 
-    async terminate(exitCode = 0, message) {
+    async terminate(exitCode = 0, message = '') {
         this.crawler && (await this.crawler.close());
+        this.screen.destroy();
+        blessed.program().clear();
         message && console[exitCode ? 'error' : 'log'](message);
-        return process.exit(exitCode);
+        process.nextTick(() => process.exit(exitCode));
     }
 }
 

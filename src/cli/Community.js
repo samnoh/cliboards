@@ -107,12 +107,15 @@ class Community extends CLI {
                     break;
                 case 'e':
                     await openUrls(__dirname + '/../cli/theme/customTheme.txt');
-                    await this.terminate();
+                    await this.terminate(
+                        0,
+                        'Please edit customTheme.txt in JSON format and restart.'
+                    );
                     break;
                 case 'r':
                     resetConfigstore();
                     resetCustomTheme();
-                    await this.terminate();
+                    await this.terminate(0, 'Cliboards has been successfully reset.');
                     break;
             }
         });
