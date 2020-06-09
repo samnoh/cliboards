@@ -152,9 +152,12 @@ class Ppomppu extends CommunityCrawler {
     async getPostDetail(link) {
         await this.page.goto(link);
 
-        const postDetail = await this.page.evaluate(() => {
+        this.postsRead.add(link); // set post that you read
+
+        return await this.page.evaluate(() => {
             const h4 = document.querySelector('h4');
             const listComment = h4.querySelector('.list_comment');
+
             listComment && h4.removeChild(listComment.parentNode);
 
             const infoEl = document.querySelector('h4').innerText.split('\n');
@@ -182,28 +185,34 @@ class Ppomppu extends CommunityCrawler {
             let upVotes = otherInfoEl[otherInfoEl.indexOf('추천') + 2];
 
             const body = document.querySelector('#KH_Content');
-            const images = Array.from(body.querySelectorAll('img, video source'))
-                .filter((item) => item.getAttribute('alt') !== '다운로드 버튼')
-                .map((item) => 'http:' + item.getAttribute('src'));
+            const imagesEl = Array.from(body.querySelectorAll('img, video')).filter(
+                (item) => item.getAttribute('alt') !== '다운로드 버튼'
+            );
+            const images = imagesEl
+                .map((item) => {
+                    if (item.tagName === 'VIDEO') {
+                        return item.querySelector('source').getAttribute('src');
+                    }
+                    return item.getAttribute('src');
+                })
+                .map((item) => (item.slice(0, 4) === 'http' ? item : 'http:' + item));
             const comments = document.querySelectorAll('.cmAr .sect-cmt');
 
             // handle images
-            Array.from(body.querySelectorAll('video, img'))
-                .filter((item) => item.getAttribute('alt') !== '다운로드 버튼')
-                .forEach((item, index) => {
-                    const text = document.createElement('span');
+            imagesEl.forEach((item, index) => {
+                const text = document.createElement('span');
 
-                    if (item.tagName === 'VIDEO') {
-                        const videoDiv = item.parentNode.parentNode;
+                if (item.tagName === 'VIDEO') {
+                    const videoDiv = item.parentNode.parentNode;
 
-                        text.innerText = `GIF_${index + 1} `;
-                        videoDiv.insertAdjacentElement('afterend', text);
-                        videoDiv.removeChild(item.parentNode);
-                    } else {
-                        text.innerText = `IMAGE_${index + 1} `;
-                        item.insertAdjacentElement('afterend', text);
-                    }
-                });
+                    text.innerText = `GIF_${index + 1} `;
+                    videoDiv.insertAdjacentElement('afterend', text);
+                    videoDiv.removeChild(item.parentNode);
+                } else {
+                    text.innerText = `IMAGE_${index + 1} `;
+                    item.insertAdjacentElement('afterend', text);
+                }
+            });
 
             body.querySelectorAll('a.noeffect').forEach((link) => {
                 const href = link.getAttribute('href');
@@ -280,10 +289,6 @@ class Ppomppu extends CommunityCrawler {
                     .filter((comment) => comment),
             };
         });
-
-        this.postsRead.add(link); // set post that you read
-
-        return postDetail;
     }
 
     static toString() {
