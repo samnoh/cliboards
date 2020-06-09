@@ -1,8 +1,8 @@
 {
     "name": "cliboards",
-    "version": "1.0.0-beta.38",
-    "private": true,
+    "version": "1.0.0-beta.39",
     "description": "Surf your online communities on CLI",
+    "main": "src/index.js",
     "scripts": {
         "start": "node src/index.js"
     },
@@ -10,10 +10,14 @@
         "type": "git",
         "url": "git+https://github.com/samnoh/cliboards.git"
     },
-    "author": "Sam Noh <samnoh.dev@gmail.com>",
+    "author": {
+        "name": "Sam Noh",
+        "email": "samnoh.dev@gmail.com"
+    },
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/samnoh/cliboards/issues"
+        "url": "https://github.com/samnoh/cliboards/issues",
+        "email": "samnoh.dev@gmail.com"
     },
     "homepage": "https://github.com/samnoh/cliboards#readme",
     "dependencies": {
