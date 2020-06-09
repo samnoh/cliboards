@@ -1,5 +1,5 @@
 const Crawler = require('./Crawler');
-const configstore = require('../helpers/configstore');
+const { configstore } = require('../helpers');
 
 class CommunityCrawler extends Crawler {
     constructor(sortUrls, ignoreRequests, baseUrl) {

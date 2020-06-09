@@ -2,6 +2,8 @@ const Configstore = require('configstore');
 
 const { name } = require('../../package.json');
 
-const config = new Configstore(name, null);
+const configstore = new Configstore(name, null);
 
-module.exports = config;
+const resetConfigstore = () => configstore.clear();
+
+module.exports = { configstore, resetConfigstore };

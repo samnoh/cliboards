@@ -2,7 +2,7 @@ const blessed = require('blessed');
 
 const { name, version, homepage } = require('../../package.json');
 const CLI = require('./CLI');
-const { openUrls } = require('../helpers');
+const { openUrls, resetConfigstore, resetCustomTheme } = require('../helpers');
 const { getCrawler, crawlers } = require('../crawler');
 
 class Community extends CLI {
@@ -107,6 +107,11 @@ class Community extends CLI {
                     break;
                 case 'e':
                     await openUrls(__dirname + '/../cli/theme/customTheme.txt');
+                    await this.terminate();
+                    break;
+                case 'r':
+                    resetConfigstore();
+                    resetCustomTheme();
                     await this.terminate();
                     break;
             }
@@ -397,7 +402,7 @@ class Community extends CLI {
                 this.isColorsError
                     ? '{gray-fg}Invalid JSON format for color theme - default theme now{/}'
                     : '',
-                `q: quit, o: open GitHub, e: edit theme{|}${name} ${version}`
+                `q: quit, o: open GitHub, e: edit theme, r: reset settings{|}${name} ${version}`
             );
         });
 

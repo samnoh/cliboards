@@ -1,12 +1,22 @@
 const fs = require('fs');
 
-const configstore = require('./configstore');
+const { configstore } = require('./configstore');
 const defaultColors = require('../cli/theme');
 
-module.exports = () => {
+const fileName = __dirname + '/../cli/theme/customTheme.txt';
+
+const resetCustomTheme = () => {
+    try {
+        fs.unlinkSync(fileName);
+        return true;
+    } catch (e) {
+        return false;
+    }
+};
+
+const getTheme = () => {
     try {
         const configstoreKey = 'theme';
-        const fileName = __dirname + '/../cli/theme/customTheme.txt';
         const exists = fs.existsSync(fileName);
 
         let customColors = {};
@@ -35,4 +45,9 @@ module.exports = () => {
     } catch (e) {
         return [defaultColors, true];
     }
+};
+
+module.exports = {
+    getTheme,
+    resetCustomTheme,
 };
