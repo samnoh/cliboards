@@ -1,9 +1,7 @@
-<p align="center">
-<img alt="npm" src="https://img.shields.io/npm/v/cliboards">
-<img alt="NPM" src="https://img.shields.io/npm/l/cliboards">
-<p>
-
 # cliboards
+
+[<img alt="npm" src="https://img.shields.io/npm/v/cliboards">](https://www.npmjs.com/package/cliboards)
+[<img alt="NPM" src="https://img.shields.io/npm/l/cliboards">](LICENSE)
 
 > Surf your online communities on CLI
 
