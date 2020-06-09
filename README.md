@@ -25,3 +25,7 @@ $ npm install cliboards -g
 ```bash
 $ cliboards
 ```
+
+## Changelog
+
+-   [https://github.com/samnoh/cliboards/tags](changelog)
