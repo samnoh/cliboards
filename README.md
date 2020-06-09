@@ -29,7 +29,7 @@ $ cliboards
 
 Please do contribute! Issues and pull requests are all welcome.
 
-### [Code of Conduct](CODE_OF_CONDUCT.md)
+### Code of Conduct
 
 Please read the [full text](CODE_OF_CONDUCT.md) so that you can understand what actions will and will not be tolerated.
 
