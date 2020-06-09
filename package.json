@@ -9,12 +9,6 @@
         "type": "git",
         "url": "git+https://github.com/samnoh/cliboards.git"
     },
-    "keywords": [
-        "CLI",
-        "Terminal",
-        "Surfing",
-        "Korean"
-    ],
     "author": "Sam Noh <samnoh.dev@gmail.com>",
     "license": "MIT",
     "bugs": {
@@ -32,5 +26,17 @@
     },
     "bin": {
         "cliboards": "src/index.js"
-    }
+    },
+    "keywords": [
+        "cli",
+        "terminal",
+        "surfing",
+        "korea",
+        "korean",
+        "online",
+        "community",
+        "viewer",
+        "crawler",
+        "scraper"
+    ]
 }
