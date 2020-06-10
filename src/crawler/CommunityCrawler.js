@@ -12,7 +12,6 @@ class CommunityCrawler extends Crawler {
         this.currentPageNumber = 0;
         this.sortListIndex = 0;
         this.postsRead = new Set();
-        this.canRefreshBoards = true;
         this.canAddBoards = false;
     }
 
@@ -113,10 +112,6 @@ class CommunityCrawler extends Crawler {
         this.saveBoards();
     }
 
-    saveBoards() {
-        configstore.set(this.title, this.boards);
-    }
-
     sortBoards(type, index, targetIndex) {
         const currentBoard = this.boards.filter((board) => board.type === type);
 
@@ -134,6 +129,10 @@ class CommunityCrawler extends Crawler {
         this.boards[targetBoardIndex] = temp;
 
         return true;
+    }
+
+    saveBoards() {
+        configstore.set(this.title, this.boards);
     }
 
     resetBoards() {

@@ -26,8 +26,28 @@ npx cliboards
 ## Usage
 
 ```bash
+# Display a list of community
 cliboards
+
+# Display the nth community (1 is the first)
+cliboards <index>
+
+# Display community for given name
+cliboards <name>
+
+# Reset all data
+cliboards --reset
+
+# Reset data for given community only
+cliboards <index|name> --reset
+
+# Update theme
+cliboards --theme
 ```
+
+## Changelog
+
+[Read the changelog here](CHANGELOG.md)
 
 ## Contributing
 
@@ -36,10 +56,6 @@ Please do contribute! Issues and pull requests are all welcome.
 ### Code of Conduct
 
 Please read the [full text](CODE_OF_CONDUCT.md) so that you can understand what actions will and will not be tolerated.
-
-## Changelog
-
-[Read the changelog here](CHANGELOG.md)
 
 ## Licnese
 

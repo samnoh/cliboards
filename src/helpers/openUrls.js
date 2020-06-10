@@ -12,6 +12,6 @@ module.exports = async (urls) => {
             await open(urls);
         }
     } catch (e) {
-        // throw new Error(e);
+        throw new Error(e);
     }
 };

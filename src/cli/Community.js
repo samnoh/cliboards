@@ -88,12 +88,44 @@ class Community extends CLI {
         this.widgets = [this.communityList, this.boardsList, this.listList, this.detailBox];
     }
 
-    static start() {
+    static async start({ theme, reset, startCrawler }) {
+        if (reset && !startCrawler) {
+            resetConfigstore();
+            resetCustomTheme();
+        }
+
         const community = new Community();
 
         community.setAllEvents();
         community.communityList.setItems(crawlers);
-        community.communityList.focus();
+
+        if (theme) {
+            await openUrls(__dirname + '/../cli/theme/customTheme.txt');
+            console.log('Please edit customTheme.txt in JSON format and restart.');
+            process.exit(0);
+        }
+
+        if (startCrawler) {
+            let index = 0;
+
+            if (isNaN(startCrawler)) {
+                index = crawlers.findIndex(
+                    (cralwer) => cralwer.toLowerCase() === startCrawler.toLowerCase()
+                );
+            } else {
+                index = startCrawler > crawlers.length || startCrawler < 1 ? -1 : startCrawler - 1;
+            }
+
+            if (index === -1) {
+                community.communityList.focus();
+            } else {
+                await community.communityList.emit('select', null, index);
+
+                reset && community.crawler.resetBoards();
+            }
+        } else {
+            community.communityList.focus();
+        }
 
         return community;
     }
@@ -105,18 +137,6 @@ class Community extends CLI {
             switch (full) {
                 case 'o':
                     await openUrls(homepage);
-                    break;
-                case 'e':
-                    await openUrls(__dirname + '/../cli/theme/customTheme.txt');
-                    await this.terminate(
-                        0,
-                        'Please edit customTheme.txt in JSON format and restart.'
-                    );
-                    break;
-                case 'r':
-                    resetConfigstore();
-                    resetCustomTheme();
-                    await this.terminate(0, 'Cliboards has been successfully reset.');
                     break;
             }
         });
@@ -188,17 +208,12 @@ class Community extends CLI {
                         !this.crawler.canAddBoards ||
                         !this.getFilteredBoards().length ||
                         this.sortBoardsMode
-                    )
+                    ) {
                         return;
+                    }
 
                     this.crawler.deleteBoard(this.getFilteredBoards()[index].value);
                     await this.getBoards(this.currentBoardTypeIndex, index);
-                    break;
-                case 'r':
-                    if (!this.crawler.canRefreshBoards || this.sortBoardsMode) return;
-                    this.crawler.boards = [];
-                    this.crawler.resetBoards();
-                    await this.getBoards(0);
                     break;
                 case 'right':
                     if (this.crawler.boardTypes.length < 2 || this.sortBoardsMode) return;
@@ -367,7 +382,6 @@ class Community extends CLI {
             if (postRead) {
                 this.crawler.postsRead = postRead;
             }
-
             this.screen.title = this.crawler.title;
             await this.crawler.start();
             await this.getBoards(index);
@@ -406,7 +420,7 @@ class Community extends CLI {
                 this.isColorsError
                     ? '{gray-fg}Invalid JSON format for color theme - default theme now{/}'
                     : '',
-                `q: quit, o: open GitHub, e: edit theme, r: reset settings{|}${name} ${version}`
+                `q: quit, o: open GitHub{|}${name} ${version}`
             );
         });
 
@@ -427,9 +441,7 @@ class Community extends CLI {
                 this.setTitleFooterContent(
                     this.crawler.title,
                     this.crawler.boardTypes[this.currentBoardTypeIndex],
-                    `q: back${this.crawler.canRefreshBoards ? ', r: refresh/reset' : ''}${
-                        this.crawler.canAddBoards ? ', a: add board, d: delete board' : ''
-                    }${
+                    `q: back${this.crawler.canAddBoards ? ', a: add board, d: delete board' : ''}${
                         this.crawler.boardTypes.length > 1
                             ? ', s: sort board, left/right arrow: prev/next page'
                             : ''

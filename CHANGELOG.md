@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.41] - 2020-06-10
+
+### Added
+
+-   add command-line arguments: `--theme`, `--reset`, `coumminty index | name`
+    -   `--theme`: update theme
+    -   `--reset`: reset data
+    -   `community index | name`: open community directly
+
 ## [1.0.0-beta.40] - 2020-06-10
 
 ### Added
