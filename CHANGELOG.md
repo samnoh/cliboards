@@ -6,8 +6,8 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
--   add a more distinguishable indicator for sorting boards and auto-refresh
--   add a gif/image indicator for comments in `CLIEN`
+-   add more distinguishable indicators for sorting boards and auto-refresh
+-   add gif/image indicators for comments in `CLIEN`
 -   display 201 or more comments in `CLIEN`
 
 ## [1.0.0-beta.37] - 2020-06-09
