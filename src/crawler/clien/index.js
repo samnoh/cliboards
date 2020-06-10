@@ -172,10 +172,21 @@ class Clien extends CommunityCrawler {
         return Array.from(commentsEl).map((comment) => {
             const isRemoved = comment.classList.contains('blocked');
             const isReply = comment.classList.contains('re');
+
+            if (isRemoved) {
+                return {
+                    isReply,
+                    isRemoved,
+                    body: '삭제 되었습니다.',
+                };
+            }
+
             const body = comment.querySelector('.comment_content');
             const author = comment.querySelector('.contact_name');
             const time = comment.querySelector('.comment_time .timestamp');
             const upVotes = comment.querySelector('.comment_symph');
+            const image = comment.querySelector('.comment-img');
+            const gif = comment.querySelector('.comment-video');
 
             // handle animated author name
             if (isReply && !isRemoved) {
@@ -188,20 +199,17 @@ class Clien extends CommunityCrawler {
                 }
             }
 
-            return isRemoved
-                ? {
-                      isReply,
-                      isRemoved,
-                      body: '삭제 되었습니다.',
-                  }
-                : {
-                      isReply,
-                      isRemoved,
-                      author: author.innerText || author.querySelector('img').getAttribute('alt'),
-                      time: time.innerText.split(' ')[1],
-                      body: body.innerText,
-                      upVotes: parseInt(upVotes.innerText.trim()),
-                  };
+            return {
+                isReply,
+                isRemoved,
+                author: author.innerText || author.querySelector('img').getAttribute('alt'),
+                time: time.innerText.split(' ')[1],
+                body:
+                    image || gif
+                        ? `${image ? 'IMAGE' : 'GIF'}_1\n\n` + body.innerText
+                        : body.innerText,
+                upVotes: parseInt(upVotes.innerText.trim()),
+            };
         });
     }
 
