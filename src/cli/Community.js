@@ -475,7 +475,7 @@ class Community extends CLI {
                         : ''
                 }`,
                 this.autoRefreshTimer
-                    ? `q: back, any key: cancel auto refresh{|}Refresh every ${this.autoRefreshInterval} sec..`
+                    ? `q: back, any key: cancel auto refresh{|}{blue-fg}Refresh every ${this.autoRefreshInterval} sec..{/}`
                     : `q: back, r: refresh, a: auto refresh${
                           this.crawler.sortUrl ? ', s: sort' : ''
                       }, left/right arrow: prev/next page`
