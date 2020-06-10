@@ -418,7 +418,7 @@ class Community extends CLI {
             if (this.sortBoardsMode) {
                 this.setTitleFooterContent(
                     this.crawler.title,
-                    '정렬하기',
+                    '{blue-fg}정렬하기{/}',
                     'c: cancel, s: save, up/down arrow: move board'
                 );
             } else {
