@@ -75,7 +75,7 @@ class SLRClub extends CommunityCrawler {
     async getPostDetail(link) {
         await this.page.goto(link);
 
-        this.postsRead.add(link); // set post that you read
+        this.postsRead.add(this.currentBaseUrl); // set post that you read
 
         const postDetail = await this.page.evaluate(() => {
             const title = document.querySelector('.subject');
@@ -115,13 +115,13 @@ class SLRClub extends CommunityCrawler {
         });
 
         if (postDetail.numberOfComments && postDetail.commentsFormData) {
-            postDetail.comments = await this.getComments(link, postDetail.commentsFormData);
+            postDetail.comments = await this.getComments(postDetail.commentsFormData);
         }
 
         return postDetail;
     }
 
-    async getComments(Referer, data) {
+    async getComments(data) {
         const form = new FormData();
 
         form.append('id', data.bbsid);
@@ -135,7 +135,7 @@ class SLRClub extends CommunityCrawler {
                 method: 'post',
                 url: commentsUrl,
                 data: form,
-                headers: { Referer, ...form.getHeaders() },
+                headers: { Referer: this.currentBaseUrl, ...form.getHeaders() },
             });
 
             if (!response.data.c) {

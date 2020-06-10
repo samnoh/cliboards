@@ -1,3 +1,5 @@
+const axios = require('axios');
+
 const CommunityCrawler = require('../CommunityCrawler');
 const {
     baseUrl,
@@ -109,16 +111,16 @@ class Clien extends CommunityCrawler {
     async getPostDetail(link) {
         await this.page.goto(link);
 
-        this.postsRead.add(link); // set post that you read
+        this.postsRead.add(this.currentBaseUrl); // set post that you read
 
-        return await this.page.evaluate(() => {
+        const postDetail = await this.page.evaluate(() => {
             const category = document.querySelector('.post_subject .post_category');
             const title = document.querySelector('.post_subject span:not(.post_category)');
             const author = document.querySelector('.post_info .contact_name');
             const hit = document.querySelector('.view_info');
             const body = document.querySelector('.post_article');
             const upVotes = document.querySelector('.symph_count strong');
-            const comments = document.querySelectorAll('.comment_row');
+            const commentsEl = document.querySelectorAll('.comment_row');
             const time = document.querySelector('.post_author span');
             const gifs = Array.from(body.querySelectorAll('.fr-video') || []);
             const images = Array.from(
@@ -151,46 +153,77 @@ class Clien extends CommunityCrawler {
                 upVotes: parseInt(upVotes.innerText),
                 images,
                 hasImages: images.length,
-                comments: Array.from(comments).map((comment) => {
-                    const isRemoved = comment.classList.contains('blocked');
-                    const isReply = comment.classList.contains('re');
-                    const body = comment.querySelector('.comment_content');
-                    const author = comment.querySelector('.contact_name');
-                    const time = comment.querySelector('.comment_time .timestamp');
-                    const upVotes = comment.querySelector('.comment_symph');
-
-                    // handle animated author name
-                    if (isReply && !isRemoved) {
-                        const replyTo = body.querySelector('.comment_view strong img');
-
-                        if (replyTo) {
-                            const nickId = document.createTextNode(
-                                replyTo.getAttribute('data-nick-id')
-                            );
-
-                            replyTo.parentNode.replaceChild(nickId, replyTo);
-                        }
-                    }
-
-                    return isRemoved
-                        ? {
-                              isReply,
-                              isRemoved,
-                              body: '삭제 되었습니다.',
-                          }
-                        : {
-                              isReply,
-                              isRemoved,
-                              author:
-                                  author.innerText ||
-                                  author.querySelector('img').getAttribute('alt'),
-                              time: time.innerText.split(' ')[1],
-                              body: body.innerText,
-                              upVotes: parseInt(upVotes.innerText.trim()),
-                          };
-                }),
+                extraData: {
+                    isXHRRequired: commentsEl && commentsEl.length === 200,
+                },
             };
         });
+
+        postDetail.comments = postDetail.extraData.isXHRRequired
+            ? await this.getAllComments()
+            : await this.page.evaluate(this.processComments);
+
+        return postDetail;
+    }
+
+    processComments() {
+        const commentsEl = document.querySelectorAll('.comment_row');
+
+        return Array.from(commentsEl).map((comment) => {
+            const isRemoved = comment.classList.contains('blocked');
+            const isReply = comment.classList.contains('re');
+            const body = comment.querySelector('.comment_content');
+            const author = comment.querySelector('.contact_name');
+            const time = comment.querySelector('.comment_time .timestamp');
+            const upVotes = comment.querySelector('.comment_symph');
+
+            // handle animated author name
+            if (isReply && !isRemoved) {
+                const replyTo = body.querySelector('.comment_view strong img');
+
+                if (replyTo) {
+                    const nickId = document.createTextNode(replyTo.getAttribute('data-nick-id'));
+
+                    replyTo.parentNode.replaceChild(nickId, replyTo);
+                }
+            }
+
+            return isRemoved
+                ? {
+                      isReply,
+                      isRemoved,
+                      body: '삭제 되었습니다.',
+                  }
+                : {
+                      isReply,
+                      isRemoved,
+                      author: author.innerText || author.querySelector('img').getAttribute('alt'),
+                      time: time.innerText.split(' ')[1],
+                      body: body.innerText,
+                      upVotes: parseInt(upVotes.innerText.trim()),
+                  };
+        });
+    }
+
+    async getAllComments() {
+        try {
+            const baseLink = this.currentBaseUrl;
+            const params = {
+                order: 'data',
+                po: 0,
+                ps: 999999,
+            };
+
+            const { data } = await axios.get(`${baseLink}/comment`, { params });
+
+            await this.page.setContent(data);
+
+            const comments = await this.page.evaluate(this.processComments);
+
+            return comments;
+        } catch (e) {
+            return [];
+        }
     }
 
     static toString() {

@@ -18,7 +18,7 @@ class Crawler {
                 args: ['--no-sandbox', '--disable-setuid-sandbox', '--diable-dev-shm-usage'],
             });
 
-            this.page = await this.browser.newPage();
+            this.page = (await this.browser.pages())[0];
 
             // page settings
             this.page.setDefaultNavigationTimeout(10000);
@@ -64,6 +64,10 @@ class Crawler {
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36'
                 );
         }
+    }
+
+    get currentBaseUrl() {
+        return this.page.url().split('?')[0];
     }
 }
 

@@ -92,7 +92,7 @@ class Dcinside extends CommunityCrawler {
     async getPostDetail(link) {
         await this.page.goto(link);
 
-        this.postsRead.add(link); // set post that you read
+        this.postsRead.add(this.currentBaseUrl); // set post that you read
 
         return await this.page.evaluate(() => {
             const _title = document.querySelector('.gallview-tit-box .tit');

@@ -152,7 +152,7 @@ class Ppomppu extends CommunityCrawler {
     async getPostDetail(link) {
         await this.page.goto(link);
 
-        this.postsRead.add(link); // set post that you read
+        this.postsRead.add(this.currentBaseUrl); // set post that you read
 
         return await this.page.evaluate(() => {
             const h4 = document.querySelector('h4');

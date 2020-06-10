@@ -14,6 +14,10 @@ module.exports = {
             name: '공감순',
             value: '&od=T33',
         },
+        {
+            name: '댓글순',
+            value: '&od=T34',
+        },
     ],
     boardTypes,
     ignoreBoards: ['사진게시판', '아무거나질문', '알뜰구매', '임시소모임', '직접홍보'],
