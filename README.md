@@ -16,13 +16,17 @@
 Use the package manager [npm](https://www.npmjs.com) to install `cliboards`.
 
 ```bash
-$ npm i -g cliboards
+# Install globally (recommended).
+npm i -g cliboards
+
+# Or run directly with npx (installs CLI on every run).
+npx cliboards
 ```
 
 ## Usage
 
 ```bash
-$ cliboards
+cliboards
 ```
 
 ## Contributing
@@ -32,6 +36,10 @@ Please do contribute! Issues and pull requests are all welcome.
 ### Code of Conduct
 
 Please read the [full text](CODE_OF_CONDUCT.md) so that you can understand what actions will and will not be tolerated.
+
+## Changelog
+
+[Read the changelog here](CHANGELOG.md)
 
 ## Licnese
 
