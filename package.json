@@ -43,5 +43,8 @@
         "viewer",
         "crawler",
         "scraper"
-    ]
+    ],
+    "engines": {
+        "node": ">= 6.0.0"
+    }
 }

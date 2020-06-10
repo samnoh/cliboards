@@ -1,4 +1,4 @@
-# cliboards &middot; [![npm version](https://img.shields.io/npm/v/cliboards)](https://www.npmjs.com/package/cliboards) [![GitHub license](https://img.shields.io/npm/l/cliboards)](LICENSE)
+# cliboards &middot; [![npm version](https://img.shields.io/npm/v/cliboards)](https://www.npmjs.com/package/cliboards) [![npm downloads](https://img.shields.io/npm/dm/cliboards)](https://www.npmjs.com/package/cliboards) [![GitHub license](https://img.shields.io/npm/l/cliboards)](LICENSE)
 
 > Surf your online communities on CLI
 
