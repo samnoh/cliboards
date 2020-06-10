@@ -1,4 +1,4 @@
-# cliboards &middot; [![npm version](https://img.shields.io/npm/v/cliboards?color=brightgreen)](https://www.npmjs.com/package/cliboards) [![npm downloads](https://img.shields.io/npm/dm/cliboards?color=red)](https://www.npmjs.com/package/cliboards) [![GitHub license](https://img.shields.io/npm/l/cliboards?color=lightgrey)](LICENSE) [![GitHub last commit](https://img.shields.io/github/last-commit/samnoh/cliboards?color=blue)](https://github.com/samnoh/cliboards/commits/master)
+# cliboards &middot; [![npm version](https://img.shields.io/npm/v/cliboards?color=brightgreen)](https://www.npmjs.com/package/cliboards) [![npm downloads](https://img.shields.io/npm/dm/cliboards?color=red)](https://npm-stat.com/charts.html?package=cliboards) [![GitHub license](https://img.shields.io/npm/l/cliboards?color=lightgrey)](LICENSE) [![GitHub last commit](https://img.shields.io/github/last-commit/samnoh/cliboards?color=blue)](https://github.com/samnoh/cliboards/commits/master)
 
 > Surf your online communities on CLI
 
