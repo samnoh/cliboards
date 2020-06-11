@@ -126,7 +126,7 @@ class CLI {
 
             if (nextWidget) {
                 direction === 'prev' && currWidget.select && currWidget.select(0);
-                currWidget.detach();
+                currWidget.destroy();
                 this.bodyBox.append(nextWidget);
 
                 callback && callback(nextWidget);

@@ -722,7 +722,12 @@ class Community extends CLI {
             this.textBox.destroy();
             this.widgets[this.currentWidgetIndex].focus();
         });
+
         this.textBox.on('submit', onSubmit);
+
+        this.textBox.on('destroy', () => {
+            this.textBox = null;
+        });
 
         this.textBox.focus();
         this.screen.render();
@@ -730,8 +735,6 @@ class Community extends CLI {
 
     showFormBox(buttons, callback) {
         if (!buttons.length) return;
-
-        let leftMargin = 0;
 
         this.formBox = blessed.form({
             parent: this.footerBox,
@@ -741,24 +744,24 @@ class Community extends CLI {
             left: -2,
         });
 
+        let left = 0;
+
         buttons.map(({ name, value }) => {
+            const nonDoubleWidthCharsLegnth = name.replace(/[^\+\(\)]/g, '').length;
+
+            const offset = 2;
+            const width = (name.length - nonDoubleWidthCharsLegnth) * 2 + nonDoubleWidthCharsLegnth;
+
             const _button = blessed.button({
                 parent: this.formBox,
                 content: name,
-                name: value,
-                vi: false,
-                input: false,
-                keyable: false,
                 shrink: true,
-                left: leftMargin,
-                style: {
-                    focus: {
-                        fg: 'blue',
-                    },
-                },
+                width,
+                left,
+                style: { focus: { fg: 'blue' } },
             });
 
-            leftMargin += name.length + 6;
+            left += width + offset;
 
             _button.on('keypress', (_, { full }) => {
                 switch (full) {
@@ -771,10 +774,9 @@ class Community extends CLI {
                     case 'left':
                         this.formBox.focusPrevious();
                         break;
+                    case 'q':
                     case 'escape':
                         this.formBox.destroy();
-                        this.formBox = null;
-                        this.widgets[this.currentWidgetIndex].focus();
                         break;
                     case 'enter':
                         this.formBox.emit('submit', { name, value });
@@ -784,10 +786,15 @@ class Community extends CLI {
         });
 
         this.formBox.on('submit', (data) => {
+            this.formBox.children.forEach((child) => child.destroy());
             this.formBox.destroy();
+
+            callback(data);
+        });
+
+        this.formBox.on('destroy', () => {
             this.formBox = null;
             this.widgets[this.currentWidgetIndex].focus();
-            callback(data);
         });
 
         this.formBox.focus();

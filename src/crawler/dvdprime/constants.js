@@ -61,4 +61,37 @@ module.exports = {
             type: boardTypes[2],
         },
     ],
+    search: {
+        getSearchParams: () => {},
+        types: [
+            {
+                name: '제목',
+                value: '',
+            },
+            {
+                name: '제목+내용',
+                value: '',
+            },
+            {
+                name: '내용',
+                value: '',
+            },
+            {
+                name: '닉네임(본문)',
+                value: '',
+            },
+            {
+                name: '닉네임(코멘트)',
+                value: '',
+            },
+            {
+                name: '아이디(본문)',
+                value: '',
+            },
+            {
+                name: '아이디(코멘트)',
+                value: '',
+            },
+        ],
+    },
 };

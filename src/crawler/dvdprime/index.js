@@ -7,6 +7,7 @@ const {
     ignoreRequests,
     boards,
     ignoreBoards,
+    search,
 } = require('./constants');
 
 class DVDPrime extends CommunityCrawler {
@@ -15,6 +16,8 @@ class DVDPrime extends CommunityCrawler {
 
         this.title = DVDPrime.toString();
         this.boardTypes = boardTypes;
+        // this.getSearchParams = search.getSearchParams;
+        // this.searchTypes = search.types;
     }
 
     async getBoards() {
