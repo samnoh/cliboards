@@ -270,7 +270,7 @@ class Community extends CLI {
 
             if (!this.posts.length) return;
 
-            const prevPaggeNumber = this.crawler.pageNumber;
+            const prevPageNumber = this.crawler.currentPageNumber;
             const prevPosts = this.posts;
             const prevPostIndex = this.currentPostIndex;
 
@@ -290,7 +290,9 @@ class Community extends CLI {
                     this.crawler.changeSortUrl((this.crawler.sortListIndex + 1) % sortUrlsLength);
                 }
             } else if (full === 'w') {
-                this.setTitleContent('검색하기');
+                if (!this.crawler.searchTypes || !this.crawler.searchTypes.length) return;
+                this.setTitleContent('필터를 선택하세요', this.crawler.title + ' 검색');
+
                 this.showFormBox(this.crawler.searchTypes, ({ name, value }) => {
                     this.setTitleContent('키워드를 입력하세요', name + ' 검색');
                     this.showTextBox(async (keyword) => {
@@ -333,7 +335,7 @@ class Community extends CLI {
 
             if (!this.posts.length) {
                 // no more pages -> go back to the previous page
-                this.crawler.pageNumber = prevPaggeNumber;
+                this.crawler.pageNumber = prevPageNumber;
                 this.posts = prevPosts;
                 this.currentPostIndex = prevPostIndex;
                 this.listList.focus();
@@ -524,8 +526,8 @@ class Community extends CLI {
                 }`,
                 this.autoRefreshTimer
                     ? `q: back, any key: cancel auto refresh{|}{blue-fg}Refresh every ${this.autoRefreshInterval} sec..{/}`
-                    : `q: back${
-                          this.crawler.searchParams ? ', c: cancel search' : ''
+                    : `q: back${this.crawler.searchParams ? ', c: cancel search' : ''}${
+                          this.crawler.searchTypes ? ', w: search' : ''
                       }, r: refresh, a: auto refresh${
                           this.crawler.sortUrl ? ', s: sort' : ''
                       }, left/right arrow: prev/next page`
@@ -726,7 +728,7 @@ class Community extends CLI {
         this.screen.render();
     }
 
-    showFormBox(buttons = [], callback) {
+    showFormBox(buttons, callback) {
         if (!buttons.length) return;
 
         let leftMargin = 0;
