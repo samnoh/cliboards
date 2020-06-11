@@ -763,9 +763,11 @@ class Community extends CLI {
             _button.on('keypress', (_, { full }) => {
                 switch (full) {
                     case 'tab':
+                    case 'l':
                     case 'right':
                         this.formBox.focusNext();
                         break;
+                    case 'h':
                     case 'left':
                         this.formBox.focusPrevious();
                         break;

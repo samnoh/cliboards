@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.42] - 2020-06-11
+
+### Added
+
+-   add `dcinside` search (`w`)
+
 ## [1.0.0-beta.41] - 2020-06-10
 
 ### Added
