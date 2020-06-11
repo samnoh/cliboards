@@ -50,7 +50,7 @@ class CommunityCrawler extends Crawler {
     }
 
     get sortUrl() {
-        return this.sortUrls.length ? this.sortUrls[this.sortListIndex] : { value: '' };
+        return this.sortUrls.length ? this.sortUrls[this.sortListIndex] : '';
     }
 
     set sortUrl(index) {

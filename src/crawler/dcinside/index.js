@@ -32,11 +32,10 @@ class Dcinside extends CommunityCrawler {
     }
 
     async getPosts() {
+        const _sortUrl = this.sortUrl ? this.sortUrl.value : '';
+
         await this.page.goto(
-            getUrl(this.currentBoard.value) +
-                this.pageNumber +
-                this.sortUrl.value +
-                this.searchParams
+            getUrl(this.currentBoard.value) + this.pageNumber + _sortUrl + this.searchParams
         );
 
         await this.getSortUrls(() => {

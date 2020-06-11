@@ -520,7 +520,7 @@ class Community extends CLI {
                 `${
                     this.crawler.currentBoard.singlePage ? '' : this.crawler.pageNumber + ' 페이지'
                 }${
-                    this.crawler.sortUrl.value && !this.crawler.currentBoard.noSortUrl
+                    this.crawler.sortUrl && !this.crawler.currentBoard.noSortUrl
                         ? '‧' + this.crawler.sortUrl.name
                         : ''
                 }`,
