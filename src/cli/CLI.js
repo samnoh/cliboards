@@ -15,7 +15,7 @@ class CLI {
             dockBorders: true,
             fastCSR: true,
             fullUnicode: true,
-            debug: true,
+            debug: process.env.NODE_ENV === 'development',
         });
         const box = blessed.box({
             parent: this.screen,
@@ -73,7 +73,10 @@ class CLI {
         });
 
         this.screen.key(['escape', 'q'], () => {
-            !this.footerBox.focused && this.moveToWidget('prev');
+            if (this.footerBox.focused || this.formBox) {
+                return;
+            }
+            this.moveToWidget('prev');
         });
     }
 

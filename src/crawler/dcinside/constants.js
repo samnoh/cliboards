@@ -31,4 +31,29 @@ module.exports = {
             type: boardTypes[0],
         },
     ],
+    search: {
+        getSearchParams: (type, keyword) => `&s_type=${type}&serval=${keyword}`,
+        types: [
+            {
+                name: '전체',
+                value: 'all',
+            },
+            {
+                name: '제목',
+                value: 'subject',
+            },
+            {
+                name: '내용',
+                value: 'memo',
+            },
+            {
+                name: '글쓴이',
+                value: 'name',
+            },
+            {
+                name: '제목+내용',
+                value: 'subject_m',
+            },
+        ],
+    },
 };

@@ -13,6 +13,7 @@ class CommunityCrawler extends Crawler {
         this.sortListIndex = 0;
         this.postsRead = new Set();
         this.canAddBoards = false;
+        this.searchParams = '';
     }
 
     getBoards(boards, ignoreBoards) {
@@ -49,7 +50,7 @@ class CommunityCrawler extends Crawler {
     }
 
     get sortUrl() {
-        return this.sortUrls.length ? this.sortUrls[this.sortListIndex] : '';
+        return this.sortUrls.length ? this.sortUrls[this.sortListIndex] : { value: '' };
     }
 
     set sortUrl(index) {
@@ -129,6 +130,10 @@ class CommunityCrawler extends Crawler {
         this.boards[targetBoardIndex] = temp;
 
         return true;
+    }
+
+    set setSearchParams({ value, keyword }) {
+        this.searchParams = this.getSearchParams(value, keyword);
     }
 
     saveBoards() {

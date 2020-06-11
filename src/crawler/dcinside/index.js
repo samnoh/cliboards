@@ -9,6 +9,7 @@ const {
     ignoreRequests,
     ignoreBoards,
     boards,
+    search,
 } = require('./constants');
 
 class Dcinside extends CommunityCrawler {
@@ -18,6 +19,8 @@ class Dcinside extends CommunityCrawler {
         this.title = Dcinside.toString();
         this.boardTypes = boardTypes;
         this.canAddBoards = true;
+        this.getSearchParams = search.getSearchParams;
+        this.searchTypes = search.types;
     }
 
     getBoards() {
@@ -30,7 +33,10 @@ class Dcinside extends CommunityCrawler {
 
     async getPosts() {
         await this.page.goto(
-            getUrl(this.currentBoard.value) + this.pageNumber + this.sortUrl.value
+            getUrl(this.currentBoard.value) +
+                this.pageNumber +
+                this.sortUrl.value +
+                this.searchParams
         );
 
         await this.getSortUrls(() => {

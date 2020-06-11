@@ -1,9 +1,9 @@
 const blessed = require('blessed');
 
-const { name, version, homepage } = require('../../package.json');
 const CLI = require('./CLI');
-const { openUrls, resetConfigstore, resetCustomTheme } = require('../helpers');
 const { getCrawler, crawlers } = require('../crawler');
+const { openUrls, resetConfigstore, resetCustomTheme } = require('../helpers');
+const { name, version, homepage } = require('../../package.json');
 
 class Community extends CLI {
     constructor() {
@@ -152,11 +152,12 @@ class Community extends CLI {
                     }
 
                     this.setTitleFooterContent('링크나 갤러리 ID를 입력하세요');
-                    this.showInputBox(async (input) => {
+
+                    this.showTextBox(async (input) => {
                         if (!input) return;
 
-                        this.inputBox.style.bg = 'green';
-                        this.inputBox.style.fg = 'black';
+                        this.textBox.style.bg = 'green';
+                        this.textBox.style.fg = 'black';
                         this.footerBox.focus();
 
                         try {
@@ -164,19 +165,20 @@ class Community extends CLI {
                                 input,
                                 this.crawler.boardTypes[this.currentBoardTypeIndex]
                             );
-                            this.inputBox.destroy();
+                            this.textBox.destroy();
                             await this.crawler.getBoards();
                             await this.getBoards(
                                 this.currentBoardTypeIndex,
                                 this.crawler.boards.length
                             );
                         } catch (e) {
-                            this.inputBox.focus();
-                            this.inputBox.style.bg = 'red';
-                            this.inputBox.style.fg = 'white';
+                            this.textBox.focus();
+                            this.textBox.style.bg = 'red';
+                            this.textBox.style.fg = 'white';
                             this.setTitleFooterContent('잘못된 입력입니다: ' + e.message);
                         }
                     });
+
                     break;
                 case 's':
                     this.sortBoardsMode = !this.sortBoardsMode;
@@ -274,6 +276,9 @@ class Community extends CLI {
 
             if (full === 'r') {
                 // refresh
+            } else if (full === 'c') {
+                if (!this.crawler.searchParams) return;
+                this.crawler.searchParams = '';
             } else if (full === 'a') {
                 this.autoRefreshTimer = setInterval(async () => {
                     await this.refreshPosts();
@@ -284,6 +289,36 @@ class Community extends CLI {
                     const sortUrlsLength = this.crawler.sortUrls.length;
                     this.crawler.changeSortUrl((this.crawler.sortListIndex + 1) % sortUrlsLength);
                 }
+            } else if (full === 'w') {
+                this.setTitleContent('검색하기');
+                this.showFormBox(this.crawler.searchTypes, ({ name, value }) => {
+                    this.setTitleContent('키워드를 입력하세요', name + ' 검색');
+                    this.showTextBox(async (keyword) => {
+                        if (!keyword) return;
+
+                        this.textBox.style.bg = 'green';
+                        this.textBox.style.fg = 'black';
+                        this.footerBox.focus();
+
+                        try {
+                            this.crawler.setSearchParams = { value, keyword };
+                            await this.refreshPosts();
+                            if (this.posts.length === 0) {
+                                this.posts = prevPosts;
+                                throw new Error('결과가 없습니다');
+                            }
+                            this.textBox.destroy();
+                            this.listList.focus();
+                        } catch (e) {
+                            this.textBox.focus();
+                            this.textBox.style.bg = 'red';
+                            this.textBox.style.fg = 'white';
+                            this.crawler.searchParams = '';
+                            this.setTitleFooterContent('Error: ' + e.message, name + ' 검색');
+                        }
+                    });
+                });
+                return;
             } else if (full === 'left' && this.crawler.pageNumber > 1) {
                 if (this.crawler.currentBoard.singlePage) return;
                 this.crawler.navigatePage = -1;
@@ -436,6 +471,7 @@ class Community extends CLI {
                     'c: cancel, s: save, up/down arrow: move board'
                 );
             } else {
+                this.crawler.searchParams = '';
                 this.currentPostIndex = 0;
                 this.crawler.changeSortUrl(0);
                 this.setTitleFooterContent(
@@ -482,13 +518,15 @@ class Community extends CLI {
                 `${
                     this.crawler.currentBoard.singlePage ? '' : this.crawler.pageNumber + ' 페이지'
                 }${
-                    this.crawler.sortUrl && !this.crawler.currentBoard.noSortUrl
+                    this.crawler.sortUrl.value && !this.crawler.currentBoard.noSortUrl
                         ? '‧' + this.crawler.sortUrl.name
                         : ''
                 }`,
                 this.autoRefreshTimer
                     ? `q: back, any key: cancel auto refresh{|}{blue-fg}Refresh every ${this.autoRefreshInterval} sec..{/}`
-                    : `q: back, r: refresh, a: auto refresh${
+                    : `q: back${
+                          this.crawler.searchParams ? ', c: cancel search' : ''
+                      }, r: refresh, a: auto refresh${
                           this.crawler.sortUrl ? ', s: sort' : ''
                       }, left/right arrow: prev/next page`
             );
@@ -665,8 +703,8 @@ class Community extends CLI {
         }
     }
 
-    showInputBox(onSubmit) {
-        this.inputBox = blessed.textbox({
+    showTextBox(onSubmit) {
+        this.textBox = blessed.textbox({
             parent: this.footerBox,
             height: 1,
             width: '100%',
@@ -678,13 +716,79 @@ class Community extends CLI {
             input: true,
         });
 
-        this.inputBox.on('cancel', () => {
-            this.inputBox.destroy();
+        this.textBox.on('cancel', () => {
+            this.textBox.destroy();
             this.widgets[this.currentWidgetIndex].focus();
         });
-        this.inputBox.on('submit', onSubmit);
+        this.textBox.on('submit', onSubmit);
 
-        this.inputBox.focus();
+        this.textBox.focus();
+        this.screen.render();
+    }
+
+    showFormBox(buttons = [], callback) {
+        if (!buttons.length) return;
+
+        let leftMargin = 0;
+
+        this.formBox = blessed.form({
+            parent: this.footerBox,
+            height: 1,
+            width: '100%',
+            top: '100%-1',
+            left: -2,
+        });
+
+        buttons.map(({ name, value }) => {
+            const _button = blessed.button({
+                parent: this.formBox,
+                content: name,
+                name: value,
+                vi: false,
+                input: false,
+                keyable: false,
+                shrink: true,
+                left: leftMargin,
+                style: {
+                    focus: {
+                        fg: 'blue',
+                    },
+                },
+            });
+
+            leftMargin += name.length + 6;
+
+            _button.on('keypress', (_, { full }) => {
+                switch (full) {
+                    case 'tab':
+                    case 'right':
+                        this.formBox.focusNext();
+                        break;
+                    case 'left':
+                        this.formBox.focusPrevious();
+                        break;
+                    case 'escape':
+                        this.formBox.destroy();
+                        this.formBox = null;
+                        this.widgets[this.currentWidgetIndex].focus();
+                        break;
+                    case 'enter':
+                        this.formBox.emit('submit', { name, value });
+                        break;
+                }
+            });
+        });
+
+        this.formBox.on('submit', (data) => {
+            this.formBox.destroy();
+            this.formBox = null;
+            this.widgets[this.currentWidgetIndex].focus();
+            callback(data);
+        });
+
+        this.formBox.focus();
+        this.formBox.focusNext();
+
         this.screen.render();
     }
 }
