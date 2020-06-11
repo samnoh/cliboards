@@ -62,35 +62,35 @@ module.exports = {
         },
     ],
     search: {
-        getSearchParams: () => {},
+        getSearchParams: (type, keyword) => `&sca=&scrap_mode=&sfl=${type}&sop=and&stx=${keyword}`,
         types: [
             {
                 name: '제목',
-                value: '',
+                value: 'wr_subject',
             },
             {
                 name: '제목+내용',
-                value: '',
+                value: 'wr_subject%7C%7Cwr_content',
             },
             {
                 name: '내용',
-                value: '',
+                value: 'wr_content',
             },
             {
                 name: '닉네임(본문)',
-                value: '',
+                value: 'wr_name',
             },
             {
                 name: '닉네임(코멘트)',
-                value: '',
+                value: 'wr_name%2C0',
             },
             {
                 name: '아이디(본문)',
-                value: '',
+                value: 'mb_id%2C1',
             },
             {
                 name: '아이디(코멘트)',
-                value: '',
+                value: 'mb_id%2C0',
             },
         ],
     },

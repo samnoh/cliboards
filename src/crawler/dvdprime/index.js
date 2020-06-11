@@ -16,8 +16,8 @@ class DVDPrime extends CommunityCrawler {
 
         this.title = DVDPrime.toString();
         this.boardTypes = boardTypes;
-        // this.getSearchParams = search.getSearchParams;
-        // this.searchTypes = search.types;
+        this.getSearchParams = search.getSearchParams;
+        this.searchTypes = search.types;
     }
 
     async getBoards() {
@@ -32,7 +32,7 @@ class DVDPrime extends CommunityCrawler {
     }
 
     async getPosts() {
-        await this.page.goto(getUrl(this.currentBoard.value) + this.pageNumber);
+        await this.page.goto(getUrl(this.currentBoard.value) + this.pageNumber + this.searchParams);
 
         const posts = await this.page.evaluate((baseUrl) => {
             const lists = document.querySelectorAll('.list_table_row');
