@@ -136,8 +136,7 @@ class Community extends CLI {
         this.communityList.on('keypress', async (_, { full }) => {
             switch (full) {
                 case 'o':
-                    await openUrls(homepage);
-                    break;
+                    return await openUrls(homepage);
             }
         });
 
@@ -153,7 +152,7 @@ class Community extends CLI {
 
                     this.setTitleFooterContent('링크나 갤러리 ID를 입력하세요');
 
-                    this.showTextBox(async (input) => {
+                    return this.showTextBox(async (input) => {
                         if (!input) return;
 
                         this.textBox.style.bg = 'green';
@@ -178,8 +177,6 @@ class Community extends CLI {
                             this.setTitleFooterContent('잘못된 입력입니다: ' + e.message);
                         }
                     });
-
-                    break;
                 case 's':
                     this.sortBoardsMode = !this.sortBoardsMode;
                     if (!this.sortBoardsMode) {
@@ -189,8 +186,7 @@ class Community extends CLI {
                         const board = this.getFilteredBoards()[index];
                         this.currItemContent = board && board.name;
                     }
-                    this.boardsList.focus();
-                    break;
+                    return this.boardsList.focus();
                 case 'enter':
                 case 'c':
                     if (!this.sortBoardsMode) return;
@@ -203,8 +199,7 @@ class Community extends CLI {
                     await this.getBoards(this.currentBoardTypeIndex, _index);
                     this.sortBoardsMode = false;
                     this.currItemContent = null;
-                    this.boardsList.focus();
-                    break;
+                    return this.boardsList.focus();
                 case 'd':
                     if (
                         !this.crawler.canAddBoards ||
@@ -215,15 +210,13 @@ class Community extends CLI {
                     }
 
                     this.crawler.deleteBoard(this.getFilteredBoards()[index].value);
-                    await this.getBoards(this.currentBoardTypeIndex, index);
-                    break;
+                    return await this.getBoards(this.currentBoardTypeIndex, index);
                 case 'right':
                     if (this.crawler.boardTypes.length < 2 || this.sortBoardsMode) return;
 
                     this.currentBoardTypeIndex =
                         (this.currentBoardTypeIndex + 1) % boardTypesLength;
-                    await this.getBoards(this.currentBoardTypeIndex);
-                    break;
+                    return await this.getBoards(this.currentBoardTypeIndex);
                 case 'left':
                     if (this.crawler.boardTypes.length < 2 || this.sortBoardsMode) return;
 
@@ -233,8 +226,7 @@ class Community extends CLI {
                         this.currentBoardTypeIndex =
                             (this.currentBoardTypeIndex - 1) % boardTypesLength;
                     }
-                    await this.getBoards(this.currentBoardTypeIndex);
-                    break;
+                    return await this.getBoards(this.currentBoardTypeIndex);
                 case 'up':
                 case 'down':
                     if (
@@ -256,9 +248,7 @@ class Community extends CLI {
 
                     this.boardsList.move(offset);
                     this.boardsList.setItems(this.getFilteredBoards().map(({ name }) => name));
-                    this.screen.render();
-
-                    break;
+                    return this.screen.render();
             }
         });
 
@@ -278,6 +268,7 @@ class Community extends CLI {
                 // refresh
             } else if (full === 'c') {
                 if (!this.crawler.searchParams) return;
+                this.crawler.currentPageNumber = 0;
                 this.crawler.searchParams = '';
             } else if (full === 'a') {
                 this.autoRefreshTimer = setInterval(async () => {
@@ -293,7 +284,7 @@ class Community extends CLI {
                 if (!this.crawler.searchTypes || !this.crawler.searchTypes.length) return;
                 this.setTitleContent('필터를 선택하세요', this.crawler.title + ' 검색');
 
-                this.showFormBox(this.crawler.searchTypes, ({ name, value }) => {
+                return this.showFormBox(this.crawler.searchTypes, ({ name, value }) => {
                     this.setTitleContent('키워드를 입력하세요', name + ' 검색');
                     this.showTextBox(async (keyword) => {
                         if (!keyword) return;
@@ -303,10 +294,13 @@ class Community extends CLI {
                         this.footerBox.focus();
 
                         try {
+                            this.crawler.currentPageNumber = 0;
                             this.crawler.setSearchParams = { value, keyword };
+
                             await this.refreshPosts();
                             if (this.posts.length === 0) {
                                 this.posts = prevPosts;
+                                this.crawler.pageNumber = prevPageNumber;
                                 throw new Error('결과가 없습니다');
                             }
                             this.textBox.destroy();
@@ -320,16 +314,13 @@ class Community extends CLI {
                         }
                     });
                 });
-                return;
             } else if (full === 'left' && this.crawler.pageNumber > 1) {
                 if (this.crawler.currentBoard.singlePage) return;
                 this.crawler.navigatePage = -1;
             } else if (full === 'right') {
                 if (this.crawler.currentBoard.singlePage) return;
                 this.crawler.navigatePage = 1;
-            } else {
-                return;
-            }
+            } else return;
 
             await this.refreshPosts();
 
@@ -347,14 +338,11 @@ class Community extends CLI {
 
             switch (full) {
                 case 'r':
-                    await this.refreshPostDetail();
-                    break;
+                    return await this.refreshPostDetail();
                 case 'i':
-                    await openUrls(this.post.images || null);
-                    break;
+                    return await openUrls(this.post.images || null);
                 case 'o':
-                    await openUrls(this.posts[this.currentPostIndex].link);
-                    break;
+                    return await openUrls(this.posts[this.currentPostIndex].link);
                 case 'h':
                 case 'left':
                     if (this.currentPostIndex) {
@@ -368,7 +356,7 @@ class Community extends CLI {
                         this.posts[this.currentPostIndex].hasRead = true;
                         await this.refreshPostDetail();
                     }
-                    break;
+                    return;
                 case 'l':
                 case 'right':
                     this.currentPostIndex += 1;
@@ -396,7 +384,6 @@ class Community extends CLI {
 
                     await this.refreshPostDetail();
                     this.posts[this.currentPostIndex].hasRead = true;
-                    break;
             }
         });
     }

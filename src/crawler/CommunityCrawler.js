@@ -65,6 +65,11 @@ class CommunityCrawler extends Crawler {
         this.currentBoardIndex = this.boards.findIndex((_board) => _board.value === board.value);
     }
 
+    changeSortUrl(index) {
+        this.currentPageNumber = 0;
+        this.sortUrl = index;
+    }
+
     async getSortUrls(callback) {
         const currentBoardValue = this.currentBoard.value;
 
@@ -75,11 +80,6 @@ class CommunityCrawler extends Crawler {
 
         this.sortUrls = await this.page.evaluate(callback);
         this.sortUrlsCache.set(currentBoardValue, this.sortUrls);
-    }
-
-    changeSortUrl(index) {
-        this.currentPageNumber = 0;
-        this.sortUrl = index;
     }
 
     async addBoard(link, value, type, callback) {
