@@ -7,6 +7,7 @@ const {
     ignoreRequests,
     ignoreBoards,
     boards,
+    search,
 } = require('./constants');
 
 class Ppomppu extends CommunityCrawler {
@@ -15,6 +16,8 @@ class Ppomppu extends CommunityCrawler {
 
         this.title = Ppomppu.toString();
         this.boardTypes = boardTypes;
+        this.getSearchParams = search.getSearchParams;
+        this.searchTypes = search.types;
     }
 
     getBoards() {
@@ -26,7 +29,9 @@ class Ppomppu extends CommunityCrawler {
     }
 
     async getPosts() {
-        await this.page.goto(getUrl(this.currentBoard.value, this.pageNumber, this.sortUrl.value));
+        await this.page.goto(
+            getUrl(this.currentBoard.value, this.pageNumber, this.sortUrl.value, this.searchParams)
+        );
 
         const posts = await this.page.evaluate(
             (baseUrl, currentBoard) => {

@@ -4,8 +4,8 @@ const boardTypes = ['커뮤니티', '뽐뿌'];
 
 module.exports = {
     baseUrl,
-    getUrl: (board, page, sort) => {
-        return `${baseUrl}/new/${sort}.php?id=${board}&page=${page}&bot_type=${sort}`;
+    getUrl: (board, page, sort, search = '') => {
+        return `${baseUrl}/new/${sort}.php?id=${board}&page=${page}&bot_type=${sort}${search}`;
     },
     boardTypes,
     sortUrls: [
@@ -85,4 +85,21 @@ module.exports = {
             type: boardTypes[1],
         },
     ],
+    search: {
+        getSearchParams: (type, keyword) => `&search_type=${type}&keyword=${keyword}`,
+        types: [
+            {
+                name: '제목+내용',
+                value: 'sub_memo',
+            },
+            {
+                name: '제목',
+                value: 'subject',
+            },
+            {
+                name: '작성자',
+                value: 'name',
+            },
+        ],
+    },
 };
