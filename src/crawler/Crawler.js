@@ -15,7 +15,13 @@ class Crawler {
         try {
             this.browser = await puppeteer.launch({
                 headless: true,
-                args: ['--no-sandbox', '--disable-setuid-sandbox', '--diable-dev-shm-usage'],
+                args: [
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox',
+                    '--diable-dev-shm-usage',
+                    '--no-first-run',
+                    '--no-default-browser-check',
+                ],
             });
 
             this.page = (await this.browser.pages())[0];
