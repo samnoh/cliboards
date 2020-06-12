@@ -266,7 +266,7 @@ class Community extends CLI {
 
             if (full === 'r') {
                 // refresh
-            } else if (full === 'c') {
+            } else if (full === 'c' || full === 'space') {
                 if (!this.crawler.searchParams) return;
                 this.crawler.currentPageNumber = 0;
                 this.crawler.searchParams = '';
@@ -314,7 +314,7 @@ class Community extends CLI {
                         }
                     });
                 });
-            } else if (full === 'left' && this.crawler.pageNumber > 1) {
+            } else if (full === 'left' && this.crawler.pageNumber >= 2) {
                 if (this.crawler.currentBoard.singlePage) return;
                 this.crawler.navigatePage = -1;
             } else if (full === 'right') {
@@ -513,7 +513,7 @@ class Community extends CLI {
                 }`,
                 this.autoRefreshTimer
                     ? `q: back, any key: cancel auto refresh{|}{blue-fg}Refresh every ${this.autoRefreshInterval} sec..{/}`
-                    : `q: back${this.crawler.searchParams ? ', c: cancel search' : ''}${
+                    : `q: back${this.crawler.searchParams ? ', c/space: cancel search' : ''}${
                           this.crawler.searchTypes ? ', w: search' : ''
                       }, r: refresh, a: auto refresh${
                           this.crawler.sortUrl ? ', s: sort' : ''
@@ -571,9 +571,9 @@ class Community extends CLI {
 
             this.boardsList.setItems(this.getFilteredBoards().map(({ name }) => name));
             this.resetScroll(this.boardsList, scrollOffset);
-            this.boardsList.focus();
         } catch (e) {
             this.boardsList.setItems([]);
+        } finally {
             this.boardsList.focus();
         }
     }
@@ -755,19 +755,17 @@ class Community extends CLI {
                     case 'tab':
                     case 'l':
                     case 'right':
-                        this.formBox.focusNext();
-                        break;
+                        return this.formBox.focusNext();
+                    case 'S-tab':
                     case 'h':
                     case 'left':
-                        this.formBox.focusPrevious();
-                        break;
+                        return this.formBox.focusPrevious();
+                    case 'c':
                     case 'q':
                     case 'escape':
-                        this.formBox.destroy();
-                        break;
+                        return this.formBox.destroy();
                     case 'enter':
-                        this.formBox.emit('submit', { name, value });
-                        break;
+                        return this.formBox.emit('submit', { name, value });
                 }
             });
         });
@@ -775,8 +773,7 @@ class Community extends CLI {
         this.formBox.on('submit', (data) => {
             this.formBox.children.forEach((child) => child.destroy());
             this.formBox.destroy();
-
-            callback(data);
+            callback && callback(data);
         });
 
         this.formBox.on('destroy', () => {
@@ -784,10 +781,12 @@ class Community extends CLI {
             this.widgets[this.currentWidgetIndex].focus();
         });
 
-        this.formBox.focus();
-        this.formBox.focusNext();
+        this.formBox.on('focus', () => {
+            this.formBox.focusNext();
+            this.screen.render();
+        });
 
-        this.screen.render();
+        this.formBox.focus();
     }
 }
 
