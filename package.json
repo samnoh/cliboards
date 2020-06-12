@@ -27,7 +27,7 @@
         "form-data": "3.0.0",
         "minimist": "1.2.5",
         "open": "7.0.3",
-        "puppeteer": "2.1.1",
+        "puppeteer": "3.3.0",
         "update-notifier": "4.1.0"
     },
     "bin": {
