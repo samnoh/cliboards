@@ -30,7 +30,12 @@ class Ppomppu extends CommunityCrawler {
 
     async getPosts() {
         await this.page.goto(
-            getUrl(this.currentBoard.value, this.pageNumber, this.sortUrl.value, this.searchParams)
+            getUrl(
+                this.currentBoard.value,
+                this.pageNumber,
+                this.sortUrl.value,
+                this.searchParams.value
+            )
         );
 
         const posts = await this.page.evaluate(

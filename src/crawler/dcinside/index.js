@@ -35,7 +35,7 @@ class Dcinside extends CommunityCrawler {
         const _sortUrl = this.sortUrl ? this.sortUrl.value : '';
 
         await this.page.goto(
-            getUrl(this.currentBoard.value) + this.pageNumber + _sortUrl + this.searchParams
+            getUrl(this.currentBoard.value) + this.pageNumber + _sortUrl + this.searchParams.value
         );
 
         await this.getSortUrls(() => {

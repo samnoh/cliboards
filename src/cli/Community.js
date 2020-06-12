@@ -267,9 +267,9 @@ class Community extends CLI {
             if (full === 'r') {
                 // refresh
             } else if (full === 'c' || full === 'space') {
-                if (!this.crawler.searchParams) return;
+                if (!this.crawler.searchParams.value) return;
                 this.crawler.currentPageNumber = 0;
-                this.crawler.searchParams = '';
+                this.crawler.searchParams = {};
             } else if (full === 'a') {
                 this.autoRefreshTimer = setInterval(async () => {
                     await this.refreshPosts();
@@ -309,7 +309,7 @@ class Community extends CLI {
                             this.textBox.focus();
                             this.textBox.style.bg = 'red';
                             this.textBox.style.fg = 'white';
-                            this.crawler.searchParams = '';
+                            this.crawler.searchParams = {};
                             this.setTitleFooterContent('Error: ' + e.message, name + ' 검색');
                         }
                     });
@@ -460,7 +460,7 @@ class Community extends CLI {
                     'c: cancel, s: save, up/down arrow: move board'
                 );
             } else {
-                this.crawler.searchParams = '';
+                this.crawler.searchParams.value = '';
                 this.currentPostIndex = 0;
                 this.crawler.changeSortUrl(0);
                 this.setTitleFooterContent(
@@ -501,8 +501,10 @@ class Community extends CLI {
             this.resetScroll(this.listList, this.currentPostIndex);
 
             this.setTitleFooterContent(
-                `${this.crawler.boards[this.crawler.currentBoardIndex].name} {gray-fg}${
-                    this.crawler.boardTypes[this.currentBoardTypeIndex]
+                `${this.crawler.boards[this.crawler.currentBoardIndex].name} ${
+                    this.crawler.searchParams.keyword
+                        ? '{blue-fg}' + this.crawler.searchParams.keyword + '{/} {gray-fg}검색 결과'
+                        : '{gray-fg}' + this.crawler.boardTypes[this.currentBoardTypeIndex]
                 }{/}`,
                 `${
                     this.crawler.currentBoard.singlePage ? '' : this.crawler.pageNumber + ' 페이지'
@@ -513,7 +515,7 @@ class Community extends CLI {
                 }`,
                 this.autoRefreshTimer
                     ? `q: back, any key: cancel auto refresh{|}{blue-fg}Refresh every ${this.autoRefreshInterval} sec..{/}`
-                    : `q: back${this.crawler.searchParams ? ', c/space: cancel search' : ''}${
+                    : `q: back${this.crawler.searchParams.value ? ', c/space: cancel search' : ''}${
                           this.crawler.searchTypes ? ', w: search' : ''
                       }, r: refresh, a: auto refresh${
                           this.crawler.sortUrl ? ', s: sort' : ''

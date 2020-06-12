@@ -32,7 +32,9 @@ class DVDPrime extends CommunityCrawler {
     }
 
     async getPosts() {
-        await this.page.goto(getUrl(this.currentBoard.value) + this.pageNumber + this.searchParams);
+        await this.page.goto(
+            getUrl(this.currentBoard.value) + this.pageNumber + this.searchParams.value
+        );
 
         const posts = await this.page.evaluate((baseUrl) => {
             const lists = document.querySelectorAll('.list_table_row');

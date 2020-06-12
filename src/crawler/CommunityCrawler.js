@@ -13,7 +13,7 @@ class CommunityCrawler extends Crawler {
         this.sortListIndex = 0;
         this.postsRead = new Set();
         this.canAddBoards = false;
-        this.searchParams = '';
+        this.searchParams = {};
     }
 
     getBoards(boards, ignoreBoards) {
@@ -133,7 +133,7 @@ class CommunityCrawler extends Crawler {
     }
 
     set setSearchParams({ value, keyword }) {
-        this.searchParams = this.getSearchParams(value, keyword);
+        this.searchParams = { keyword, value: this.getSearchParams(value, keyword) };
     }
 
     saveBoards() {
