@@ -10,6 +10,7 @@
 -   Supports color customizations
 -   Loads faster with a slow Internect connection
 -   Shurtcut for viewing images on web browser
+-   Hide screen instantly (`space` key)
 
 ## Installation
 

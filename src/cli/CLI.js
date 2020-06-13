@@ -68,15 +68,19 @@ class CLI {
     }
 
     setKeyPressEvent() {
-        this.screen.key('C-c', async () => {
-            await this.terminate();
-        });
-
-        this.screen.key(['escape', 'q'], () => {
-            if (this.footerBox.focused || this.formBox) {
-                return;
+        this.screen.on('keypress', async (_, { full }) => {
+            switch (full) {
+                case 'C-c':
+                    return await this.terminate();
+                case 'escape':
+                case 'q':
+                    return !this.footerBox.focused && !this.formBox && this.moveToWidget('prev');
+                case 'space':
+                    return this.screen.children.forEach((c) => {
+                        c.visible ? c.hide() : c.show();
+                        this.screen.render();
+                    });
             }
-            this.moveToWidget('prev');
         });
     }
 

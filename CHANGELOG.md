@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.46] - 2020-06-13
+
+### Added
+
+-   hide screen anywhere (`space` key)
+
 ## [1.0.0-beta.45] - 2020-06-12
 
 ### Added

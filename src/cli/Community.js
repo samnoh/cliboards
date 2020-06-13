@@ -266,7 +266,7 @@ class Community extends CLI {
 
             if (full === 'r') {
                 // refresh
-            } else if (full === 'c' || full === 'space') {
+            } else if (full === 'c') {
                 if (!this.crawler.searchParams.value) return;
                 this.crawler.currentPageNumber = 0;
                 this.crawler.searchParams = {};
@@ -515,7 +515,7 @@ class Community extends CLI {
                 }`,
                 this.autoRefreshTimer
                     ? `q: back, any key: cancel auto refresh{|}{blue-fg}Refresh every ${this.autoRefreshInterval} sec..{/}`
-                    : `q: back${this.crawler.searchParams.value ? ', c/space: cancel search' : ''}${
+                    : `q: back${this.crawler.searchParams.value ? ', c: cancel search' : ''}${
                           this.crawler.searchTypes ? ', w: search' : ''
                       }, r: refresh, a: auto refresh${
                           this.crawler.sortUrl ? ', s: sort' : ''

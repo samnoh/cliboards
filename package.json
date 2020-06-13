@@ -1,6 +1,6 @@
 {
     "name": "cliboards",
-    "version": "1.0.0-beta.45",
+    "version": "1.0.0-beta.46",
     "description": "Surf your online communities on CLI",
     "main": "src/index.js",
     "scripts": {
