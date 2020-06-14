@@ -60,9 +60,6 @@
         }
     },
     "lint-staged": {
-        "*.js": [
-            "npm run format",
-            "git add"
-        ]
+        "*.js": "npm run format"
     }
 }
