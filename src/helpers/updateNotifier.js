@@ -10,7 +10,10 @@ const notifier = updateNotifier({
 
 const notifyUpdate = () => {
     if (notifier.update) {
-        notifier.notify({ isGlobal: true, defer: false });
+        notifier.notify({
+            isGlobal: true,
+            defer: false
+        });
     }
 };
 

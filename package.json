@@ -55,7 +55,8 @@
     },
     "husky": {
         "hooks": {
-            "pre-commit": "npm run format"
+            "pre-commit": "npm run format",
+            "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
         }
     }
 }
