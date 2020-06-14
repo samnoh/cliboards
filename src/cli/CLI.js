@@ -15,12 +15,12 @@ class CLI {
             dockBorders: true,
             fastCSR: true,
             fullUnicode: true,
-            debug: process.env.NODE_ENV === 'development'
+            debug: process.env.NODE_ENV === 'development',
         });
         const box = blessed.box({
             parent: this.screen,
             width: '100%',
-            height: '100%'
+            height: '100%',
         });
         this.titleBox = blessed.box({
             parent: box,
@@ -30,12 +30,12 @@ class CLI {
             height: 1,
             padding: {
                 left: 2,
-                right: 2
+                right: 2,
             },
             style: {
                 bg: this.colors.top_bg,
-                fg: this.colors.top_left_color
-            }
+                fg: this.colors.top_left_color,
+            },
         });
         this.bodyBox = blessed.box({
             parent: box,
@@ -44,8 +44,8 @@ class CLI {
             width: '100%',
             scrollbar: {
                 ch: ' ',
-                inverse: true
-            }
+                inverse: true,
+            },
         });
         this.footerBox = blessed.box({
             parent: box,
@@ -55,12 +55,12 @@ class CLI {
             height: 1,
             padding: {
                 left: 2,
-                right: 2
+                right: 2,
             },
             style: {
                 fg: this.colors.bottom_left_color,
-                bg: this.colors.bottom_bg
-            }
+                bg: this.colors.bottom_bg,
+            },
         });
 
         // update
@@ -97,11 +97,11 @@ class CLI {
             this.footerBox.setContent(
                 `${this.footerBox.getContent()} {|}{${
                     this.colors.bottom_right_color
-                }-fg}Loading...{/}`
+                }-fg}Loading...{/}`,
             );
             this.footerBox.style = {
                 ...this.footerBox.style,
-                bg: this.colors.bottom_bg_loading
+                bg: this.colors.bottom_bg_loading,
             };
             this.screen.render();
         });
@@ -111,7 +111,7 @@ class CLI {
         this.footerBox.on('blur', () => {
             this.footerBox.style = {
                 ...this.footerBox.style,
-                bg: this.colors.bottom_bg
+                bg: this.colors.bottom_bg,
             };
         });
     }
@@ -136,7 +136,7 @@ class CLI {
 
             if (!currWidget) {
                 throw new Error(
-                    'The next widget index is outside the bounds of the widgets array'
+                    'The next widget index is outside the bounds of the widgets array',
                 );
             }
 
@@ -164,7 +164,7 @@ class CLI {
         this.titleBox.setContent(
             `${leftTitleText} {|}{${this.colors.top_right_color}-fg}${
                 rightTitleText || ''
-            }{/}`
+            }{/}`,
         );
         this.screen.render();
     }
@@ -177,7 +177,7 @@ class CLI {
     setTitleFooterContent(
         leftTitleText = '',
         rightTitleText = '',
-        footerText = ''
+        footerText = '',
     ) {
         this.setTitleContent(leftTitleText, rightTitleText);
         this.setFoooterContent(footerText);

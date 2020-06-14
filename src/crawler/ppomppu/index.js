@@ -7,7 +7,7 @@ const {
     ignoreRequests,
     ignoreBoards,
     boards,
-    search
+    search,
 } = require('./constants');
 
 class Ppomppu extends CommunityCrawler {
@@ -34,8 +34,8 @@ class Ppomppu extends CommunityCrawler {
                 this.currentBoard.value,
                 this.pageNumber,
                 this.sortUrl.value,
-                this.searchParams.value
-            )
+                this.searchParams.value,
+            ),
         );
 
         const posts = await this.page.evaluate(
@@ -79,7 +79,7 @@ class Ppomppu extends CommunityCrawler {
                                     .filter(a => a);
 
                                 timeEl.removeChild(
-                                    timeEl.querySelector('time')
+                                    timeEl.querySelector('time'),
                                 );
                                 category = timeEl.innerText
                                     .replace('|', '')
@@ -113,7 +113,7 @@ class Ppomppu extends CommunityCrawler {
                                     downVotes: parseInt(downVotes),
                                     numberOfComments: numberOfComments
                                         ? parseInt(numberOfComments.innerText)
-                                        : 0
+                                        : 0,
                                 }
                             );
                         })
@@ -128,7 +128,7 @@ class Ppomppu extends CommunityCrawler {
                         const author = list.querySelector('.names');
                         const time = list.querySelector('time');
                         const numberOfComments = list.querySelector(
-                            '.title .rp'
+                            '.title .rp',
                         );
 
                         const infoEl = list
@@ -157,18 +157,18 @@ class Ppomppu extends CommunityCrawler {
                             downVotes: parseInt(downVotes),
                             numberOfComments: numberOfComments
                                 ? parseInt(numberOfComments.innerText)
-                                : 0
+                                : 0,
                         };
                     });
                 }
             },
             baseUrl,
-            this.currentBoard.value
+            this.currentBoard.value,
         );
 
         return posts.map(post => ({
             ...post,
-            hasRead: this.postsRead.has(post.link)
+            hasRead: this.postsRead.has(post.link),
         }));
     }
 
@@ -209,7 +209,7 @@ class Ppomppu extends CommunityCrawler {
 
             const body = document.querySelector('#KH_Content');
             const imagesEl = Array.from(
-                body.querySelectorAll('img, video')
+                body.querySelectorAll('img, video'),
             ).filter(item => item.getAttribute('alt') !== '다운로드 버튼');
             const images = imagesEl
                 .map(item => {
@@ -219,7 +219,7 @@ class Ppomppu extends CommunityCrawler {
                     return item.getAttribute('src');
                 })
                 .map(item =>
-                    item.slice(0, 4) === 'http' ? item : 'http:' + item
+                    item.slice(0, 4) === 'http' ? item : 'http:' + item,
                 );
             const comments = document.querySelectorAll('.cmAr .sect-cmt');
 
@@ -274,14 +274,14 @@ class Ppomppu extends CommunityCrawler {
                         const author = comment.querySelector('.com_name span');
                         const time = comment.querySelector('.cin_02 span');
                         const isReply = parseInt(
-                            comment.classList[0].replace('sect', '')
+                            comment.classList[0].replace('sect', ''),
                         );
                         const isHot = comment.parentNode.classList.contains(
-                            'hot-comment-preview'
+                            'hot-comment-preview',
                         );
 
                         const votesEl = comment.querySelectorAll(
-                            '.com_name > span'
+                            '.com_name > span',
                         );
                         let upVotes, downVotes;
 
@@ -299,24 +299,24 @@ class Ppomppu extends CommunityCrawler {
                                     text.innerText = `GIF_${index + 1} `;
                                     videoDiv.insertAdjacentElement(
                                         'afterend',
-                                        text
+                                        text,
                                     );
                                     videoDiv.removeChild(item.parentNode);
                                 } else {
                                     text.innerText = `IMAGE_${index + 1} `;
                                     item.insertAdjacentElement(
                                         'afterend',
-                                        text
+                                        text,
                                     );
                                 }
-                            }
+                            },
                         );
 
                         body.querySelectorAll('a.noeffect').forEach(link => {
                             const href = link.getAttribute('href');
                             link.innerText = link.innerText.replace(
                                 link.innerText,
-                                href
+                                href,
                             );
                         });
 
@@ -326,17 +326,17 @@ class Ppomppu extends CommunityCrawler {
                                 isRemoved: false,
                                 author: author.innerText.trim(),
                                 time: time.innerText.match(
-                                    /[0-9]{2}:[0-9]{2}/
+                                    /[0-9]{2}:[0-9]{2}/,
                                 )[0],
                                 body: body.textContent.trim(),
                                 upVotes: upVotes ? parseInt(upVotes.trim()) : 0,
                                 downVotes: downVotes
                                     ? parseInt(downVotes.trim())
-                                    : 0
+                                    : 0,
                             }
                         );
                     })
-                    .filter(comment => comment)
+                    .filter(comment => comment),
             };
         });
     }

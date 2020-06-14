@@ -5,7 +5,7 @@ const pkg = require('../../package.json');
 const notifier = updateNotifier({
     pkg,
     updateCheckInterval: 1,
-    shouldNotifyInNpmScript: true
+    shouldNotifyInNpmScript: true,
 });
 
 const notifyUpdate = () => {

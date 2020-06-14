@@ -4,7 +4,7 @@ class Crawler {
     constructor(ignoreRequests, baseUrl) {
         if (this.constructor === Crawler) {
             throw new TypeError(
-                'Abstract class "Crawler" cannot be instantiated directly'
+                'Abstract class "Crawler" cannot be instantiated directly',
             );
         }
         this.ignoreRequests = ignoreRequests;
@@ -22,8 +22,8 @@ class Crawler {
                     '--disable-setuid-sandbox',
                     '--diable-dev-shm-usage',
                     '--no-first-run',
-                    '--no-default-browser-check'
-                ]
+                    '--no-default-browser-check',
+                ],
             });
 
             this.page = (await this.browser.pages())[0];
@@ -65,12 +65,12 @@ class Crawler {
         switch (type) {
             case 'mobile':
                 await this.page.setUserAgent(
-                    'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1'
+                    'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
                 );
                 break;
             default:
                 await this.page.setUserAgent(
-                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36'
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36',
                 );
         }
     }

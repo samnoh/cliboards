@@ -10,7 +10,7 @@ const {
     boardTypes,
     ignoreRequests,
     ignoreBoards,
-    boards
+    boards,
 } = require('./constants');
 
 class SLRClub extends CommunityCrawler {
@@ -31,7 +31,7 @@ class SLRClub extends CommunityCrawler {
 
     async getPosts() {
         await this.page.goto(
-            getUrl(this.currentBoard.value) + (this.currentPageNumber || '')
+            getUrl(this.currentBoard.value) + (this.currentPageNumber || ''),
         );
 
         const [posts, currentPageNumber] = await this.page.evaluate(baseUrl => {
@@ -66,10 +66,10 @@ class SLRClub extends CommunityCrawler {
                         link: baseUrl + title.getAttribute('href'),
                         upVotes: parseInt(upVotes),
                         numberOfComments: numberOfComments.innerText,
-                        hasImages: !!hasImages
+                        hasImages: !!hasImages,
                     };
                 }),
-                parseInt(nextPageNumber) + 1
+                parseInt(nextPageNumber) + 1,
             ];
         }, baseUrl);
 
@@ -77,7 +77,7 @@ class SLRClub extends CommunityCrawler {
 
         return posts.map(post => ({
             ...post,
-            hasRead: this.postsRead.has(post.link)
+            hasRead: this.postsRead.has(post.link),
         }));
     }
 
@@ -101,7 +101,7 @@ class SLRClub extends CommunityCrawler {
                 .dataset;
             const imagesEl = body.querySelectorAll('img');
             const images = Array.from(imagesEl).map(img =>
-                img.getAttribute('src')
+                img.getAttribute('src'),
             );
 
             // handle images
@@ -128,13 +128,13 @@ class SLRClub extends CommunityCrawler {
                 upVotes: parseInt(upVotes),
                 comments: [],
                 numberOfComments: parseInt(numberOfComments.innerText),
-                commentsFormData: { ...commentsFormData }
+                commentsFormData: { ...commentsFormData },
             };
         });
 
         if (postDetail.numberOfComments && postDetail.commentsFormData) {
             postDetail.comments = await this.getComments(
-                postDetail.commentsFormData
+                postDetail.commentsFormData,
             );
         }
 
@@ -155,7 +155,7 @@ class SLRClub extends CommunityCrawler {
                 method: 'post',
                 url: commentsUrl,
                 data: form,
-                headers: { Referer: this.currentBaseUrl, ...form.getHeaders() }
+                headers: { Referer: this.currentBaseUrl, ...form.getHeaders() },
             });
 
             if (!response.data.c) {
@@ -171,7 +171,7 @@ class SLRClub extends CommunityCrawler {
                     .replace(/<br \/>/g, '\n')
                     .replace(/<[^>]*>/g, 'IMAGE_1'),
                 time: comment.dt,
-                upVotes: comment.vt
+                upVotes: comment.vt,
             }));
         } catch (e) {
             return [];

@@ -9,7 +9,7 @@ const {
     ignoreRequests,
     ignoreBoards,
     boards,
-    search
+    search,
 } = require('./constants');
 
 class Dcinside extends CommunityCrawler {
@@ -38,7 +38,7 @@ class Dcinside extends CommunityCrawler {
             getUrl(this.currentBoard.value) +
                 this.pageNumber +
                 _sortUrl +
-                this.searchParams.value
+                this.searchParams.value,
         );
 
         await this.getSortUrls(() => {
@@ -56,7 +56,7 @@ class Dcinside extends CommunityCrawler {
 
         const posts = await this.page.evaluate(() => {
             const lists = document.querySelectorAll(
-                '.gall-detail-lst li .gall-detail-lnktb'
+                '.gall-detail-lst li .gall-detail-lnktb',
             );
 
             return Array.from(lists)
@@ -94,10 +94,10 @@ class Dcinside extends CommunityCrawler {
                             upVotes:
                                 parseInt(
                                     upVotes &&
-                                        upVotes.innerText.replace(/[^0-9]/)
+                                        upVotes.innerText.replace(/[^0-9]/),
                                 ) || 0,
                             numberOfComments: numberOfComments.innerText,
-                            hasImages
+                            hasImages,
                         }
                     );
                 })
@@ -106,7 +106,7 @@ class Dcinside extends CommunityCrawler {
 
         return posts.map(post => ({
             ...post,
-            hasRead: this.postsRead.has(post.link)
+            hasRead: this.postsRead.has(post.link),
         }));
     }
 
@@ -118,14 +118,14 @@ class Dcinside extends CommunityCrawler {
         return await this.page.evaluate(() => {
             const _title = document.querySelector('.gallview-tit-box .tit');
             const author = document.querySelector(
-                '.btm .ginfo2 li:nth-child(1)'
+                '.btm .ginfo2 li:nth-child(1)',
             );
             const hit = document.querySelector(
-                '.gall-thum-btm .ginfo2 li:nth-child(1)'
+                '.gall-thum-btm .ginfo2 li:nth-child(1)',
             );
             const body = document.querySelector('.thum-txt');
             const upVotes = document.querySelector(
-                '.gall-thum-btm .ginfo2 li:nth-child(2)'
+                '.gall-thum-btm .ginfo2 li:nth-child(2)',
             );
             const comments = document.querySelectorAll('.all-comment-lst li');
             const _time = document
@@ -143,7 +143,7 @@ class Dcinside extends CommunityCrawler {
                     const text = document.createElement('span');
                     text.innerText = `GIF_${index + 1} `;
                     gif.parentNode.insertAdjacentElement('afterend', text);
-                }
+                },
             );
 
             // handle images
@@ -170,7 +170,7 @@ class Dcinside extends CommunityCrawler {
                         const author = comment.querySelector('.nick');
                         const time = comment.querySelector('.date');
                         const isReply = comment.classList.contains(
-                            'comment-add'
+                            'comment-add',
                         );
 
                         if (!body) {
@@ -186,10 +186,10 @@ class Dcinside extends CommunityCrawler {
                             isRemoved: false,
                             author: author.innerText,
                             time: time.innerText.match(/[0-9]{2}:[0-9]{2}/)[0],
-                            body: body.textContent.trim()
+                            body: body.textContent.trim(),
                         };
                     })
-                    .filter(comment => comment)
+                    .filter(comment => comment),
             };
         });
     }

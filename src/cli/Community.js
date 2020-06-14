@@ -6,7 +6,7 @@ const {
     openUrls,
     resetConfigstore,
     resetCustomTheme,
-    customThemeFilePath
+    customThemeFilePath,
 } = require('../helpers');
 const { name, version, homepage } = require('../../package.json');
 
@@ -20,37 +20,37 @@ class Community extends CLI {
             scrollbar: {
                 ch: ' ',
                 style: {
-                    inverse: true
-                }
+                    inverse: true,
+                },
             },
             style: {
                 selected: {
                     bg: this.colors.cursor_bg,
-                    fg: this.colors.cursor_color
+                    fg: this.colors.cursor_color,
                 },
                 bg: this.colors.list_bg,
-                fg: this.colors.list_left_color
+                fg: this.colors.list_left_color,
             },
             keys: true,
-            vi: true
+            vi: true,
         });
         this.boardsList = blessed.list({
             scrollbar: {
                 ch: ' ',
                 style: {
-                    inverse: true
-                }
+                    inverse: true,
+                },
             },
             style: {
                 selected: {
                     bg: this.colors.cursor_bg,
-                    fg: this.colors.cursor_color
+                    fg: this.colors.cursor_color,
                 },
                 bg: this.colors.list_bg,
-                fg: this.colors.list_left_color
+                fg: this.colors.list_left_color,
             },
             keys: true,
-            vi: true
+            vi: true,
         });
         this.listList = blessed.list({
             width: '100%',
@@ -58,19 +58,19 @@ class Community extends CLI {
             scrollbar: {
                 ch: ' ',
                 style: {
-                    inverse: true
-                }
+                    inverse: true,
+                },
             },
             style: {
                 selected: {
                     bg: this.colors.cursor_bg,
-                    fg: this.colors.cursor_color
+                    fg: this.colors.cursor_color,
                 },
                 bg: this.colors.list_bg,
-                fg: this.colors.list_left_color
+                fg: this.colors.list_left_color,
             },
             keys: true,
-            vi: true
+            vi: true,
         });
         this.detailBox = blessed.box({
             scrollable: true,
@@ -81,12 +81,12 @@ class Community extends CLI {
             width: '100%',
             scrollbar: {
                 ch: ' ',
-                inverse: true
+                inverse: true,
             },
             style: {
                 bg: this.colors.post_bg,
-                fg: this.colors.post_color
-            }
+                fg: this.colors.post_color,
+            },
         });
         this.autoRefreshInterval = 10; // refresh every 10 seconds; do not make it too low
         this.autoRefreshTimer = null;
@@ -94,7 +94,7 @@ class Community extends CLI {
             this.communityList,
             this.boardsList,
             this.listList,
-            this.detailBox
+            this.detailBox,
         ];
     }
 
@@ -112,7 +112,7 @@ class Community extends CLI {
         if (theme) {
             await openUrls(customThemeFilePath);
             console.log(
-                'Please edit customTheme.txt in JSON format and restart.'
+                'Please edit customTheme.txt in JSON format and restart.',
             );
             process.exit(0);
         }
@@ -123,7 +123,7 @@ class Community extends CLI {
             if (isNaN(startCrawler)) {
                 index = crawlers.findIndex(
                     cralwer =>
-                        cralwer.toLowerCase() === startCrawler.toLowerCase()
+                        cralwer.toLowerCase() === startCrawler.toLowerCase(),
                 );
             } else {
                 index =
@@ -180,20 +180,20 @@ class Community extends CLI {
                                 input,
                                 this.crawler.boardTypes[
                                     this.currentBoardTypeIndex
-                                ]
+                                ],
                             );
                             this.textBox.destroy();
                             await this.crawler.getBoards();
                             await this.getBoards(
                                 this.currentBoardTypeIndex,
-                                this.crawler.boards.length
+                                this.crawler.boards.length,
                             );
                         } catch (e) {
                             this.textBox.focus();
                             this.textBox.style.bg = 'red';
                             this.textBox.style.fg = 'white';
                             this.setTitleFooterContent(
-                                '잘못된 입력입니다: ' + e.message
+                                '잘못된 입력입니다: ' + e.message,
                             );
                         }
                     });
@@ -214,7 +214,7 @@ class Community extends CLI {
                     this.footerBox.focus();
                     await this.crawler.getBoards();
                     const _index = this.getFilteredBoards().findIndex(
-                        board => board.name === this.currItemContent
+                        board => board.name === this.currItemContent,
                     );
                     await this.getBoards(this.currentBoardTypeIndex, _index);
                     this.sortBoardsMode = false;
@@ -230,11 +230,11 @@ class Community extends CLI {
                     }
 
                     this.crawler.deleteBoard(
-                        this.getFilteredBoards()[index].value
+                        this.getFilteredBoards()[index].value,
                     );
                     return await this.getBoards(
                         this.currentBoardTypeIndex,
-                        index
+                        index,
                     );
                 case 'right':
                     if (
@@ -275,14 +275,14 @@ class Community extends CLI {
                     const isSwaped = this.crawler.sortBoards(
                         this.crawler.boardTypes[this.currentBoardTypeIndex],
                         index + offset,
-                        index
+                        index,
                     );
 
                     if (!isSwaped) return;
 
                     this.boardsList.move(offset);
                     this.boardsList.setItems(
-                        this.getFilteredBoards().map(({ name }) => name)
+                        this.getFilteredBoards().map(({ name }) => name),
                     );
                     return this.screen.render();
             }
@@ -319,7 +319,7 @@ class Community extends CLI {
                 else {
                     const sortUrlsLength = this.crawler.sortUrls.length;
                     this.crawler.changeSortUrl(
-                        (this.crawler.sortListIndex + 1) % sortUrlsLength
+                        (this.crawler.sortListIndex + 1) % sortUrlsLength,
                     );
                 }
             } else if (full === 'w') {
@@ -330,7 +330,7 @@ class Community extends CLI {
                     return;
                 this.setTitleContent(
                     '필터를 선택하세요',
-                    this.crawler.title + ' 검색'
+                    this.crawler.title + ' 검색',
                 );
 
                 return this.showFormBox(
@@ -338,7 +338,7 @@ class Community extends CLI {
                     ({ name, value }) => {
                         this.setTitleContent(
                             '키워드를 입력하세요',
-                            name + ' 검색'
+                            name + ' 검색',
                         );
                         this.showTextBox(async keyword => {
                             if (!keyword) return;
@@ -351,7 +351,7 @@ class Community extends CLI {
                                 this.crawler.currentPageNumber = 0;
                                 this.crawler.setSearchParams = {
                                     value,
-                                    keyword
+                                    keyword,
                                 };
 
                                 await this.refreshPosts();
@@ -369,11 +369,11 @@ class Community extends CLI {
                                 this.crawler.searchParams = {};
                                 this.setTitleFooterContent(
                                     'Error: ' + e.message,
-                                    name + ' 검색'
+                                    name + ' 검색',
                                 );
                             }
                         });
-                    }
+                    },
                 );
             } else if (full === 'left' && this.crawler.pageNumber >= 2) {
                 if (this.crawler.currentBoard.singlePage) return;
@@ -403,7 +403,7 @@ class Community extends CLI {
                 case 'i':
                     if (this.crawler.openImages) {
                         const responses = await this.crawler.openImages(
-                            this.post.images
+                            this.post.images,
                         );
                         return await openUrls(responses);
                     }
@@ -412,7 +412,7 @@ class Community extends CLI {
                         : null;
                 case 'o':
                     return await openUrls(
-                        this.posts[this.currentPostIndex].link
+                        this.posts[this.currentPostIndex].link,
                     );
                 case 'h':
                 case 'left':
@@ -515,7 +515,7 @@ class Community extends CLI {
                 this.isColorsError
                     ? '{gray-fg}Invalid JSON format for color theme - default theme now{/}'
                     : '',
-                `q: quit, o: open GitHub{|}${name} ${version}`
+                `q: quit, o: open GitHub{|}${name} ${version}`,
             );
         });
 
@@ -528,7 +528,7 @@ class Community extends CLI {
                 this.setTitleFooterContent(
                     this.crawler.title,
                     '{blue-fg}정렬하기{/}',
-                    'c: cancel, s: save, up/down arrow: move board'
+                    'c: cancel, s: save, up/down arrow: move board',
                 );
             } else {
                 this.crawler.searchParams.value = '';
@@ -545,7 +545,7 @@ class Community extends CLI {
                         this.crawler.boardTypes.length > 1
                             ? ', s: sort board, left/right arrow: prev/next page'
                             : ''
-                    }`
+                    }`,
                 );
             }
         });
@@ -565,7 +565,7 @@ class Community extends CLI {
                         numberOfComments,
                         author,
                         hasRead,
-                        hasImages
+                        hasImages,
                     }) =>
                         `${
                             category
@@ -587,8 +587,8 @@ class Community extends CLI {
                                 : numberOfComments
                         }{/}  {|}{${
                             this.colors.list_right_color
-                        }-fg}${author}{/}`
-                )
+                        }-fg}${author}{/}`,
+                ),
             );
             this.resetScroll(this.listList, this.currentPostIndex);
 
@@ -620,7 +620,7 @@ class Community extends CLI {
                           this.crawler.searchTypes ? ', w: search' : ''
                       }, r: refresh, a: auto refresh${
                           this.crawler.sortUrl ? ', s: sort' : ''
-                      }, left/right arrow: prev/next page`
+                      }, left/right arrow: prev/next page`,
             );
         });
 
@@ -641,7 +641,7 @@ class Community extends CLI {
                 comments,
                 time,
                 images,
-                hasImages
+                hasImages,
             } = this.post;
 
             this.setTitleFooterContent(
@@ -661,7 +661,7 @@ class Community extends CLI {
                               images.length !== 1 ? 's' : ''
                           }, `
                         : ''
-                }left/right arrow: prev/next post`
+                }left/right arrow: prev/next post`,
             );
         });
     }
@@ -681,7 +681,7 @@ class Community extends CLI {
             }
 
             this.boardsList.setItems(
-                this.getFilteredBoards().map(({ name }) => name)
+                this.getFilteredBoards().map(({ name }) => name),
             );
             this.resetScroll(this.boardsList, scrollOffset);
         } catch (e) {
@@ -696,7 +696,7 @@ class Community extends CLI {
             this.currentBoardTypeIndex
         ];
         return this.crawler.boards.filter(
-            ({ type }) => type === currentBoardType
+            ({ type }) => type === currentBoardType,
         );
     }
 
@@ -704,7 +704,7 @@ class Community extends CLI {
         try {
             this.footerBox.focus();
             this.posts = await this.crawler.changeBoard(
-                this.getFilteredBoards()[index]
+                this.getFilteredBoards()[index],
             );
         } catch (e) {
             this.posts = [];
@@ -713,7 +713,7 @@ class Community extends CLI {
 
     async refreshPosts() {
         const index = this.getFilteredBoards().indexOf(
-            this.crawler.boards[this.crawler.currentBoardIndex]
+            this.crawler.boards[this.crawler.currentBoardIndex],
         );
         await this.getPosts(index);
         this.currentPostIndex = 0;
@@ -727,7 +727,7 @@ class Community extends CLI {
 
             if (this.posts[index]) {
                 this.post = await this.crawler.getPostDetail(
-                    this.posts[index].link
+                    this.posts[index].link,
                 );
             }
         } catch (e) {
@@ -752,8 +752,8 @@ class Community extends CLI {
         this.detailBox.setContent(
             this.post.body.replace(
                 /(GIF_\d+|IMAGE_\d+)/g,
-                '{inverse}$&{/inverse}'
-            )
+                '{inverse}$&{/inverse}',
+            ),
         );
         this.renderComments();
         this.detailBox.scrollTo(0);
@@ -775,7 +775,7 @@ class Community extends CLI {
                 author,
                 time,
                 upVotes,
-                downVotes
+                downVotes,
             }) => {
                 const info = `{${
                     this.colors.comment_top_color
@@ -799,17 +799,17 @@ class Community extends CLI {
                         : info +
                           body.replace(
                               /(GIF_\d+|IMAGE_\d+)/g,
-                              '{inverse}$&{/inverse}'
+                              '{inverse}$&{/inverse}',
                           ),
                     border: {
                         type: 'line',
-                        fg: this.colors.comment_border_color
+                        fg: this.colors.comment_border_color,
                     },
                     style: {
                         bg: this.colors.comment_bg,
-                        fg: this.colors.comment_bottom_color
+                        fg: this.colors.comment_bottom_color,
                     },
-                    tags: true
+                    tags: true,
                 });
 
                 commentBox.padding.left = isReply * 4;
@@ -817,7 +817,7 @@ class Community extends CLI {
                 prevTop += commentBox.height - 1;
 
                 return commentBox;
-            }
+            },
         );
     }
 
@@ -840,7 +840,7 @@ class Community extends CLI {
             keys: true,
             inputOnFocus: true,
             style: { fg: 'inverse' },
-            input: true
+            input: true,
         });
 
         this.textBox.on('cancel', () => {
@@ -866,7 +866,7 @@ class Community extends CLI {
             height: 1,
             width: '100%',
             top: '100%-1',
-            left: -2
+            left: -2,
         });
 
         let left = 0;
@@ -886,7 +886,7 @@ class Community extends CLI {
                 shrink: true,
                 width,
                 left,
-                style: { focus: { fg: 'blue' } }
+                style: { focus: { fg: 'blue' } },
             });
 
             left += width + offset;

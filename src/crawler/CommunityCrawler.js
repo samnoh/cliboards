@@ -27,7 +27,7 @@ class CommunityCrawler extends Crawler {
 
         if (ignoreBoards && ignoreBoards.length) {
             this.boards = _boards.filter(
-                board => ignoreBoards.indexOf(board) === -1
+                board => ignoreBoards.indexOf(board) === -1,
             );
         } else {
             this.boards = _boards;
@@ -65,7 +65,7 @@ class CommunityCrawler extends Crawler {
 
     set currentBoard(board) {
         this.currentBoardIndex = this.boards.findIndex(
-            _board => _board.value === board.value
+            _board => _board.value === board.value,
         );
     }
 
@@ -100,13 +100,13 @@ class CommunityCrawler extends Crawler {
 
             const name = await this.page.evaluate(callback);
             const isDuplicate = this.boards.filter(
-                board => board.value === value
+                board => board.value === value,
             ).length;
 
             if (!isDuplicate || !name) {
                 configstore.set(this.title, [
                     ...this.boards,
-                    { name, value, type }
+                    { name, value, type },
                 ]);
             } else {
                 throw new Error('Duplicated input');
@@ -133,7 +133,7 @@ class CommunityCrawler extends Crawler {
         const targetBoardIndex = this.boards.findIndex(
             board =>
                 currentBoard[targetIndex] &&
-                board.name === currentBoard[targetIndex].name
+                board.name === currentBoard[targetIndex].name,
         );
 
         if (selectedBoardIndex === -1 || targetBoardIndex === -1) return false;
@@ -148,7 +148,7 @@ class CommunityCrawler extends Crawler {
     set setSearchParams({ value, keyword }) {
         this.searchParams = {
             keyword,
-            value: this.getSearchParams(value, keyword)
+            value: this.getSearchParams(value, keyword),
         };
     }
 

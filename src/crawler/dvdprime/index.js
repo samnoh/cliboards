@@ -7,7 +7,7 @@ const {
     ignoreRequests,
     boards,
     ignoreBoards,
-    search
+    search,
 } = require('./constants');
 
 class DVDPrime extends CommunityCrawler {
@@ -35,7 +35,7 @@ class DVDPrime extends CommunityCrawler {
         await this.page.goto(
             getUrl(this.currentBoard.value) +
                 this.pageNumber +
-                this.searchParams.value
+                this.searchParams.value,
         );
 
         const posts = await this.page.evaluate(baseUrl => {
@@ -52,10 +52,10 @@ class DVDPrime extends CommunityCrawler {
                         .querySelector('.list_subject_a')
                         .getAttribute('href');
                     const upVotes = list.querySelector(
-                        '.list_table_col_recommend'
+                        '.list_table_col_recommend',
                     );
                     const numberOfComments = list.querySelector(
-                        '.list_comment_new'
+                        '.list_comment_new',
                     );
 
                     return (
@@ -71,7 +71,7 @@ class DVDPrime extends CommunityCrawler {
                             numberOfComments: numberOfComments
                                 ? parseInt(numberOfComments.innerText)
                                 : 0,
-                            hasImages: false
+                            hasImages: false,
                         }
                     );
                 })
@@ -80,7 +80,7 @@ class DVDPrime extends CommunityCrawler {
 
         return posts.map(post => ({
             ...post,
-            hasRead: this.postsRead.has(post.link)
+            hasRead: this.postsRead.has(post.link),
         }));
     }
 
@@ -100,7 +100,7 @@ class DVDPrime extends CommunityCrawler {
                 .querySelector('#view_datetime')
                 .innerText.match(/[0-9]{2}:[0-9]{2}:[0-9]{2}/)[0];
             const images = Array.from(
-                body.querySelectorAll('img') || []
+                body.querySelectorAll('img') || [],
             ).map(image => image.getAttribute('src'));
 
             // handle images
@@ -128,13 +128,13 @@ class DVDPrime extends CommunityCrawler {
                         .querySelector('.comment_time')
                         .innerText.match(/[0-9]{2}:[0-9]{2}:[0-9]{2}/)[0];
                     const upVotes = comment.querySelector(
-                        '.comment_title_right .c_r_num'
+                        '.comment_title_right .c_r_num',
                     );
                     const isReply = comment.querySelector(
-                        '.comment_reply_line'
+                        '.comment_reply_line',
                     );
                     const spoilerWarning = body.querySelector(
-                        '.view_warning_div'
+                        '.view_warning_div',
                     );
 
                     if (spoilerWarning) {
@@ -144,7 +144,7 @@ class DVDPrime extends CommunityCrawler {
                     body.querySelectorAll('.view_image img').forEach(
                         (image, index) => {
                             image.textContent = `IMAGE_${index + 1} `;
-                        }
+                        },
                     );
 
                     return {
@@ -153,9 +153,9 @@ class DVDPrime extends CommunityCrawler {
                         author: author.innerText,
                         time,
                         body: body.textContent.trim(),
-                        upVotes: parseInt(upVotes.innerText)
+                        upVotes: parseInt(upVotes.innerText),
                     };
-                })
+                }),
             };
         });
     }

@@ -9,7 +9,7 @@ const customThemeFilePath = path.resolve(
     '..',
     'cli',
     'theme',
-    'customTheme.txt'
+    'customTheme.txt',
 );
 
 const resetCustomTheme = () => {
@@ -45,7 +45,7 @@ const getTheme = () => {
         if (!exists) {
             fs.writeFileSync(
                 customThemeFilePath,
-                JSON.stringify(customColors, null, '\t')
+                JSON.stringify(customColors, null, '\t'),
             );
         }
 
@@ -60,5 +60,5 @@ const getTheme = () => {
 module.exports = {
     getTheme,
     resetCustomTheme,
-    customThemeFilePath
+    customThemeFilePath,
 };

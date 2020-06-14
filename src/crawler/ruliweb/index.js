@@ -6,7 +6,7 @@ const {
     boardTypes,
     ignoreRequests,
     ignoreBoards,
-    boards
+    boards,
 } = require('./constants');
 
 class Ruliweb extends CommunityCrawler {
@@ -40,7 +40,7 @@ class Ruliweb extends CommunityCrawler {
                     const time = list.querySelector('.time');
                     const upVotes = list.querySelector('.recomd');
                     const numberOfComments = list.querySelector(
-                        '.subject .num_reply .num'
+                        '.subject .num_reply .num',
                     );
                     const hasImages = list.querySelector('.icon-picture');
 
@@ -57,7 +57,7 @@ class Ruliweb extends CommunityCrawler {
                             numberOfComments: numberOfComments
                                 ? parseInt(numberOfComments.innerText)
                                 : 0,
-                            hasImages: !!hasImages
+                            hasImages: !!hasImages,
                         }
                     );
                 })
@@ -66,7 +66,7 @@ class Ruliweb extends CommunityCrawler {
 
         return posts.map(post => ({
             ...post,
-            hasRead: this.postsRead.has(post.link)
+            hasRead: this.postsRead.has(post.link),
         }));
     }
 
@@ -84,12 +84,12 @@ class Ruliweb extends CommunityCrawler {
             const body = document.querySelector('.view_content');
             const upVotes = document.querySelector('.like');
             const comments = document.querySelectorAll(
-                '.comment_view.normal tr'
+                '.comment_view.normal tr',
             );
             const time = document.querySelector('.regdate');
             const gifs = Array.from(body.querySelectorAll('.gifct') || []);
             const images = Array.from(
-                document.querySelectorAll('.img_load img') || []
+                document.querySelectorAll('.img_load img') || [],
             ).map(image => 'https:' + image.getAttribute('src'));
 
             // handle gifs
@@ -127,7 +127,7 @@ class Ruliweb extends CommunityCrawler {
                     const time = comment.querySelector('.time');
                     const upVotes = comment.querySelector('.btn_like .num');
                     const downVotes = comment.querySelector(
-                        '.btn_dislike .num'
+                        '.btn_dislike .num',
                     );
                     const isReply = comment.classList.contains('child');
                     const control_box = comment.querySelector('.control_box');
@@ -141,7 +141,7 @@ class Ruliweb extends CommunityCrawler {
                         ? {
                               isReply,
                               isRemoved,
-                              body: body.innerText.trim()
+                              body: body.innerText.trim(),
                           }
                         : {
                               isReply,
@@ -150,9 +150,9 @@ class Ruliweb extends CommunityCrawler {
                               time: time.innerText.split(' ')[1],
                               body: body.innerText.trim(),
                               upVotes: parseInt(upVotes.innerText) || 0,
-                              downVotes: parseInt(downVotes.innerText) || 0
+                              downVotes: parseInt(downVotes.innerText) || 0,
                           };
-                })
+                }),
             };
         });
     }
