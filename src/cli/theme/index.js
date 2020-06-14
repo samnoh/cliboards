@@ -21,5 +21,5 @@ module.exports = {
     comment_top_color: 'gray',
     comment_bottom_color: 'inverse',
     comment_top_color_likes: 'green',
-    comment_top_color_dislikes: 'red',
+    comment_top_color_dislikes: 'red'
 };

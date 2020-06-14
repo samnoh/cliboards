@@ -3,7 +3,9 @@ const puppeteer = require('puppeteer');
 class Crawler {
     constructor(ignoreRequests, baseUrl) {
         if (this.constructor === Crawler) {
-            throw new TypeError('Abstract class "Crawler" cannot be instantiated directly');
+            throw new TypeError(
+                'Abstract class "Crawler" cannot be instantiated directly'
+            );
         }
         this.ignoreRequests = ignoreRequests;
         this.baseUrl = baseUrl;
@@ -20,8 +22,8 @@ class Crawler {
                     '--disable-setuid-sandbox',
                     '--diable-dev-shm-usage',
                     '--no-first-run',
-                    '--no-default-browser-check',
-                ],
+                    '--no-default-browser-check'
+                ]
             });
 
             this.page = (await this.browser.pages())[0];
@@ -32,9 +34,10 @@ class Crawler {
             await this.page.setJavaScriptEnabled(false);
             await this.page.setRequestInterception(true);
 
-            this.page.on('request', (request) => {
+            this.page.on('request', request => {
                 if (
-                    this.ignoreRequests.indexOf(request.resourceType()) !== -1 ||
+                    this.ignoreRequests.indexOf(request.resourceType()) !==
+                        -1 ||
                     request.url().startsWith('https://www.youtube.com') ||
                     !request.url().startsWith(this.baseUrl)
                 ) {

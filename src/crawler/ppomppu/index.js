@@ -7,7 +7,7 @@ const {
     ignoreRequests,
     ignoreBoards,
     boards,
-    search,
+    search
 } = require('./constants');
 
 class Ppomppu extends CommunityCrawler {
@@ -21,7 +21,7 @@ class Ppomppu extends CommunityCrawler {
     }
 
     getBoards() {
-        return new Promise(async (resolve) => {
+        return new Promise(async resolve => {
             await this.changeUserAgent('mobile');
             super.getBoards(boards, ignoreBoards);
             resolve();
@@ -44,15 +44,19 @@ class Ppomppu extends CommunityCrawler {
 
                 if (lists.length) {
                     return Array.from(lists)
-                        .map((list) => {
-                            const author = list.querySelector('.ct') || list.querySelector('.name');
+                        .map(list => {
+                            const author =
+                                list.querySelector('.ct') ||
+                                list.querySelector('.name');
                             const numberOfComments = list.querySelector('.rp');
 
                             const title =
-                                list.querySelector('strong') || list.querySelector('.title');
+                                list.querySelector('strong') ||
+                                list.querySelector('.title');
 
                             try {
-                                numberOfComments && title.removeChild(numberOfComments);
+                                numberOfComments &&
+                                    title.removeChild(numberOfComments);
                             } catch (e) {}
 
                             let time = list.querySelector('.b');
@@ -62,7 +66,7 @@ class Ppomppu extends CommunityCrawler {
                                 const infoEl = list
                                     .querySelector('.hi')
                                     .innerText.split('/')
-                                    .map((el) => el.replace(/[^0-9]/g, ''));
+                                    .map(el => el.replace(/[^0-9]/g, ''));
                                 hit = infoEl[0];
                                 upVotes = infoEl[1];
                                 downVotes = infoEl[2];
@@ -72,10 +76,14 @@ class Ppomppu extends CommunityCrawler {
                                 const infoEl = timeEl.innerText
                                     .replace(/[^0-9:\-]/g, '/')
                                     .split('/')
-                                    .filter((a) => a);
+                                    .filter(a => a);
 
-                                timeEl.removeChild(timeEl.querySelector('time'));
-                                category = timeEl.innerText.replace('|', '').trim();
+                                timeEl.removeChild(
+                                    timeEl.querySelector('time')
+                                );
+                                category = timeEl.innerText
+                                    .replace('|', '')
+                                    .trim();
                                 time = infoEl[0];
                                 hit = infoEl[1];
                                 upVotes = infoEl[2];
@@ -105,26 +113,28 @@ class Ppomppu extends CommunityCrawler {
                                     downVotes: parseInt(downVotes),
                                     numberOfComments: numberOfComments
                                         ? parseInt(numberOfComments.innerText)
-                                        : 0,
+                                        : 0
                                 }
                             );
                         })
-                        .filter((post) => post);
+                        .filter(post => post);
                 } else {
                     const bbs = document.querySelector('.bbsList_new');
                     const lists2 = bbs.querySelectorAll('li a');
 
-                    return Array.from(lists2).map((list) => {
+                    return Array.from(lists2).map(list => {
                         const category = list.querySelector('.exp span.ty');
                         const title = list.querySelector('.title .cont');
                         const author = list.querySelector('.names');
                         const time = list.querySelector('time');
-                        const numberOfComments = list.querySelector('.title .rp');
+                        const numberOfComments = list.querySelector(
+                            '.title .rp'
+                        );
 
                         const infoEl = list
                             .querySelector('.exp span:last-child')
                             .innerText.split('/')
-                            .map((el) => el.replace(/[^0-9]/g, ''));
+                            .map(el => el.replace(/[^0-9]/g, ''));
 
                         const hit = infoEl[0];
                         const upVotes = infoEl[1];
@@ -147,7 +157,7 @@ class Ppomppu extends CommunityCrawler {
                             downVotes: parseInt(downVotes),
                             numberOfComments: numberOfComments
                                 ? parseInt(numberOfComments.innerText)
-                                : 0,
+                                : 0
                         };
                     });
                 }
@@ -156,7 +166,10 @@ class Ppomppu extends CommunityCrawler {
             this.currentBoard.value
         );
 
-        return posts.map((post) => ({ ...post, hasRead: this.postsRead.has(post.link) }));
+        return posts.map(post => ({
+            ...post,
+            hasRead: this.postsRead.has(post.link)
+        }));
     }
 
     async getPostDetail(link) {
@@ -195,17 +208,19 @@ class Ppomppu extends CommunityCrawler {
             let upVotes = otherInfoEl[otherInfoEl.indexOf('추천') + 2];
 
             const body = document.querySelector('#KH_Content');
-            const imagesEl = Array.from(body.querySelectorAll('img, video')).filter(
-                (item) => item.getAttribute('alt') !== '다운로드 버튼'
-            );
+            const imagesEl = Array.from(
+                body.querySelectorAll('img, video')
+            ).filter(item => item.getAttribute('alt') !== '다운로드 버튼');
             const images = imagesEl
-                .map((item) => {
+                .map(item => {
                     if (item.tagName === 'VIDEO') {
                         return item.querySelector('source').getAttribute('src');
                     }
                     return item.getAttribute('src');
                 })
-                .map((item) => (item.slice(0, 4) === 'http' ? item : 'http:' + item));
+                .map(item =>
+                    item.slice(0, 4) === 'http' ? item : 'http:' + item
+                );
             const comments = document.querySelectorAll('.cmAr .sect-cmt');
 
             // handle images
@@ -224,7 +239,7 @@ class Ppomppu extends CommunityCrawler {
                 }
             });
 
-            body.querySelectorAll('a.noeffect').forEach((link) => {
+            body.querySelectorAll('a.noeffect').forEach(link => {
                 const href = link.getAttribute('href');
                 link.innerText = link.innerText.replace(link.innerText, href);
             });
@@ -232,7 +247,11 @@ class Ppomppu extends CommunityCrawler {
             const link = h4.querySelector('a.noeffect');
 
             if (link) {
-                body.innerText = '링크: ' + link.getAttribute('href') + '\n\n' + body.innerText;
+                body.innerText =
+                    '링크: ' +
+                    link.getAttribute('href') +
+                    '\n\n' +
+                    body.innerText;
             }
 
             return {
@@ -243,21 +262,27 @@ class Ppomppu extends CommunityCrawler {
                 time,
                 body: body.innerText
                     .split('\n')
-                    .map((b) => b.trim())
+                    .map(b => b.trim())
                     .join('\n')
                     .trim(),
                 upVotes: parseInt(upVotes),
                 images,
                 hasImages: images.length,
                 comments: Array.from(comments)
-                    .map((comment) => {
+                    .map(comment => {
                         const body = comment.querySelector('.comment_memo td');
                         const author = comment.querySelector('.com_name span');
                         const time = comment.querySelector('.cin_02 span');
-                        const isReply = parseInt(comment.classList[0].replace('sect', ''));
-                        const isHot = comment.parentNode.classList.contains('hot-comment-preview');
+                        const isReply = parseInt(
+                            comment.classList[0].replace('sect', '')
+                        );
+                        const isHot = comment.parentNode.classList.contains(
+                            'hot-comment-preview'
+                        );
 
-                        const votesEl = comment.querySelectorAll('.com_name > span');
+                        const votesEl = comment.querySelectorAll(
+                            '.com_name > span'
+                        );
                         let upVotes, downVotes;
 
                         if (votesEl.length === 3) {
@@ -265,23 +290,34 @@ class Ppomppu extends CommunityCrawler {
                             downVotes = votesEl[1].innerText;
                         }
 
-                        body.querySelectorAll('img, video').forEach((item, index) => {
-                            const text = document.createElement('span');
-                            if (item.tagName === 'VIDEO') {
-                                const videoDiv = item.parentNode.parentNode;
+                        body.querySelectorAll('img, video').forEach(
+                            (item, index) => {
+                                const text = document.createElement('span');
+                                if (item.tagName === 'VIDEO') {
+                                    const videoDiv = item.parentNode.parentNode;
 
-                                text.innerText = `GIF_${index + 1} `;
-                                videoDiv.insertAdjacentElement('afterend', text);
-                                videoDiv.removeChild(item.parentNode);
-                            } else {
-                                text.innerText = `IMAGE_${index + 1} `;
-                                item.insertAdjacentElement('afterend', text);
+                                    text.innerText = `GIF_${index + 1} `;
+                                    videoDiv.insertAdjacentElement(
+                                        'afterend',
+                                        text
+                                    );
+                                    videoDiv.removeChild(item.parentNode);
+                                } else {
+                                    text.innerText = `IMAGE_${index + 1} `;
+                                    item.insertAdjacentElement(
+                                        'afterend',
+                                        text
+                                    );
+                                }
                             }
-                        });
+                        );
 
-                        body.querySelectorAll('a.noeffect').forEach((link) => {
+                        body.querySelectorAll('a.noeffect').forEach(link => {
                             const href = link.getAttribute('href');
-                            link.innerText = link.innerText.replace(link.innerText, href);
+                            link.innerText = link.innerText.replace(
+                                link.innerText,
+                                href
+                            );
                         });
 
                         return (
@@ -289,14 +325,18 @@ class Ppomppu extends CommunityCrawler {
                                 isReply,
                                 isRemoved: false,
                                 author: author.innerText.trim(),
-                                time: time.innerText.match(/[0-9]{2}:[0-9]{2}/)[0],
+                                time: time.innerText.match(
+                                    /[0-9]{2}:[0-9]{2}/
+                                )[0],
                                 body: body.textContent.trim(),
                                 upVotes: upVotes ? parseInt(upVotes.trim()) : 0,
-                                downVotes: downVotes ? parseInt(downVotes.trim()) : 0,
+                                downVotes: downVotes
+                                    ? parseInt(downVotes.trim())
+                                    : 0
                             }
                         );
                     })
-                    .filter((comment) => comment),
+                    .filter(comment => comment)
             };
         });
     }

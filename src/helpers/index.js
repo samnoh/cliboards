@@ -10,5 +10,5 @@ module.exports = {
     getTheme,
     resetCustomTheme,
     customThemeFilePath,
-    openUrls,
+    openUrls
 };

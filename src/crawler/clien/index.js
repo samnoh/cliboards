@@ -8,7 +8,7 @@ const {
     boardTypes,
     ignoreBoards,
     ignoreRequests,
-    boards,
+    boards
 } = require('./constants');
 const { configstore } = require('../../helpers');
 
@@ -32,8 +32,12 @@ class Clien extends CommunityCrawler {
 
             const newBoards = await this.page.evaluate(
                 (ignoreBoards, boardTypes) => {
-                    const main = Array.from(document.querySelectorAll('.navmenu a'));
-                    const sub = Array.from(document.querySelectorAll('.menu_somoim a'));
+                    const main = Array.from(
+                        document.querySelectorAll('.navmenu a')
+                    );
+                    const sub = Array.from(
+                        document.querySelectorAll('.menu_somoim a')
+                    );
                     const mainBoardSize = main.length;
                     return [...main, ...sub]
                         .map((board, index) => {
@@ -44,11 +48,14 @@ class Clien extends CommunityCrawler {
                                 ? {
                                       name: name.innerText,
                                       value: link,
-                                      type: boardTypes[mainBoardSize < index ? 1 : 0],
+                                      type:
+                                          boardTypes[
+                                              mainBoardSize < index ? 1 : 0
+                                          ]
                                   }
                                 : null;
                         })
-                        .filter((board) => board);
+                        .filter(board => board);
                 },
                 ignoreBoards,
                 this.boardTypes
@@ -65,16 +72,22 @@ class Clien extends CommunityCrawler {
 
     async getPosts() {
         await this.page.goto(
-            getUrl(this.currentBoard.value) + this.currentPageNumber + this.sortUrl.value
+            getUrl(this.currentBoard.value) +
+                this.currentPageNumber +
+                this.sortUrl.value
         );
 
-        const posts = await this.page.evaluate((baseUrl) => {
+        const posts = await this.page.evaluate(baseUrl => {
             const lists = document.querySelectorAll('.list_item');
 
             return Array.from(lists)
-                .map((list) => {
-                    const category = list.querySelector('.list_subject .category');
-                    const title = list.querySelector('.list_subject .subject_fixed');
+                .map(list => {
+                    const category = list.querySelector(
+                        '.list_subject .category'
+                    );
+                    const title = list.querySelector(
+                        '.list_subject .subject_fixed'
+                    );
                     const link = list.querySelector('.list_subject');
                     const author = list.querySelector('.list_author .nickname');
                     const hit = list.querySelector('.list_hit');
@@ -98,14 +111,17 @@ class Clien extends CommunityCrawler {
                             numberOfComments: numberOfComments
                                 ? parseInt(numberOfComments.innerText)
                                 : 0,
-                            hasImages: !!hasImages,
+                            hasImages: !!hasImages
                         }
                     );
                 })
-                .filter((post) => post);
+                .filter(post => post);
         }, baseUrl);
 
-        return posts.map((post) => ({ ...post, hasRead: this.postsRead.has(post.link) }));
+        return posts.map(post => ({
+            ...post,
+            hasRead: this.postsRead.has(post.link)
+        }));
     }
 
     async getPostDetail(link) {
@@ -114,8 +130,12 @@ class Clien extends CommunityCrawler {
         this.postsRead.add(this.currentBaseUrl); // set post that you read
 
         const postDetail = await this.page.evaluate(() => {
-            const category = document.querySelector('.post_subject .post_category');
-            const title = document.querySelector('.post_subject span:not(.post_category)');
+            const category = document.querySelector(
+                '.post_subject .post_category'
+            );
+            const title = document.querySelector(
+                '.post_subject span:not(.post_category)'
+            );
             const author = document.querySelector('.post_info .contact_name');
             const hit = document.querySelector('.view_info');
             const body = document.querySelector('.post_article');
@@ -125,7 +145,7 @@ class Clien extends CommunityCrawler {
             const gifs = Array.from(body.querySelectorAll('.fr-video') || []);
             const images = Array.from(
                 document.querySelectorAll('.post_content img') || []
-            ).map((image) => image.getAttribute('src'));
+            ).map(image => image.getAttribute('src'));
 
             // handle GIFs
             gifs.map((gif, index) => {
@@ -142,20 +162,22 @@ class Clien extends CommunityCrawler {
             return {
                 category: category && category.innerText,
                 title: title.innerText.trim(),
-                author: author.innerText.trim() || author.querySelector('img').getAttribute('alt'),
+                author:
+                    author.innerText.trim() ||
+                    author.querySelector('img').getAttribute('alt'),
                 hit: hit.innerText.trim(),
                 time: time.innerText.trim().split(' ')[1],
                 body: body.textContent
                     .split('\n')
-                    .map((b) => b.trim())
+                    .map(b => b.trim())
                     .join('\n')
                     .trim(),
                 upVotes: parseInt(upVotes.innerText),
                 images,
                 hasImages: images.length,
                 extraData: {
-                    isXHRRequired: commentsEl && commentsEl.length === 200,
-                },
+                    isXHRRequired: commentsEl && commentsEl.length === 200
+                }
             };
         });
 
@@ -169,7 +191,7 @@ class Clien extends CommunityCrawler {
     processComments() {
         const commentsEl = document.querySelectorAll('.comment_row');
 
-        return Array.from(commentsEl).map((comment) => {
+        return Array.from(commentsEl).map(comment => {
             const isRemoved = comment.classList.contains('blocked');
             const isReply = comment.classList.contains('re');
 
@@ -177,7 +199,7 @@ class Clien extends CommunityCrawler {
                 return {
                     isReply,
                     isRemoved,
-                    body: '삭제 되었습니다.',
+                    body: '삭제 되었습니다.'
                 };
             }
 
@@ -193,7 +215,9 @@ class Clien extends CommunityCrawler {
                 const replyTo = body.querySelector('.comment_view strong img');
 
                 if (replyTo) {
-                    const nickId = document.createTextNode(replyTo.getAttribute('data-nick-id'));
+                    const nickId = document.createTextNode(
+                        replyTo.getAttribute('data-nick-id')
+                    );
 
                     replyTo.parentNode.replaceChild(nickId, replyTo);
                 }
@@ -202,13 +226,15 @@ class Clien extends CommunityCrawler {
             return {
                 isReply,
                 isRemoved,
-                author: author.innerText || author.querySelector('img').getAttribute('alt'),
+                author:
+                    author.innerText ||
+                    author.querySelector('img').getAttribute('alt'),
                 time: time.innerText.split(' ')[1],
                 body:
                     image || gif
                         ? `${image ? 'IMAGE' : 'GIF'}_1\n\n` + body.innerText
                         : body.innerText,
-                upVotes: parseInt(upVotes.innerText.trim()),
+                upVotes: parseInt(upVotes.innerText.trim())
             };
         });
     }
@@ -219,7 +245,7 @@ class Clien extends CommunityCrawler {
             const params = {
                 order: 'data',
                 po: 0,
-                ps: 999999,
+                ps: 999999
             };
 
             const { data } = await axios.get(`${baseLink}/comment`, { params });

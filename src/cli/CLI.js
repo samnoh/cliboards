@@ -15,12 +15,12 @@ class CLI {
             dockBorders: true,
             fastCSR: true,
             fullUnicode: true,
-            debug: process.env.NODE_ENV === 'development',
+            debug: process.env.NODE_ENV === 'development'
         });
         const box = blessed.box({
             parent: this.screen,
             width: '100%',
-            height: '100%',
+            height: '100%'
         });
         this.titleBox = blessed.box({
             parent: box,
@@ -30,12 +30,12 @@ class CLI {
             height: 1,
             padding: {
                 left: 2,
-                right: 2,
+                right: 2
             },
             style: {
                 bg: this.colors.top_bg,
-                fg: this.colors.top_left_color,
-            },
+                fg: this.colors.top_left_color
+            }
         });
         this.bodyBox = blessed.box({
             parent: box,
@@ -44,8 +44,8 @@ class CLI {
             width: '100%',
             scrollbar: {
                 ch: ' ',
-                inverse: true,
-            },
+                inverse: true
+            }
         });
         this.footerBox = blessed.box({
             parent: box,
@@ -55,12 +55,12 @@ class CLI {
             height: 1,
             padding: {
                 left: 2,
-                right: 2,
+                right: 2
             },
             style: {
                 fg: this.colors.bottom_left_color,
-                bg: this.colors.bottom_bg,
-            },
+                bg: this.colors.bottom_bg
+            }
         });
 
         // update
@@ -74,9 +74,13 @@ class CLI {
                     return await this.terminate();
                 case 'escape':
                 case 'q':
-                    return !this.footerBox.focused && !this.formBox && this.moveToWidget('prev');
+                    return (
+                        !this.footerBox.focused &&
+                        !this.formBox &&
+                        this.moveToWidget('prev')
+                    );
                 case 'space':
-                    return this.screen.children.forEach((c) => {
+                    return this.screen.children.forEach(c => {
                         c.visible ? c.hide() : c.show();
                         this.screen.render();
                     });
@@ -95,14 +99,20 @@ class CLI {
                     this.colors.bottom_right_color
                 }-fg}Loading...{/}`
             );
-            this.footerBox.style = { ...this.footerBox.style, bg: this.colors.bottom_bg_loading };
+            this.footerBox.style = {
+                ...this.footerBox.style,
+                bg: this.colors.bottom_bg_loading
+            };
             this.screen.render();
         });
     }
 
     setBlurEvent() {
         this.footerBox.on('blur', () => {
-            this.footerBox.style = { ...this.footerBox.style, bg: this.colors.bottom_bg };
+            this.footerBox.style = {
+                ...this.footerBox.style,
+                bg: this.colors.bottom_bg
+            };
         });
     }
 
@@ -117,19 +127,25 @@ class CLI {
     moveToWidget(direction, callback) {
         try {
             const nextWidgetIndex =
-                direction === 'next' ? this.currentWidgetIndex + 1 : this.currentWidgetIndex - 1;
+                direction === 'next'
+                    ? this.currentWidgetIndex + 1
+                    : this.currentWidgetIndex - 1;
 
             const nextWidget = this.widgets[nextWidgetIndex];
             const currWidget = this.widgets[this.currentWidgetIndex];
 
             if (!currWidget) {
-                throw new Error('The next widget index is outside the bounds of the widgets array');
+                throw new Error(
+                    'The next widget index is outside the bounds of the widgets array'
+                );
             }
 
             this.currentWidgetIndex = nextWidgetIndex;
 
             if (nextWidget) {
-                direction === 'prev' && currWidget.select && currWidget.select(0);
+                direction === 'prev' &&
+                    currWidget.select &&
+                    currWidget.select(0);
                 currWidget.destroy();
                 this.bodyBox.append(nextWidget);
 
@@ -146,7 +162,9 @@ class CLI {
 
     setTitleContent(leftTitleText, rightTitleText) {
         this.titleBox.setContent(
-            `${leftTitleText} {|}{${this.colors.top_right_color}-fg}${rightTitleText || ''}{/}`
+            `${leftTitleText} {|}{${this.colors.top_right_color}-fg}${
+                rightTitleText || ''
+            }{/}`
         );
         this.screen.render();
     }
@@ -156,7 +174,11 @@ class CLI {
         this.screen.render();
     }
 
-    setTitleFooterContent(leftTitleText = '', rightTitleText = '', footerText = '') {
+    setTitleFooterContent(
+        leftTitleText = '',
+        rightTitleText = '',
+        footerText = ''
+    ) {
         this.setTitleContent(leftTitleText, rightTitleText);
         this.setFoooterContent(footerText);
     }

@@ -1,11 +1,11 @@
 const open = require('open');
 
-module.exports = async (urls) => {
+module.exports = async urls => {
     if (!urls) return;
 
     try {
         if (Array.isArray(urls)) {
-            urls.map(async (url) => {
+            urls.map(async url => {
                 await open(url, { url: true });
             });
         } else {

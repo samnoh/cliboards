@@ -10,7 +10,7 @@ const {
     boardTypes,
     ignoreRequests,
     ignoreBoards,
-    boards,
+    boards
 } = require('./constants');
 
 class SLRClub extends CommunityCrawler {
@@ -30,9 +30,11 @@ class SLRClub extends CommunityCrawler {
     }
 
     async getPosts() {
-        await this.page.goto(getUrl(this.currentBoard.value) + (this.currentPageNumber || ''));
+        await this.page.goto(
+            getUrl(this.currentBoard.value) + (this.currentPageNumber || '')
+        );
 
-        const [posts, currentPageNumber] = await this.page.evaluate((baseUrl) => {
+        const [posts, currentPageNumber] = await this.page.evaluate(baseUrl => {
             const lists = document.querySelectorAll('.list li:not(.notice)');
             const nextPageNumber = document
                 .querySelector('.paging #actpg + a')
@@ -41,13 +43,17 @@ class SLRClub extends CommunityCrawler {
                 .pop();
 
             return [
-                Array.from(lists).map((list) => {
+                Array.from(lists).map(list => {
                     const title = list.querySelector('.subject a');
                     const author = list.querySelector('.article-info span');
-                    const infoEl = list.querySelector('.article-info').innerText.split('|');
+                    const infoEl = list
+                        .querySelector('.article-info')
+                        .innerText.split('|');
                     const time = infoEl[1];
                     const hit = infoEl[2].replace(/[^0-9]/g, '');
-                    const upVotes = infoEl[3] ? infoEl[3].replace(/[^0-9]/g, '') : 0;
+                    const upVotes = infoEl[3]
+                        ? infoEl[3].replace(/[^0-9]/g, '')
+                        : 0;
                     const hasImages = list.querySelector('.subject .li_ic');
                     const numberOfComments = list.querySelector('.cmt2');
 
@@ -60,16 +66,19 @@ class SLRClub extends CommunityCrawler {
                         link: baseUrl + title.getAttribute('href'),
                         upVotes: parseInt(upVotes),
                         numberOfComments: numberOfComments.innerText,
-                        hasImages: !!hasImages,
+                        hasImages: !!hasImages
                     };
                 }),
-                parseInt(nextPageNumber) + 1,
+                parseInt(nextPageNumber) + 1
             ];
         }, baseUrl);
 
         this.currentPageNumber = currentPageNumber;
 
-        return posts.map((post) => ({ ...post, hasRead: this.postsRead.has(post.link) }));
+        return posts.map(post => ({
+            ...post,
+            hasRead: this.postsRead.has(post.link)
+        }));
     }
 
     async getPostDetail(link) {
@@ -81,14 +90,19 @@ class SLRClub extends CommunityCrawler {
             const title = document.querySelector('.subject');
             const body = document.querySelector('#userct');
             const author = document.querySelector('.info-wrap span');
-            const infoEl = document.querySelector('.info-wrap').innerText.split('|');
+            const infoEl = document
+                .querySelector('.info-wrap')
+                .innerText.split('|');
             const time = infoEl[1].replace(/[^0-9:]/g, '');
             const hit = infoEl[2].replace(/[^0-9]/g, '');
             const upVotes = infoEl[3].replace(/[^0-9]/g, '');
             const numberOfComments = document.querySelector('#cmcnt');
-            const commentsFormData = document.querySelector('#comment_box').dataset;
+            const commentsFormData = document.querySelector('#comment_box')
+                .dataset;
             const imagesEl = body.querySelectorAll('img');
-            const images = Array.from(imagesEl).map((img) => img.getAttribute('src'));
+            const images = Array.from(imagesEl).map(img =>
+                img.getAttribute('src')
+            );
 
             // handle images
             imagesEl.forEach((image, index) => {
@@ -103,7 +117,7 @@ class SLRClub extends CommunityCrawler {
                 title: title.innerText.trim(),
                 body: body.textContent
                     .split('\n')
-                    .map((b) => b.trim())
+                    .map(b => b.trim())
                     .join('\n')
                     .trim(),
                 author: author.innerText.trim(),
@@ -114,12 +128,14 @@ class SLRClub extends CommunityCrawler {
                 upVotes: parseInt(upVotes),
                 comments: [],
                 numberOfComments: parseInt(numberOfComments.innerText),
-                commentsFormData: { ...commentsFormData },
+                commentsFormData: { ...commentsFormData }
             };
         });
 
         if (postDetail.numberOfComments && postDetail.commentsFormData) {
-            postDetail.comments = await this.getComments(postDetail.commentsFormData);
+            postDetail.comments = await this.getComments(
+                postDetail.commentsFormData
+            );
         }
 
         return postDetail;
@@ -139,14 +155,14 @@ class SLRClub extends CommunityCrawler {
                 method: 'post',
                 url: commentsUrl,
                 data: form,
-                headers: { Referer: this.currentBaseUrl, ...form.getHeaders() },
+                headers: { Referer: this.currentBaseUrl, ...form.getHeaders() }
             });
 
             if (!response.data.c) {
                 throw new Error();
             }
 
-            return response.data.c.map((comment) => ({
+            return response.data.c.map(comment => ({
                 isRemoved: !!comment.del,
                 isReply: !!comment.th,
                 author: comment.name,
@@ -155,7 +171,7 @@ class SLRClub extends CommunityCrawler {
                     .replace(/<br \/>/g, '\n')
                     .replace(/<[^>]*>/g, 'IMAGE_1'),
                 time: comment.dt,
-                upVotes: comment.vt,
+                upVotes: comment.vt
             }));
         } catch (e) {
             return [];

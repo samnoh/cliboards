@@ -6,7 +6,7 @@ const {
     boardTypes,
     ignoreRequests,
     ignoreBoards,
-    boards,
+    boards
 } = require('./constants');
 
 class Ruliweb extends CommunityCrawler {
@@ -32,14 +32,16 @@ class Ruliweb extends CommunityCrawler {
             const lists = document.querySelectorAll('.table_body:not(.inside)');
 
             return Array.from(lists)
-                .map((list) => {
+                .map(list => {
                     const category = list.querySelector('.divsn');
                     const title = list.querySelector('.subject .deco');
                     const author = list.querySelector('.writer');
                     const hit = list.querySelector('.hit');
                     const time = list.querySelector('.time');
                     const upVotes = list.querySelector('.recomd');
-                    const numberOfComments = list.querySelector('.subject .num_reply .num');
+                    const numberOfComments = list.querySelector(
+                        '.subject .num_reply .num'
+                    );
                     const hasImages = list.querySelector('.icon-picture');
 
                     return (
@@ -55,14 +57,17 @@ class Ruliweb extends CommunityCrawler {
                             numberOfComments: numberOfComments
                                 ? parseInt(numberOfComments.innerText)
                                 : 0,
-                            hasImages: !!hasImages,
+                            hasImages: !!hasImages
                         }
                     );
                 })
-                .filter((post) => post);
+                .filter(post => post);
         });
 
-        return posts.map((post) => ({ ...post, hasRead: this.postsRead.has(post.link) }));
+        return posts.map(post => ({
+            ...post,
+            hasRead: this.postsRead.has(post.link)
+        }));
     }
 
     async getPostDetail(link) {
@@ -73,15 +78,19 @@ class Ruliweb extends CommunityCrawler {
         return await this.page.evaluate(() => {
             const title = document.querySelector('.subject_text');
             const author = document.querySelector('.nick');
-            const hit = document.querySelector('.user_info p:nth-child(5)').innerText.split(' ');
+            const hit = document
+                .querySelector('.user_info p:nth-child(5)')
+                .innerText.split(' ');
             const body = document.querySelector('.view_content');
             const upVotes = document.querySelector('.like');
-            const comments = document.querySelectorAll('.comment_view.normal tr');
+            const comments = document.querySelectorAll(
+                '.comment_view.normal tr'
+            );
             const time = document.querySelector('.regdate');
             const gifs = Array.from(body.querySelectorAll('.gifct') || []);
-            const images = Array.from(document.querySelectorAll('.img_load img') || []).map(
-                (image) => 'https:' + image.getAttribute('src')
-            );
+            const images = Array.from(
+                document.querySelectorAll('.img_load img') || []
+            ).map(image => 'https:' + image.getAttribute('src'));
 
             // handle gifs
             gifs.map((gif, index) => {
@@ -106,18 +115,20 @@ class Ruliweb extends CommunityCrawler {
                     .replace(/[^0-9:]/g, ''),
                 body: body.textContent
                     .split('\n')
-                    .map((b) => b.trim())
+                    .map(b => b.trim())
                     .join('\n')
                     .trim(),
                 upVotes: parseInt(upVotes.innerText),
                 images,
                 hasImages: images.length,
-                comments: Array.from(comments).map((comment) => {
+                comments: Array.from(comments).map(comment => {
                     const body = comment.querySelector('.text_wrapper');
                     const author = comment.querySelector('.nick');
                     const time = comment.querySelector('.time');
                     const upVotes = comment.querySelector('.btn_like .num');
-                    const downVotes = comment.querySelector('.btn_dislike .num');
+                    const downVotes = comment.querySelector(
+                        '.btn_dislike .num'
+                    );
                     const isReply = comment.classList.contains('child');
                     const control_box = comment.querySelector('.control_box');
                     const isRemoved = !comment.getAttribute('id');
@@ -130,7 +141,7 @@ class Ruliweb extends CommunityCrawler {
                         ? {
                               isReply,
                               isRemoved,
-                              body: body.innerText.trim(),
+                              body: body.innerText.trim()
                           }
                         : {
                               isReply,
@@ -139,9 +150,9 @@ class Ruliweb extends CommunityCrawler {
                               time: time.innerText.split(' ')[1],
                               body: body.innerText.trim(),
                               upVotes: parseInt(upVotes.innerText) || 0,
-                              downVotes: parseInt(downVotes.innerText) || 0,
+                              downVotes: parseInt(downVotes.innerText) || 0
                           };
-                }),
+                })
             };
         });
     }

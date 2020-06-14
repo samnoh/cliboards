@@ -4,7 +4,13 @@ const path = require('path');
 const { configstore } = require('./configstore');
 const defaultColors = require('../cli/theme');
 
-const customThemeFilePath = path.resolve(__dirname, '..', 'cli', 'theme', 'customTheme.txt');
+const customThemeFilePath = path.resolve(
+    __dirname,
+    '..',
+    'cli',
+    'theme',
+    'customTheme.txt'
+);
 
 const resetCustomTheme = () => {
     try {
@@ -30,14 +36,17 @@ const getTheme = () => {
             }
         }
 
-        Object.keys(defaultColors).map((key) => {
+        Object.keys(defaultColors).map(key => {
             if (!customColors[key]) {
                 customColors[key] = defaultColors[key];
             }
         });
 
         if (!exists) {
-            fs.writeFileSync(customThemeFilePath, JSON.stringify(customColors, null, '\t'));
+            fs.writeFileSync(
+                customThemeFilePath,
+                JSON.stringify(customColors, null, '\t')
+            );
         }
 
         configstore.set(configstoreKey, customColors);
@@ -51,5 +60,5 @@ const getTheme = () => {
 module.exports = {
     getTheme,
     resetCustomTheme,
-    customThemeFilePath,
+    customThemeFilePath
 };

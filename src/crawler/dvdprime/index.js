@@ -7,7 +7,7 @@ const {
     ignoreRequests,
     boards,
     ignoreBoards,
-    search,
+    search
 } = require('./constants');
 
 class DVDPrime extends CommunityCrawler {
@@ -33,22 +33,30 @@ class DVDPrime extends CommunityCrawler {
 
     async getPosts() {
         await this.page.goto(
-            getUrl(this.currentBoard.value) + this.pageNumber + this.searchParams.value
+            getUrl(this.currentBoard.value) +
+                this.pageNumber +
+                this.searchParams.value
         );
 
-        const posts = await this.page.evaluate((baseUrl) => {
+        const posts = await this.page.evaluate(baseUrl => {
             const lists = document.querySelectorAll('.list_table_row');
 
             return Array.from(lists)
-                .map((list) => {
+                .map(list => {
                     const category = list.querySelector('.list_category_text');
                     const title = list.querySelector('.list_subject_span_pc');
                     const author = list.querySelector('.list_table_col_name');
                     const hit = list.querySelector('.list_table_col_hit');
                     const time = list.querySelector('.list_table_dates');
-                    const link = list.querySelector('.list_subject_a').getAttribute('href');
-                    const upVotes = list.querySelector('.list_table_col_recommend');
-                    const numberOfComments = list.querySelector('.list_comment_new');
+                    const link = list
+                        .querySelector('.list_subject_a')
+                        .getAttribute('href');
+                    const upVotes = list.querySelector(
+                        '.list_table_col_recommend'
+                    );
+                    const numberOfComments = list.querySelector(
+                        '.list_comment_new'
+                    );
 
                     return (
                         title &&
@@ -63,14 +71,17 @@ class DVDPrime extends CommunityCrawler {
                             numberOfComments: numberOfComments
                                 ? parseInt(numberOfComments.innerText)
                                 : 0,
-                            hasImages: false,
+                            hasImages: false
                         }
                     );
                 })
-                .filter((post) => post);
+                .filter(post => post);
         }, baseUrl);
 
-        return posts.map((post) => ({ ...post, hasRead: this.postsRead.has(post.link) }));
+        return posts.map(post => ({
+            ...post,
+            hasRead: this.postsRead.has(post.link)
+        }));
     }
 
     async getPostDetail(link) {
@@ -88,9 +99,9 @@ class DVDPrime extends CommunityCrawler {
             const time = document
                 .querySelector('#view_datetime')
                 .innerText.match(/[0-9]{2}:[0-9]{2}:[0-9]{2}/)[0];
-            const images = Array.from(body.querySelectorAll('img') || []).map((image) =>
-                image.getAttribute('src')
-            );
+            const images = Array.from(
+                body.querySelectorAll('img') || []
+            ).map(image => image.getAttribute('src'));
 
             // handle images
             body.querySelectorAll('img').forEach((image, index) => {
@@ -104,29 +115,37 @@ class DVDPrime extends CommunityCrawler {
                 time,
                 body: body.textContent
                     .split('\n')
-                    .map((b) => b.trim())
+                    .map(b => b.trim())
                     .join('\n')
                     .trim(),
                 upVotes: parseInt(upVotes.innerText),
                 images,
                 hasImages: images.length,
-                comments: Array.from(comments).map((comment) => {
+                comments: Array.from(comments).map(comment => {
                     const body = comment.querySelector('.comment_content');
                     const author = comment.querySelector('.sideview_a');
                     const time = comment
                         .querySelector('.comment_time')
                         .innerText.match(/[0-9]{2}:[0-9]{2}:[0-9]{2}/)[0];
-                    const upVotes = comment.querySelector('.comment_title_right .c_r_num');
-                    const isReply = comment.querySelector('.comment_reply_line');
-                    const spoilerWarning = body.querySelector('.view_warning_div');
+                    const upVotes = comment.querySelector(
+                        '.comment_title_right .c_r_num'
+                    );
+                    const isReply = comment.querySelector(
+                        '.comment_reply_line'
+                    );
+                    const spoilerWarning = body.querySelector(
+                        '.view_warning_div'
+                    );
 
                     if (spoilerWarning) {
                         body.removeChild(spoilerWarning);
                     }
 
-                    body.querySelectorAll('.view_image img').forEach((image, index) => {
-                        image.textContent = `IMAGE_${index + 1} `;
-                    });
+                    body.querySelectorAll('.view_image img').forEach(
+                        (image, index) => {
+                            image.textContent = `IMAGE_${index + 1} `;
+                        }
+                    );
 
                     return {
                         isReply: !!isReply,
@@ -134,9 +153,9 @@ class DVDPrime extends CommunityCrawler {
                         author: author.innerText,
                         time,
                         body: body.textContent.trim(),
-                        upVotes: parseInt(upVotes.innerText),
+                        upVotes: parseInt(upVotes.innerText)
                     };
-                }),
+                })
             };
         });
     }

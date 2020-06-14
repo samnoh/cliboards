@@ -26,7 +26,9 @@ class CommunityCrawler extends Crawler {
         }
 
         if (ignoreBoards && ignoreBoards.length) {
-            this.boards = _boards.filter((board) => ignoreBoards.indexOf(board) === -1);
+            this.boards = _boards.filter(
+                board => ignoreBoards.indexOf(board) === -1
+            );
         } else {
             this.boards = _boards;
         }
@@ -62,7 +64,9 @@ class CommunityCrawler extends Crawler {
     }
 
     set currentBoard(board) {
-        this.currentBoardIndex = this.boards.findIndex((_board) => _board.value === board.value);
+        this.currentBoardIndex = this.boards.findIndex(
+            _board => _board.value === board.value
+        );
     }
 
     changeSortUrl(index) {
@@ -95,10 +99,15 @@ class CommunityCrawler extends Crawler {
             }
 
             const name = await this.page.evaluate(callback);
-            const isDuplicate = this.boards.filter((board) => board.value === value).length;
+            const isDuplicate = this.boards.filter(
+                board => board.value === value
+            ).length;
 
             if (!isDuplicate || !name) {
-                configstore.set(this.title, [...this.boards, { name, value, type }]);
+                configstore.set(this.title, [
+                    ...this.boards,
+                    { name, value, type }
+                ]);
             } else {
                 throw new Error('Duplicated input');
             }
@@ -114,13 +123,17 @@ class CommunityCrawler extends Crawler {
     }
 
     sortBoards(type, index, targetIndex) {
-        const currentBoard = this.boards.filter((board) => board.type === type);
+        const currentBoard = this.boards.filter(board => board.type === type);
 
-        const selectedBoardIndex = this.boards.findIndex((board) => {
-            return currentBoard[index] && board.name === currentBoard[index].name;
+        const selectedBoardIndex = this.boards.findIndex(board => {
+            return (
+                currentBoard[index] && board.name === currentBoard[index].name
+            );
         });
         const targetBoardIndex = this.boards.findIndex(
-            (board) => currentBoard[targetIndex] && board.name === currentBoard[targetIndex].name
+            board =>
+                currentBoard[targetIndex] &&
+                board.name === currentBoard[targetIndex].name
         );
 
         if (selectedBoardIndex === -1 || targetBoardIndex === -1) return false;
@@ -133,7 +146,10 @@ class CommunityCrawler extends Crawler {
     }
 
     set setSearchParams({ value, keyword }) {
-        this.searchParams = { keyword, value: this.getSearchParams(value, keyword) };
+        this.searchParams = {
+            keyword,
+            value: this.getSearchParams(value, keyword)
+        };
     }
 
     saveBoards() {
