@@ -60,6 +60,6 @@
         }
     },
     "lint-staged": {
-        "*.js": "prettier --write"
+        "*.js": "npm run format"
     }
 }
