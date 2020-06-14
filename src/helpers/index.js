@@ -1,6 +1,6 @@
 const updateNotifier = require('./updateNotifier');
 const { configstore, resetConfigstore } = require('./configstore');
-const { getTheme, resetCustomTheme } = require('./theme');
+const { getTheme, resetCustomTheme, customThemeFilePath } = require('./theme');
 const openUrls = require('./openUrls');
 
 module.exports = {
@@ -9,5 +9,6 @@ module.exports = {
     resetConfigstore,
     getTheme,
     resetCustomTheme,
+    customThemeFilePath,
     openUrls,
 };

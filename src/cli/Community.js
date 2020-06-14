@@ -2,7 +2,7 @@ const blessed = require('blessed');
 
 const CLI = require('./CLI');
 const { getCrawler, crawlers } = require('../crawler');
-const { openUrls, resetConfigstore, resetCustomTheme } = require('../helpers');
+const { openUrls, resetConfigstore, resetCustomTheme, customThemeFilePath } = require('../helpers');
 const { name, version, homepage } = require('../../package.json');
 
 class Community extends CLI {
@@ -100,7 +100,7 @@ class Community extends CLI {
         community.communityList.setItems(crawlers);
 
         if (theme) {
-            await openUrls(__dirname + '/../cli/theme/customTheme.txt');
+            await openUrls(customThemeFilePath);
             console.log('Please edit customTheme.txt in JSON format and restart.');
             process.exit(0);
         }
@@ -340,7 +340,11 @@ class Community extends CLI {
                 case 'r':
                     return await this.refreshPostDetail();
                 case 'i':
-                    return await openUrls(this.post.images || null);
+                    if (this.crawler.openImages) {
+                        const responses = await this.crawler.openImages(this.post.images);
+                        return await openUrls(responses);
+                    }
+                    return this.post.hasImages ? await openUrls(this.post.images) : null;
                 case 'o':
                     return await openUrls(this.posts[this.currentPostIndex].link);
                 case 'h':

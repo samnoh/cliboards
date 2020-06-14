@@ -87,9 +87,11 @@ class SLRClub extends CommunityCrawler {
             const upVotes = infoEl[3].replace(/[^0-9]/g, '');
             const numberOfComments = document.querySelector('#cmcnt');
             const commentsFormData = document.querySelector('#comment_box').dataset;
+            const imagesEl = body.querySelectorAll('img');
+            const images = Array.from(imagesEl).map((img) => img.getAttribute('src'));
 
             // handle images
-            body.querySelectorAll('img').forEach((image, index) => {
+            imagesEl.forEach((image, index) => {
                 const src = image.getAttribute('src');
                 const isGif = src.slice(-3) === 'gif';
 
@@ -107,6 +109,8 @@ class SLRClub extends CommunityCrawler {
                 author: author.innerText.trim(),
                 hit,
                 time,
+                images,
+                // hasImages: images.length,
                 upVotes: parseInt(upVotes),
                 comments: [],
                 numberOfComments: parseInt(numberOfComments.innerText),
@@ -165,6 +169,15 @@ class SLRClub extends CommunityCrawler {
     set navigatePage(offset) {
         this.currentPageNumber -= offset;
     }
+
+    // async openImages(urls) {
+    //     const host = 'media.slrclub.com';
+    //     const headers = { host, Referer: this.currentBaseUrl };
+
+    //     const requests = urls.map((url) => axios.get(url, { headers, responseType: 'stream' }));
+
+    //     return await axios.all([...requests]).then(axios.spread((...responses) => ''));
+    // }
 
     static toString() {
         return 'SLRClub';
