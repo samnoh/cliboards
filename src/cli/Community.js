@@ -8,6 +8,7 @@ const {
     resetConfigstore,
     resetCustomTheme,
     customThemeFilePath,
+    clearFolder,
 } = require('../helpers');
 const { name, version, homepage } = require('../../package.json');
 
@@ -408,9 +409,9 @@ class Community extends CLI {
 
                     this.footerBox.focus();
 
-                    const images = this.crawler.imageXhrRequired
-                        ? await this.crawler.downloadImages(this.post.images)
-                        : this.post.images;
+                    const images = await this.crawler.downloadImages(
+                        this.post.images,
+                    );
 
                     this.detailBox.focus();
 

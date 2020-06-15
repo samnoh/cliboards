@@ -167,9 +167,11 @@ class CommunityCrawler extends Crawler {
     }
 
     async downloadImages(images) {
-        try {
-            clearFolder(tempFolderPath);
+        clearFolder(tempFolderPath);
 
+        if (!this.imageXhrRequired) return images;
+
+        try {
             const requests = images.map(url =>
                 axios.get(url.value, {
                     headers: { Referer: this.page.url() },

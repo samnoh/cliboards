@@ -3,3 +3,4 @@ img/
 CODE_OF_CONDUCT.md
 *.txt
 *.json
+.temp/
