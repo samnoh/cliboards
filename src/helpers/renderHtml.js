@@ -8,7 +8,7 @@ const renderImageTag = ({ type, value }) => {
     }
 };
 
-module.exports = ({ communityTitle, title, images }) => `
+module.exports = ({ communityTitle, title, author, comments, images }) => `
 <!DOCTYPE html>
 <html lang="en">
 
@@ -26,7 +26,7 @@ module.exports = ({ communityTitle, title, images }) => `
 </head>
 
 <body>
-    <h1>${title}</h1>
+    <h1>${title} (${comments.length}) - ${author}</h1>
     ${images
         .map(
             ({ type, value, name }) =>

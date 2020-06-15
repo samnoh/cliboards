@@ -8,7 +8,6 @@ const {
     resetConfigstore,
     resetCustomTheme,
     customThemeFilePath,
-    clearFolder,
 } = require('../helpers');
 const { name, version, homepage } = require('../../package.json');
 
@@ -419,7 +418,7 @@ class Community extends CLI {
                         ? null
                         : await openImages({
                               communityTitle: this.crawler.title,
-                              title: this.post.title,
+                              ...this.post,
                               images,
                           });
 

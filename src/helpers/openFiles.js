@@ -31,21 +31,23 @@ const openImages = async props => {
 };
 
 const clearFolder = folderPath => {
-    const exists = fs.existsSync(folderPath);
+    try {
+        const exists = fs.existsSync(folderPath);
 
-    if (exists) {
-        fs.readdir(folderPath, (err, files) => {
-            if (err) throw err;
+        if (exists) {
+            fs.readdirSync(folderPath, (err, files) => {
+                if (err) throw err;
 
-            for (const file of files) {
-                fs.unlink(path.join(folderPath, file), err => {
-                    if (err) throw err;
-                });
-            }
-        });
-    } else {
-        fs.mkdirSync(folderPath, { recursive: true });
-    }
+                for (const file of files) {
+                    fs.unlink(path.join(folderPath, file), err => {
+                        if (err) throw err;
+                    });
+                }
+            });
+        } else {
+            fs.mkdirSync(folderPath, { recursive: true });
+        }
+    } catch (e) {}
 };
 
 module.exports = { openUrls, openImages, clearFolder, tempFolderPath };
