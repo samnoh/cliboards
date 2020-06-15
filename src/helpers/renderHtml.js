@@ -5,7 +5,7 @@ module.exports = ({ communityTitle, title, images }) => `
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>(${images.length}) ${communityTitle} - cliboards </title>
+    <title>(${images.length}) ${communityTitle} - cliboards</title>
     <style>
         body { color: gray; background: black; padding: 30px 0 30px; display: flex; align-items: center; justify-content: center; flex-direction: column; }
         img { display: block; max-width: 80vw; margin: 30px 0; }
@@ -19,5 +19,4 @@ module.exports = ({ communityTitle, title, images }) => `
         ${images.map(image => '<img src="' + image + '">').join('\n')}
 </body>
 
-</html>
-`;
+</html>`;
