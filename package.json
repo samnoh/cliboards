@@ -27,7 +27,6 @@
         "configstore": "5.0.1",
         "form-data": "3.0.0",
         "minimist": "1.2.5",
-        "mkdirp": "1.0.4",
         "open": "7.0.4",
         "puppeteer": "3.3.0",
         "update-notifier": "4.1.0"
