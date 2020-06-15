@@ -13,10 +13,8 @@ module.exports = ({ communityTitle, title, images }) => `
 </head>
 
 <body>
-    <h1>
-        ${title}
-    </h1>
-        ${images.map(image => '<img src="' + image + '">').join('\n')}
+    <h1>${title}</h1>
+    ${images.map(image => '<img src="' + image + '">').join('\n')}
 </body>
 
 </html>`;
