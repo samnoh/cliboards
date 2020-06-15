@@ -1,11 +1,9 @@
 #!/usr/bin/env node
 
-const Community = require('./cli/Community');
 const parseArgs = require('minimist')(process.argv.slice(2));
 
+const Community = require('./cli/Community');
+
 (async () => {
-    await Community.start({
-        startCrawler: parseArgs._[0],
-        ...parseArgs,
-    });
+    await Community.start({ startCrawler: parseArgs._[0], ...parseArgs });
 })();
