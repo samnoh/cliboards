@@ -18,7 +18,7 @@ const openUrls = async urls => {
     } catch (e) {}
 };
 
-const tempFolderPath = path.resolve(__dirname, '..', '..', 'temp');
+const tempFolderPath = path.resolve(__dirname, '..', '..', '.temp');
 
 const openImages = async props => {
     const tempHtmlPath = path.join(tempFolderPath, 'index.html');

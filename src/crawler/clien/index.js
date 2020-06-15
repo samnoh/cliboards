@@ -133,7 +133,7 @@ class Clien extends CommunityCrawler {
             const category = document.querySelector(
                 '.post_subject .post_category',
             );
-            const title = document.querySelector(
+            const _title = document.querySelector(
                 '.post_subject span:not(.post_category)',
             );
             const author = document.querySelector('.post_info .contact_name');
@@ -142,26 +142,31 @@ class Clien extends CommunityCrawler {
             const upVotes = document.querySelector('.symph_count strong');
             const commentsEl = document.querySelectorAll('.comment_row');
             const time = document.querySelector('.post_author span');
-            const gifs = Array.from(body.querySelectorAll('.fr-video') || []);
             const images = Array.from(
-                document.querySelectorAll('.post_content img') || [],
-            ).map(image => image.getAttribute('src'));
+                body.querySelectorAll('img, .fr-video') || [],
+            ).map((item, index) => {
+                let value, type;
 
-            // handle GIFs
-            gifs.map((gif, index) => {
-                const src = gif.querySelector('source').getAttribute('src');
-                gif.innerHTML = `GIF_${index + 1} `;
-                images.push(src);
-            });
+                if (item.classList.contains('fr-video')) {
+                    type = 'mp4';
+                    value = item.querySelector('source').getAttribute('src');
+                    item.textContent = `GIF_${index + 1}`;
+                } else {
+                    type = 'image';
+                    value = item.getAttribute('src');
+                    item.textContent = `IMAGE_${index + 1}`;
+                }
 
-            // handle images
-            body.querySelectorAll('img').forEach((image, index) => {
-                image.textContent = `IMAGE_${index + 1} `;
+                return {
+                    type,
+                    value,
+                    name: item.textContent,
+                };
             });
 
             return {
                 category: category && category.innerText,
-                title: title.innerText.trim(),
+                title: _title.innerText.trim(),
                 author:
                     author.innerText.trim() ||
                     author.querySelector('img').getAttribute('alt'),
