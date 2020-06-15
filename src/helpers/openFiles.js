@@ -21,7 +21,7 @@ const openUrls = async urls => {
 const tempFolderPath = path.resolve(__dirname, '..', '..', 'temp');
 
 const openImages = async props => {
-    const tempHtmlPath = path.join(tempFolderPath, 'temp.html');
+    const tempHtmlPath = path.join(tempFolderPath, 'index.html');
 
     const html = renderHtml(props);
 
@@ -30,22 +30,22 @@ const openImages = async props => {
     await open(tempHtmlPath, { wait: true });
 };
 
-const clearTempFolder = () => {
-    const exists = fs.existsSync(tempFolderPath);
+const clearFolder = folderPath => {
+    const exists = fs.existsSync(folderPath);
 
     if (exists) {
-        fs.readdir(tempFolderPath, (err, files) => {
+        fs.readdir(folderPath, (err, files) => {
             if (err) throw err;
 
             for (const file of files) {
-                fs.unlink(path.join(tempFolderPath, file), err => {
+                fs.unlink(path.join(folderPath, file), err => {
                     if (err) throw err;
                 });
             }
         });
     } else {
-        fs.mkdirSync(tempFolderPath, { recursive: true });
+        fs.mkdirSync(folderPath, { recursive: true });
     }
 };
 
-module.exports = { openUrls, openImages, clearTempFolder };
+module.exports = { openUrls, openImages, clearFolder, tempFolderPath };

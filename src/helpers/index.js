@@ -1,7 +1,12 @@
 const updateNotifier = require('./updateNotifier');
 const { configstore, resetConfigstore } = require('./configstore');
 const { getTheme, resetCustomTheme, customThemeFilePath } = require('./theme');
-const { openUrls, openImages, clearTempFolder } = require('./openFiles');
+const {
+    openUrls,
+    openImages,
+    clearFolder,
+    tempFolderPath,
+} = require('./openFiles');
 
 module.exports = {
     updateNotifier,
@@ -12,5 +17,6 @@ module.exports = {
     customThemeFilePath,
     openUrls,
     openImages,
-    clearTempFolder,
+    clearFolder,
+    tempFolderPath,
 };

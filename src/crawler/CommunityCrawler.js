@@ -4,7 +4,7 @@ const path = require('path');
 const axios = require('axios');
 
 const Crawler = require('./Crawler');
-const { configstore, clearTempFolder } = require('../helpers');
+const { configstore, clearFolder, tempFolderPath } = require('../helpers');
 
 class CommunityCrawler extends Crawler {
     constructor(sortUrls, ignoreRequests, baseUrl) {
@@ -167,9 +167,7 @@ class CommunityCrawler extends Crawler {
     }
 
     async downloadImages(urls) {
-        const tempFolderPath = path.resolve(__dirname, '..', '..', 'temp');
-
-        clearTempFolder();
+        clearFolder(tempFolderPath);
 
         const requests = urls.map(url =>
             axios.get(url, {
