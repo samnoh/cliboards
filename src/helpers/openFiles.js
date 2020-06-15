@@ -14,14 +14,14 @@ const openUrls = async urls => {
                 await openUrls(url);
             });
         }
-        await open(urls);
+        await open(urls, { wait: true });
     } catch (e) {}
 };
 
-const tempFolderPath = path.resolve(__dirname, '..', 'temp');
-const tempHtmlPath = path.resolve(tempFolderPath, 'temp.html');
-
 const openImages = async props => {
+    const tempFolderPath = path.resolve(__dirname, '..', '..', 'temp');
+    const tempHtmlPath = path.resolve(tempFolderPath, 'temp.html');
+
     const html = renderHtml(props);
 
     fs.writeFileSync(tempHtmlPath, html);

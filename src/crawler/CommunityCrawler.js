@@ -1,3 +1,9 @@
+const fs = require('fs');
+const path = require('path');
+
+const mkdirp = require('mkdirp');
+const axios = require('axios');
+
 const Crawler = require('./Crawler');
 const { configstore } = require('../helpers');
 
@@ -14,6 +20,7 @@ class CommunityCrawler extends Crawler {
         this.postsRead = new Set();
         this.canAddBoards = false;
         this.searchParams = {};
+        this.imageXhrRequired = false;
     }
 
     getBoards(boards, ignoreBoards) {
@@ -158,6 +165,52 @@ class CommunityCrawler extends Crawler {
 
     resetBoards() {
         configstore.delete(this.title);
+    }
+
+    async downloadImages(urls) {
+        const tempFolderPath = path.resolve(__dirname, '..', '..', 'temp');
+
+        fs.rmdirSync(tempFolderPath, { recursive: true });
+
+        mkdirp.sync(tempFolderPath);
+
+        const requests = urls.map(url =>
+            axios.get(url, {
+                headers: { Referer: this.page.url() },
+                responseType: 'stream',
+            }),
+        );
+
+        try {
+            return axios.all([...requests]).then(
+                axios.spread((...resps) =>
+                    Promise.all(
+                        resps.map((res, index) => {
+                            const ext = res.data.responseUrl.split('.').pop();
+
+                            return new Promise(resolve => {
+                                const file = fs.createWriteStream(
+                                    path.resolve(
+                                        tempFolderPath,
+                                        index +
+                                            '.' +
+                                            (ext.length > 4 ? 'jpeg' : ext),
+                                    ),
+                                );
+                                file.on('finish', () =>
+                                    file.close(() => resolve(file)),
+                                );
+                                res.data.pipe(file);
+                            });
+                        }),
+                    ).then(files =>
+                        files.map(file => file.path.split('/').pop()),
+                    ),
+                ),
+            );
+        } catch (e) {
+            return null;
+        }
     }
 }
 

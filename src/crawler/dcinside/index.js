@@ -21,6 +21,7 @@ class Dcinside extends CommunityCrawler {
         this.canAddBoards = true;
         this.getSearchParams = search.getSearchParams;
         this.searchTypes = search.types;
+        this.imageXhrRequired = true;
     }
 
     getBoards() {
@@ -131,6 +132,8 @@ class Dcinside extends CommunityCrawler {
             const _time = document
                 .querySelector('.btm .ginfo2 li:nth-child(2)')
                 .innerText.match(/[0-9]{2}:[0-9]{2}/)[0];
+            const imagesEl = Array.from(body.querySelectorAll('img.lazy'));
+            const images = imagesEl.map(image => image.dataset.original);
 
             if (body) {
                 const scripts = Array.from(body.querySelectorAll('script'));
@@ -147,7 +150,7 @@ class Dcinside extends CommunityCrawler {
             );
 
             // handle images
-            body.querySelectorAll('img.lazy').forEach((image, index) => {
+            imagesEl.forEach((image, index) => {
                 const text = document.createElement('span');
                 text.innerText = `IMAGE_${index + 1} `;
                 image.insertAdjacentElement('afterend', text);
@@ -163,6 +166,8 @@ class Dcinside extends CommunityCrawler {
                     .map(b => b.trim())
                     .join('\n')
                     .trim(),
+                images,
+                hasImages: images.length,
                 upVotes: parseInt(upVotes.innerText.replace(/[^0-9]/g, '')),
                 comments: Array.from(comments)
                     .map(comment => {

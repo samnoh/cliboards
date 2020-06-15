@@ -406,17 +406,22 @@ class Community extends CLI {
                 case 'i':
                     if (!this.post.hasImages) return;
 
-                    const images = this.crawler.openImages
-                        ? await this.crawler.openImages(this.post.images)
+                    this.footerBox.focus();
+
+                    const images = this.crawler.imageXhrRequired
+                        ? await this.crawler.downloadImages(this.post.images)
                         : this.post.images;
 
-                    if (!images) return;
+                    this.detailBox.focus();
 
-                    return openImages({
-                        communityTitle: this.crawler.title,
-                        title: this.post.title,
-                        images,
-                    });
+                    return !images
+                        ? null
+                        : await openImages({
+                              communityTitle: this.crawler.title,
+                              title: this.post.title,
+                              images,
+                          });
+
                 case 'o':
                     return await openUrls(
                         this.posts[this.currentPostIndex].link,

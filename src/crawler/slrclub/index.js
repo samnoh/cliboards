@@ -1,7 +1,3 @@
-const fs = require('fs');
-const path = require('path');
-const mkdirp = require('mkdirp');
-
 const axios = require('axios');
 const FormData = require('form-data');
 
@@ -23,6 +19,7 @@ class SLRClub extends CommunityCrawler {
 
         this.title = SLRClub.toString();
         this.boardTypes = boardTypes;
+        this.imageXhrRequired = true;
     }
 
     async getBoards() {
@@ -188,54 +185,6 @@ class SLRClub extends CommunityCrawler {
 
     set navigatePage(offset) {
         this.currentPageNumber -= offset;
-    }
-
-    async openImages(urls) {
-        const tempFolderPath = path.resolve(__dirname, '..', '..', 'temp');
-
-        fs.rmdirSync(tempFolderPath, { recursive: true });
-
-        mkdirp.sync(tempFolderPath);
-
-        const requests = urls.map(url =>
-            axios.get(url, {
-                headers: {
-                    host: 'media.slrclub.com',
-                    Referer: this.currentBaseUrl,
-                },
-                responseType: 'stream',
-            }),
-        );
-
-        try {
-            return axios.all([...requests]).then(
-                axios.spread((...resps) =>
-                    Promise.all(
-                        resps.map((res, index) => {
-                            const ext = res.data.responseUrl.split('.').pop();
-
-                            return new Promise(resolve => {
-                                const file = fs.createWriteStream(
-                                    path.resolve(
-                                        tempFolderPath,
-                                        index + '.' + ext,
-                                    ),
-                                );
-                                file.on('finish', () =>
-                                    file.close(() => resolve(file)),
-                                );
-                                res.data.pipe(file);
-                            });
-                        }),
-                    ).then(files =>
-                        files.map(file => file.path.split('/').pop()),
-                    ),
-                ),
-            );
-        } catch (e) {
-            console.error(e);
-            return null;
-        }
     }
 
     static toString() {
