@@ -87,21 +87,26 @@ class Ruliweb extends CommunityCrawler {
                 '.comment_view.normal tr',
             );
             const time = document.querySelector('.regdate');
-            const gifs = Array.from(body.querySelectorAll('.gifct') || []);
             const images = Array.from(
-                document.querySelectorAll('.img_load img') || [],
-            ).map(image => 'https:' + image.getAttribute('src'));
+                document.querySelectorAll('.img_load img, .gifct'),
+            ).map((item, index) => {
+                let value, type;
 
-            // handle gifs
-            gifs.map((gif, index) => {
-                const src = gif.querySelector('video').getAttribute('src');
-                gif.innerHTML = `GIF_${index + 1} `;
-                images.push(src);
-            });
+                if (item.classList.contains('gifct')) {
+                    type = 'mp4';
+                    value = item.querySelector('video').getAttribute('src');
+                    item.innerHTML = `GIF_${index + 1}`;
+                } else {
+                    type = 'image';
+                    value = item.getAttribute('src');
+                    item.textContent = `IMAGE_${index + 1}`;
+                }
 
-            // handle images
-            body.querySelectorAll('img').forEach((image, index) => {
-                image.textContent = `IMAGE_${index + 1} `;
+                return {
+                    type,
+                    value: 'https:' + value,
+                    name: item.textContent,
+                };
             });
 
             return {
