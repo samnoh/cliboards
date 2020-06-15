@@ -1,11 +1,10 @@
 const fs = require('fs');
 const path = require('path');
 
-const mkdirp = require('mkdirp');
 const axios = require('axios');
 
 const Crawler = require('./Crawler');
-const { configstore } = require('../helpers');
+const { configstore, clearTempFolder } = require('../helpers');
 
 class CommunityCrawler extends Crawler {
     constructor(sortUrls, ignoreRequests, baseUrl) {
@@ -170,9 +169,7 @@ class CommunityCrawler extends Crawler {
     async downloadImages(urls) {
         const tempFolderPath = path.resolve(__dirname, '..', '..', 'temp');
 
-        fs.rmdirSync(tempFolderPath, { recursive: true });
-
-        mkdirp.sync(tempFolderPath);
+        clearTempFolder();
 
         const requests = urls.map(url =>
             axios.get(url, {
@@ -190,7 +187,7 @@ class CommunityCrawler extends Crawler {
 
                             return new Promise(resolve => {
                                 const file = fs.createWriteStream(
-                                    path.resolve(
+                                    path.join(
                                         tempFolderPath,
                                         index +
                                             '.' +
