@@ -99,14 +99,17 @@ class DVDPrime extends CommunityCrawler {
             const time = document
                 .querySelector('#view_datetime')
                 .innerText.match(/[0-9]{2}:[0-9]{2}:[0-9]{2}/)[0];
-            const images = Array.from(
-                body.querySelectorAll('img') || [],
-            ).map(image => image.getAttribute('src'));
+            const images = Array.from(body.querySelectorAll('img')).map(
+                (image, index) => {
+                    image.textContent = `IMAGE_${index + 1} `;
 
-            // handle images
-            body.querySelectorAll('img').forEach((image, index) => {
-                image.textContent = `IMAGE_${index + 1} `;
-            });
+                    return {
+                        type: 'image',
+                        value: image.getAttribute('src'),
+                        name: image.textContent,
+                    };
+                },
+            );
 
             return {
                 title: title.innerText,

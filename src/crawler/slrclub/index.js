@@ -101,9 +101,18 @@ class SLRClub extends CommunityCrawler {
             const commentsFormData = document.querySelector('#comment_box')
                 .dataset;
             const imagesEl = body.querySelectorAll('img');
-            const images = Array.from(imagesEl).map(img =>
-                img.getAttribute('src'),
-            );
+            const images = Array.from(imagesEl).map((image, index) => {
+                const value = image.getAttribute('src');
+                const isGif = value.slice(-3) === 'gif';
+
+                image.textContent = `${isGif ? 'GIF' : 'IMAGE'}_${index + 1} `;
+
+                return {
+                    type: isGif ? 'gif' : 'image',
+                    value,
+                    name: image.textContent,
+                };
+            });
 
             // handle images
             imagesEl.forEach((image, index) => {

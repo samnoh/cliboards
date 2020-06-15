@@ -143,7 +143,7 @@ class Clien extends CommunityCrawler {
             const commentsEl = document.querySelectorAll('.comment_row');
             const time = document.querySelector('.post_author span');
             const images = Array.from(
-                body.querySelectorAll('img, .fr-video') || [],
+                body.querySelectorAll('img, .fr-video'),
             ).map((item, index) => {
                 let value, type;
 

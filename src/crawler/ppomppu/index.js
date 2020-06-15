@@ -208,36 +208,54 @@ class Ppomppu extends CommunityCrawler {
             let upVotes = otherInfoEl[otherInfoEl.indexOf('추천') + 2];
 
             const body = document.querySelector('#KH_Content');
+            const comments = document.querySelectorAll('.cmAr .sect-cmt');
             const imagesEl = Array.from(
                 body.querySelectorAll('img, video'),
             ).filter(item => item.getAttribute('alt') !== '다운로드 버튼');
             const images = imagesEl
-                .map(item => {
+                .map((item, index) => {
+                    let value;
+                    const text = document.createElement('span');
+
                     if (item.tagName === 'VIDEO') {
-                        return item.querySelector('source').getAttribute('src');
+                        const videoDiv = item.parentNode.parentNode;
+                        value = item
+                            .querySelector('source')
+                            .getAttribute('src');
+
+                        text.innerText = `GIF_${index + 1}`;
+                        videoDiv.insertAdjacentElement('afterend', text);
+                        videoDiv.removeChild(item.parentNode);
+                    } else {
+                        value = item.getAttribute('src');
+                        text.innerText = `IMAGE_${index + 1}`;
+                        item.insertAdjacentElement('afterend', text);
                     }
-                    return item.getAttribute('src');
+                    return { type: 'image', value, name: text.innerText };
                 })
-                .map(item =>
-                    item.slice(0, 4) === 'http' ? item : 'http:' + item,
-                );
-            const comments = document.querySelectorAll('.cmAr .sect-cmt');
+                .map(item => {
+                    const value = item.value;
+                    const newValue =
+                        value.slice(0, 4) === 'http' ? value : 'http:' + value;
 
-            // handle images
-            imagesEl.forEach((item, index) => {
-                const text = document.createElement('span');
+                    return { ...item, value: newValue };
+                });
 
-                if (item.tagName === 'VIDEO') {
-                    const videoDiv = item.parentNode.parentNode;
+            // // handle images
+            // imagesEl.forEach((item, index) => {
+            //     const text = document.createElement('span');
 
-                    text.innerText = `GIF_${index + 1} `;
-                    videoDiv.insertAdjacentElement('afterend', text);
-                    videoDiv.removeChild(item.parentNode);
-                } else {
-                    text.innerText = `IMAGE_${index + 1} `;
-                    item.insertAdjacentElement('afterend', text);
-                }
-            });
+            //     if (item.tagName === 'VIDEO') {
+            //         const videoDiv = item.parentNode.parentNode;
+
+            //         text.innerText = `GIF_${index + 1} `;
+            //         videoDiv.insertAdjacentElement('afterend', text);
+            //         videoDiv.removeChild(item.parentNode);
+            //     } else {
+            //         text.innerText = `IMAGE_${index + 1} `;
+            //         item.insertAdjacentElement('afterend', text);
+            //     }
+            // });
 
             body.querySelectorAll('a.noeffect').forEach(link => {
                 const href = link.getAttribute('href');

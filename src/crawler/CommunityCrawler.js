@@ -166,17 +166,17 @@ class CommunityCrawler extends Crawler {
         configstore.delete(this.title);
     }
 
-    async downloadImages(urls) {
-        clearFolder(tempFolderPath);
-
-        const requests = urls.map(url =>
-            axios.get(url, {
-                headers: { Referer: this.page.url() },
-                responseType: 'stream',
-            }),
-        );
-
+    async downloadImages(images) {
         try {
+            clearFolder(tempFolderPath);
+
+            const requests = images.map(url =>
+                axios.get(url.value, {
+                    headers: { Referer: this.page.url() },
+                    responseType: 'stream',
+                }),
+            );
+
             return axios.all([...requests]).then(
                 axios.spread((...resps) =>
                     Promise.all(
@@ -199,7 +199,11 @@ class CommunityCrawler extends Crawler {
                             });
                         }),
                     ).then(files =>
-                        files.map(file => file.path.split('/').pop()),
+                        files.map((file, index) => ({
+                            type: 'image',
+                            value: file.path.split('/').pop(),
+                            name: images[index].name,
+                        })),
                     ),
                 ),
             );

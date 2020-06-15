@@ -133,23 +133,26 @@ class Dcinside extends CommunityCrawler {
                 .querySelector('.btm .ginfo2 li:nth-child(2)')
                 .innerText.match(/[0-9]{2}:[0-9]{2}/)[0];
             const imagesEl = Array.from(body.querySelectorAll('img.lazy'));
-            const images = imagesEl.map(image => image.dataset.original);
+            const images = imagesEl.map((image, index) => {
+                const text = document.createElement('span');
+
+                const isGif =
+                    image.classList.contains('gif-mp4') ||
+                    image.dataset.original.split('.').pop() === 'gif';
+                text.innerText = `${isGif ? 'GIF' : 'IMAGE'}_${index + 1} `;
+                image.insertAdjacentElement('afterend', text);
+
+                return {
+                    type: 'image',
+                    name: text.innerText,
+                    value: image.dataset.original,
+                };
+            });
 
             if (body) {
                 const scripts = Array.from(body.querySelectorAll('script'));
                 scripts.map(script => script.parentNode.removeChild(script));
             }
-
-            // handle images
-            imagesEl.forEach((image, index) => {
-                const text = document.createElement('span');
-
-                const isGif =
-                    image.classList.contains('gif-mp4') ||
-                    images[index].split('.').pop() === 'gif';
-                text.innerText = `${isGif ? 'GIF' : 'IMAGE'}_${index + 1} `;
-                image.insertAdjacentElement('afterend', text);
-            });
 
             return {
                 title: _title.innerText,
