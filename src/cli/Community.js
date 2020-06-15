@@ -4,6 +4,7 @@ const CLI = require('./CLI');
 const { getCrawler, crawlers } = require('../crawler');
 const {
     openUrls,
+    openImages,
     resetConfigstore,
     resetCustomTheme,
     customThemeFilePath,
@@ -135,9 +136,11 @@ class Community extends CLI {
             if (index === -1) {
                 community.communityList.focus();
             } else {
-                await community.communityList.emit('select', null, index);
+                community.communityList.emit('select', null, index);
 
-                reset && community.crawler.resetBoards();
+                process.nextTick(() => {
+                    reset && community.crawler.resetBoards();
+                });
             }
         } else {
             community.communityList.focus();
@@ -401,15 +404,19 @@ class Community extends CLI {
                 case 'r':
                     return await this.refreshPostDetail();
                 case 'i':
-                    if (this.crawler.openImages) {
-                        const responses = await this.crawler.openImages(
-                            this.post.images,
-                        );
-                        return await openUrls(responses);
-                    }
-                    return this.post.hasImages
-                        ? await openUrls(this.post.images)
-                        : null;
+                    if (!this.post.hasImages) return;
+
+                    const images = this.crawler.openImages
+                        ? await this.crawler.openImages(this.post.images)
+                        : this.post.images;
+
+                    if (!images) return;
+
+                    return openImages({
+                        communityTitle: this.crawler.title,
+                        title: this.post.title,
+                        images,
+                    });
                 case 'o':
                     return await openUrls(
                         this.posts[this.currentPostIndex].link,

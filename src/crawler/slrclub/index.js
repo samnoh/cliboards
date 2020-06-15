@@ -1,3 +1,7 @@
+const fs = require('fs');
+const path = require('path');
+const mkdirp = require('mkdirp');
+
 const axios = require('axios');
 const FormData = require('form-data');
 
@@ -124,7 +128,7 @@ class SLRClub extends CommunityCrawler {
                 hit,
                 time,
                 images,
-                // hasImages: images.length,
+                hasImages: images.length,
                 upVotes: parseInt(upVotes),
                 comments: [],
                 numberOfComments: parseInt(numberOfComments.innerText),
@@ -186,14 +190,53 @@ class SLRClub extends CommunityCrawler {
         this.currentPageNumber -= offset;
     }
 
-    // async openImages(urls) {
-    //     const host = 'media.slrclub.com';
-    //     const headers = { host, Referer: this.currentBaseUrl };
+    async openImages(urls) {
+        const tempFolderPath = path.resolve(__dirname, '..', '..', 'temp');
 
-    //     const requests = urls.map((url) => axios.get(url, { headers, responseType: 'stream' }));
+        fs.rmdirSync(tempFolderPath, { recursive: true });
 
-    //     return await axios.all([...requests]).then(axios.spread((...responses) => ''));
-    // }
+        mkdirp.sync(tempFolderPath);
+
+        const requests = urls.map(url =>
+            axios.get(url, {
+                headers: {
+                    host: 'media.slrclub.com',
+                    Referer: this.currentBaseUrl,
+                },
+                responseType: 'stream',
+            }),
+        );
+
+        try {
+            return axios.all([...requests]).then(
+                axios.spread((...resps) =>
+                    Promise.all(
+                        resps.map((res, index) => {
+                            const ext = res.data.responseUrl.split('.').pop();
+
+                            return new Promise(resolve => {
+                                const file = fs.createWriteStream(
+                                    path.resolve(
+                                        tempFolderPath,
+                                        index + '.' + ext,
+                                    ),
+                                );
+                                file.on('finish', () =>
+                                    file.close(() => resolve(file)),
+                                );
+                                res.data.pipe(file);
+                            });
+                        }),
+                    ).then(files =>
+                        files.map(file => file.path.split('/').pop()),
+                    ),
+                ),
+            );
+        } catch (e) {
+            console.error(e);
+            return null;
+        }
+    }
 
     static toString() {
         return 'SLRClub';
