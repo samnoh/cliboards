@@ -140,19 +140,14 @@ class Dcinside extends CommunityCrawler {
                 scripts.map(script => script.parentNode.removeChild(script));
             }
 
-            // handle gifs
-            body.querySelectorAll('video source[type^=video]').forEach(
-                (gif, index) => {
-                    const text = document.createElement('span');
-                    text.innerText = `GIF_${index + 1} `;
-                    gif.parentNode.insertAdjacentElement('afterend', text);
-                },
-            );
-
             // handle images
             imagesEl.forEach((image, index) => {
                 const text = document.createElement('span');
-                text.innerText = `IMAGE_${index + 1} `;
+
+                const isGif =
+                    image.classList.contains('gif-mp4') ||
+                    images[index].split('.').pop() === 'gif';
+                text.innerText = `${isGif ? 'GIF' : 'IMAGE'}_${index + 1} `;
                 image.insertAdjacentElement('afterend', text);
             });
 
