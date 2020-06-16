@@ -25,19 +25,25 @@ module.exports = ({
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${communityTitle} - ${title}</title>
     <link rel="stylesheet" href="../src/static/css/style.css" />
+
 </head>
 <body>
-    <h1><a href="${link}" target="_blank">${title} (${
+    <div id="content">
+        <h1><a href="${link}" target="_blank">${title} (${
     comments.length
-}) - ${author}</a></h1>
-    ${images
-        .map(
-            ({ type, value, name }) =>
-                `<div class="image-box">${renderImageTag({
-                    type,
-                    value,
-                })}<div class="name">${name}</div></div>`,
-        )
-        .join('\n')}
+}) <span class="author">${author}</span></a></h1>
+        ${images
+            .map(
+                ({ type, value, name }, index) =>
+                    `<div class="image-box" data-image="${index}">${renderImageTag(
+                        {
+                            type,
+                            value,
+                        },
+                    )}<div class="name">${name}</div></div>`,
+            )
+            .join('\n')}
+        <script src="../src/static/js/index.js"></script>
+    </div>
 </body>
 </html>`;
