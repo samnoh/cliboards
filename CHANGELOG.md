@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.52] - 2020-06-16
+
+### Added
+
+-   image zoom-in in image viewer
+
+### Fixed
+
+-   gif loading error in `Ruliweb`
+
 ## [1.0.0-beta.48] - 2020-06-15
 
 ### Added
@@ -78,6 +88,7 @@ All notable changes to this project will be documented in this file.
 -   fix auto refresh bug
 -   update [README.md](README.md)
 
+[1.0.0-beta.52]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.52
 [1.0.0-beta.48]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.48
 [1.0.0-beta.47]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.47
 [1.0.0-beta.46]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.46
