@@ -165,6 +165,7 @@ class Clien extends CommunityCrawler {
             });
 
             return {
+                link: window.location.href,
                 category: category && category.innerText,
                 title: _title.innerText.trim(),
                 author:

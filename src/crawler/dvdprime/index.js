@@ -112,6 +112,7 @@ class DVDPrime extends CommunityCrawler {
             );
 
             return {
+                link: window.location.href,
                 title: title.innerText,
                 author: author.innerText.trim(),
                 hit: hit.innerText.trim(),

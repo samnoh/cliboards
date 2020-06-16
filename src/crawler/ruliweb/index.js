@@ -115,6 +115,7 @@ class Ruliweb extends CommunityCrawler {
             });
 
             return {
+                link: window.location.href,
                 category: title.innerText.trim().match(/\[([^)]+)\]\s/)[1],
                 title: title.innerText.trim().replace(/\[([^)]+)\]\s/, ''),
                 author: author.innerText.trim(),

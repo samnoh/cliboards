@@ -273,6 +273,7 @@ class Ppomppu extends CommunityCrawler {
             }
 
             return {
+                link: window.location.href,
                 title: _title.trim(),
                 category,
                 author,

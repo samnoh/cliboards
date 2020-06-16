@@ -155,6 +155,7 @@ class Dcinside extends CommunityCrawler {
             }
 
             return {
+                link: window.location.href,
                 title: _title.innerText,
                 author: author.innerText.trim(),
                 hit: hit.innerText.replace(/[^0-9]/g, ''),

@@ -123,6 +123,7 @@ class SLRClub extends CommunityCrawler {
             });
 
             return {
+                link: window.location.href,
                 category: null,
                 title: title.innerText.trim(),
                 body: body.textContent
