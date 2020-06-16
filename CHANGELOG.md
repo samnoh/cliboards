@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.53] - 2020-06-16
+
+### Added
+
+-   display 101 or more comments in `Ruliweb`
+
+### Fixed
+
+-   temp files empty bug
+
 ## [1.0.0-beta.52] - 2020-06-16
 
 ### Added
