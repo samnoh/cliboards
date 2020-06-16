@@ -31,7 +31,6 @@
                 zoomedImageIndex = zoomedImageIndex
                     ? zoomedImageIndex - 1
                     : imageBoxes.length - 1;
-                console.log(zoomedImageIndex);
                 setImageSrc(imageEl);
                 return;
             case 32:
@@ -40,6 +39,7 @@
                 zoomedImageIndex = (zoomedImageIndex + 1) % imageBoxes.length;
                 setImageSrc(imageEl);
                 return;
+            case 81:
             case 27:
                 closePopupImage(document.querySelector('.popup-image-box'));
                 return;
