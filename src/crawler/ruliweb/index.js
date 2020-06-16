@@ -90,23 +90,28 @@ class Ruliweb extends CommunityCrawler {
             const images = Array.from(
                 document.querySelectorAll('.img_load img, .gifct'),
             ).map((item, index) => {
-                let value, type;
+                let value = item.getAttribute('src'),
+                    type = 'image';
 
                 if (item.classList.contains('gifct')) {
-                    type = 'mp4';
-                    value = item.querySelector('video').getAttribute('src');
+                    const video = item.querySelector('video');
+
+                    if (video) {
+                        type = 'mp4';
+                        value = video.getAttribute('src');
+                    }
                     item.innerHTML = `GIF_${index + 1}`;
                 } else {
-                    type = 'image';
-                    value = item.getAttribute('src');
                     item.textContent = `IMAGE_${index + 1}`;
                 }
 
-                return {
-                    type,
-                    value: 'https:' + value,
-                    name: item.textContent,
-                };
+                return (
+                    value && {
+                        type,
+                        value: 'https:' + value,
+                        name: item.textContent,
+                    }
+                );
             });
 
             return {

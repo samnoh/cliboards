@@ -409,7 +409,7 @@ class Community extends CLI {
                     this.footerBox.focus();
 
                     const images = await this.crawler.downloadImages(
-                        this.post.images,
+                        this.post.images.filter(i => i),
                     );
 
                     this.detailBox.focus();
