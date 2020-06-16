@@ -212,50 +212,32 @@ class Ppomppu extends CommunityCrawler {
             const imagesEl = Array.from(
                 body.querySelectorAll('img, video'),
             ).filter(item => item.getAttribute('alt') !== '다운로드 버튼');
-            const images = imagesEl
-                .map((item, index) => {
-                    let value;
-                    const text = document.createElement('span');
+            const images = imagesEl.map((item, index) => {
+                const text = document.createElement('span');
+                const isVideo = item.tagName === 'VIDEO';
 
-                    if (item.tagName === 'VIDEO') {
-                        const videoDiv = item.parentNode.parentNode;
-                        value = item
-                            .querySelector('source')
-                            .getAttribute('src');
+                let value;
 
-                        text.innerText = `GIF_${index + 1}`;
-                        videoDiv.insertAdjacentElement('afterend', text);
-                        videoDiv.removeChild(item.parentNode);
-                    } else {
-                        value = item.getAttribute('src');
-                        text.innerText = `IMAGE_${index + 1}`;
-                        item.insertAdjacentElement('afterend', text);
-                    }
-                    return { type: 'image', value, name: text.innerText };
-                })
-                .map(item => {
-                    const value = item.value;
-                    const newValue =
-                        value.slice(0, 4) === 'http' ? value : 'http:' + value;
+                if (isVideo) {
+                    const videoDiv = item.parentNode.parentNode;
+                    value = item.querySelector('source').getAttribute('src');
 
-                    return { ...item, value: newValue };
-                });
+                    text.innerText = `GIF_${index + 1}`;
+                    videoDiv.insertAdjacentElement('afterend', text);
+                    videoDiv.removeChild(item.parentNode);
+                } else {
+                    value = item.getAttribute('src');
+                    text.innerText = `IMAGE_${index + 1}`;
+                    item.insertAdjacentElement('afterend', text);
+                }
 
-            // // handle images
-            // imagesEl.forEach((item, index) => {
-            //     const text = document.createElement('span');
-
-            //     if (item.tagName === 'VIDEO') {
-            //         const videoDiv = item.parentNode.parentNode;
-
-            //         text.innerText = `GIF_${index + 1} `;
-            //         videoDiv.insertAdjacentElement('afterend', text);
-            //         videoDiv.removeChild(item.parentNode);
-            //     } else {
-            //         text.innerText = `IMAGE_${index + 1} `;
-            //         item.insertAdjacentElement('afterend', text);
-            //     }
-            // });
+                return {
+                    type: isVideo ? 'mp4' : 'image',
+                    value:
+                        value.slice(0, 4) === 'http' ? value : 'http:' + value,
+                    name: text.innerText,
+                };
+            });
 
             body.querySelectorAll('a.noeffect').forEach(link => {
                 const href = link.getAttribute('href');
