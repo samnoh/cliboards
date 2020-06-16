@@ -179,10 +179,10 @@ class CommunityCrawler extends Crawler {
                 }),
             );
 
-            return axios.all([...requests]).then(
-                axios.spread((...resps) =>
+            return axios.all(requests).then(
+                axios.spread((...responses) =>
                     Promise.all(
-                        resps.map((res, index) => {
+                        responses.map((res, index) => {
                             const ext = res.data.responseUrl.split('.').pop();
 
                             return new Promise(resolve => {

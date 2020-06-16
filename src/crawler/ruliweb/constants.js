@@ -4,6 +4,7 @@ const boardTypes = ['PS4/5', 'SWITCH', 'XBO/SX', 'PC', '취미갤'];
 
 module.exports = {
     baseUrl,
+    commentsUrl: 'https://api.ruliweb.com/commentView',
     getUrl: board => `${baseUrl}${board}?page=`,
     sortUrls: [],
     boardTypes,

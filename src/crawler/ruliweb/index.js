@@ -1,3 +1,7 @@
+const querystring = require('querystring');
+
+const axios = require('axios');
+
 const CommunityCrawler = require('../CommunityCrawler');
 const {
     baseUrl,
@@ -7,6 +11,7 @@ const {
     ignoreRequests,
     ignoreBoards,
     boards,
+    commentsUrl,
 } = require('./constants');
 
 class Ruliweb extends CommunityCrawler {
@@ -75,7 +80,7 @@ class Ruliweb extends CommunityCrawler {
 
         this.postsRead.add(this.currentBaseUrl); // set post that you read
 
-        return await this.page.evaluate(() => {
+        const postDetail = await this.page.evaluate(() => {
             const title = document.querySelector('.subject_text');
             const author = document.querySelector('.nick');
             const hit = document
@@ -114,6 +119,10 @@ class Ruliweb extends CommunityCrawler {
                 );
             });
 
+            const commentPages = document.querySelectorAll(
+                '.comment_count_wrapper .paging_wrapper a.btn_num',
+            ).length;
+
             return {
                 link: window.location.href,
                 category: title.innerText.trim().match(/\[([^)]+)\]\s/)[1],
@@ -132,6 +141,10 @@ class Ruliweb extends CommunityCrawler {
                 upVotes: parseInt(upVotes.innerText),
                 images,
                 hasImages: images.length,
+                extraData: {
+                    nCommentPages: commentPages,
+                    isXHRRequired: commentPages !== 1,
+                },
                 comments: Array.from(comments).map(comment => {
                     const body = comment.querySelector('.text_wrapper');
                     const author = comment.querySelector('.nick');
@@ -166,6 +179,89 @@ class Ruliweb extends CommunityCrawler {
                 }),
             };
         });
+
+        const { isXHRRequired, nCommentPages } = postDetail.extraData;
+
+        if (isXHRRequired) {
+            const newComments = await this.getNextAllComments(nCommentPages);
+            postDetail.comments = [...postDetail.comments, ...newComments];
+        }
+
+        return postDetail;
+    }
+
+    processComments() {
+        const comments = document.querySelectorAll('.comment_view.normal tr');
+
+        return Array.from(comments).map(comment => {
+            const body = comment.querySelector('.text_wrapper');
+            const author = comment.querySelector('.nick');
+            const time = comment.querySelector('.time');
+            const upVotes = comment.querySelector('.btn_like .num');
+            const downVotes = comment.querySelector('.btn_dislike .num');
+            const isReply = comment.classList.contains('child');
+            const control_box = comment.querySelector('.control_box');
+            const isRemoved = !comment.getAttribute('id');
+
+            isReply && control_box && body.removeChild(control_box);
+
+            return isRemoved
+                ? {
+                      isReply,
+                      isRemoved,
+                      body: body.innerText.trim(),
+                  }
+                : {
+                      isReply,
+                      isRemoved,
+                      author: author.innerText,
+                      time: time.innerText.split(' ')[1],
+                      body: body.innerText.trim(),
+                      upVotes: parseInt(upVotes.innerText) || 0,
+                      downVotes: parseInt(downVotes.innerText) || 0,
+                  };
+        });
+    }
+
+    async getNextAllComments(nPages) {
+        try {
+            const baseLink = this.currentBaseUrl;
+            const postInfo = baseLink.split('?')[0].split('/');
+            const body = {
+                board_id: postInfo[5],
+                article_id: postInfo[7],
+            };
+            const config = {
+                headers: {
+                    Referer: baseUrl,
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+            };
+            let requests = [];
+
+            for (let i = 2; i <= nPages; i++) {
+                requests.push(
+                    axios.post(
+                        commentsUrl,
+                        querystring.stringify({ ...body, page: i }),
+                        config,
+                    ),
+                );
+            }
+
+            let commentViews = '';
+
+            await Promise.all(requests).then(responses =>
+                responses.map(res => {
+                    commentViews += res.data.view;
+                }),
+            );
+
+            await this.page.setContent(commentViews);
+            return await this.page.evaluate(this.processComments);
+        } catch (e) {
+            return [];
+        }
     }
 
     static toString() {
