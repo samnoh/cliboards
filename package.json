@@ -20,7 +20,7 @@
         "url": "https://github.com/samnoh/cliboards/issues",
         "email": "samnoh.dev@gmail.com"
     },
-    "homepage": "https://github.com/samnoh/cliboards#readme",
+    "homepage": "https://github.com/samnoh/cliboards",
     "dependencies": {
         "axios": "0.19.2",
         "blessed": "0.1.81",

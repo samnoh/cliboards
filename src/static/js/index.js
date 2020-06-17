@@ -29,9 +29,14 @@
     }
 
     function closePopupImage() {
-        const popupImageBox = document.querySelector('.popup-image-box');
         document.removeEventListener('keydown', popupImageKeyEvent);
-        popupImageBox.remove();
+
+        const popupImageBox = document.querySelector('.popup-image-box');
+        popupImageBox.classList.add('fade-out');
+        setTimeout(function () {
+            popupImageBox.remove();
+        }, 200);
+
         toggleLockBodyScroll();
     }
 
