@@ -174,9 +174,9 @@ class Community extends CLI {
                     return this.showTextBox(async input => {
                         if (!input) return;
 
-                        this.textBox.style.bg = 'green';
-                        this.textBox.style.fg = 'black';
                         this.footerBox.focus();
+
+                        this.textBox.emit('success');
 
                         try {
                             await this.crawler.addBoard(
@@ -193,8 +193,7 @@ class Community extends CLI {
                             );
                         } catch (e) {
                             this.textBox.focus();
-                            this.textBox.style.bg = 'red';
-                            this.textBox.style.fg = 'white';
+                            this.textBox.emit('failure');
                             this.setTitleFooterContent(
                                 '잘못된 입력입니다: ' + e.message,
                             );
@@ -344,9 +343,8 @@ class Community extends CLI {
                         this.showTextBox(async keyword => {
                             if (!keyword) return;
 
-                            this.textBox.style.bg = 'green';
-                            this.textBox.style.fg = 'black';
                             this.footerBox.focus();
+                            this.textBox.emit('success');
 
                             try {
                                 this.crawler.currentPageNumber = 0;
@@ -365,8 +363,7 @@ class Community extends CLI {
                                 this.listList.focus();
                             } catch (e) {
                                 this.textBox.focus();
-                                this.textBox.style.bg = 'red';
-                                this.textBox.style.fg = 'white';
+                                this.textBox.emit('failure');
                                 this.crawler.searchParams = {};
                                 this.setTitleFooterContent(
                                     'Error: ' + e.message,
@@ -849,7 +846,10 @@ class Community extends CLI {
             left: -2,
             keys: true,
             inputOnFocus: true,
-            style: { fg: 'inverse' },
+            style: {
+                bg: this.colors.text_input_bg,
+                fg: this.colors.text_input_color,
+            },
             input: true,
         });
 
@@ -859,6 +859,16 @@ class Community extends CLI {
         });
 
         this.textBox.on('submit', onSubmit);
+
+        this.textBox.on('success', () => {
+            this.textBox.style.bg = this.colors.text_input_success_bg;
+            this.textBox.style.fg = this.colors.text_input_success_color;
+        });
+
+        this.textBox.on('failure', () => {
+            this.textBox.style.bg = this.colors.text_input_failure_bg;
+            this.textBox.style.fg = this.colors.text_input_failure_color;
+        });
 
         this.textBox.on('destroy', () => {
             this.textBox = null;
@@ -895,8 +905,9 @@ class Community extends CLI {
                 width,
                 left,
                 style: {
-                    focus: { fg: this.colors.search_menu_focused },
-                    fg: this.colors.search_menu_color,
+                    focus: { fg: this.colors.button_input_focused },
+                    fg: this.colors.button_input_color,
+                    bg: this.colors.button_input_bg,
                 },
             });
 
