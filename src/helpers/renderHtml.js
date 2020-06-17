@@ -37,7 +37,7 @@ const renderHtml = ({
     <div id="content">
         <h1><a href="${link}" target="_blank">${title} (${
     comments.length
-}) <span class="author">${author}</span></a></h1>
+})</a> <span class="author">${author}</span></h1>
         ${images
             .map(
                 ({ type, value, name }, index) =>
