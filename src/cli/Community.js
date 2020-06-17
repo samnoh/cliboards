@@ -256,12 +256,10 @@ class Community extends CLI {
                     )
                         return;
 
-                    if (!this.currentBoardTypeIndex) {
-                        this.currentBoardTypeIndex = boardTypesLength - 1;
-                    } else {
-                        this.currentBoardTypeIndex =
-                            (this.currentBoardTypeIndex - 1) % boardTypesLength;
-                    }
+                    this.currentBoardTypeIndex = this.currentBoardTypeIndex
+                        ? boardTypesLength - 1
+                        : (this.currentBoardTypeIndex - 1) % boardTypesLength;
+
                     return await this.getBoards(this.currentBoardTypeIndex);
                 case 'up':
                 case 'down':
@@ -884,7 +882,7 @@ class Community extends CLI {
         let left = 0;
 
         buttons.map(({ name, value }) => {
-            const nonDoubleWidthCharsLegnth = name.replace(/[^\+\(\)]/g, '')
+            const nonDoubleWidthCharsLegnth = name.replace(/[^\+\(\)\s]/g, '')
                 .length;
 
             const offset = 2;
