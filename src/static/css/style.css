@@ -98,7 +98,6 @@ img {
     object-fit: contain;
 }
 .popup-image-box .name {
-    /* display: none; */
     font-family: initial;
     background: none;
     color: #f1f1f0;
