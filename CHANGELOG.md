@@ -6,7 +6,8 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
--   Ruliweb search
+-   `Ruliweb` search
+-   new color options for text and button input
 
 ### Fixed
 
