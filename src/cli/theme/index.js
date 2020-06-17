@@ -22,4 +22,6 @@ module.exports = {
     comment_bottom_color: 'inverse',
     comment_top_color_likes: 'green',
     comment_top_color_dislikes: 'red',
+    search_menu_color: 'inverse',
+    search_menu_focused: 'blue',
 };

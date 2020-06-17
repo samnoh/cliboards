@@ -136,12 +136,6 @@ class CLI {
             const nextWidget = this.widgets[nextWidgetIndex];
             const currWidget = this.widgets[this.currentWidgetIndex];
 
-            if (!currWidget) {
-                throw new Error(
-                    'The next widget index is outside the bounds of the widgets array',
-                );
-            }
-
             this.currentWidgetIndex = nextWidgetIndex;
 
             if (nextWidget) {

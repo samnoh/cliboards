@@ -169,7 +169,7 @@ class Community extends CLI {
                         return;
                     }
 
-                    this.setTitleFooterContent('링크나 갤러리 ID를 입력하세요');
+                    this.setTitleContent('링크나 갤러리 ID를 입력하세요');
 
                     return this.showTextBox(async input => {
                         if (!input) return;
@@ -228,9 +228,8 @@ class Community extends CLI {
                         !this.crawler.canAddBoards ||
                         !this.getFilteredBoards().length ||
                         this.sortBoardsMode
-                    ) {
+                    )
                         return;
-                    }
 
                     this.crawler.deleteBoard(
                         this.getFilteredBoards()[index].value,
@@ -329,6 +328,7 @@ class Community extends CLI {
                     !this.crawler.searchTypes.length
                 )
                     return;
+
                 this.setTitleContent(
                     '필터를 선택하세요',
                     this.crawler.title + ' 검색',
@@ -563,8 +563,7 @@ class Community extends CLI {
         this.listList.on('focus', () => {
             if (!this.posts.length) {
                 this.listList.setItems([]);
-                this.setTitleFooterContent('Error', '', 'q: back');
-                return;
+                return this.setTitleFooterContent('Error', '', 'q: back');
             }
 
             this.listList.setItems(
@@ -638,8 +637,7 @@ class Community extends CLI {
             if (!this.post) {
                 this.detailBox.setContent('');
                 this.flushComments();
-                this.setTitleFooterContent('Error', '', 'q: back');
-                return;
+                return this.setTitleFooterContent('Error', '', 'q: back');
             }
 
             const {
@@ -705,6 +703,7 @@ class Community extends CLI {
         const currentBoardType = this.crawler.boardTypes[
             this.currentBoardTypeIndex
         ];
+
         return this.crawler.boards.filter(
             ({ type }) => type === currentBoardType,
         );
@@ -773,6 +772,7 @@ class Community extends CLI {
         this.flushComments();
 
         const { comments } = this.post;
+
         if (!comments || !comments.length) return;
 
         let prevTop = this.detailBox.getScreenLines().length + 1;
@@ -882,10 +882,9 @@ class Community extends CLI {
         let left = 0;
 
         buttons.map(({ name, value }) => {
+            const offset = 2;
             const nonDoubleWidthCharsLegnth = name.replace(/[^\+\(\)\s]/g, '')
                 .length;
-
-            const offset = 2;
             const width =
                 (name.length - nonDoubleWidthCharsLegnth) * 2 +
                 nonDoubleWidthCharsLegnth;
@@ -893,10 +892,12 @@ class Community extends CLI {
             const _button = blessed.button({
                 parent: this.formBox,
                 content: name,
-                shrink: true,
                 width,
                 left,
-                style: { focus: { fg: 'blue' } },
+                style: {
+                    focus: { fg: this.colors.search_menu_focused },
+                    fg: this.colors.search_menu_color,
+                },
             });
 
             left += width + offset;
