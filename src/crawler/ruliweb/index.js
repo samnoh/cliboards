@@ -88,9 +88,6 @@ class Ruliweb extends CommunityCrawler {
                 .innerText.split(' ');
             const body = document.querySelector('.view_content');
             const upVotes = document.querySelector('.like');
-            const comments = document.querySelectorAll(
-                '.comment_view.normal tr',
-            );
             const time = document.querySelector('.regdate');
             const images = Array.from(
                 document.querySelectorAll('.img_load img, .gifct'),
@@ -141,44 +138,15 @@ class Ruliweb extends CommunityCrawler {
                 upVotes: parseInt(upVotes.innerText),
                 images,
                 hasImages: images.length,
+                comments: [],
                 extraData: {
                     nCommentPages: commentPages,
                     isXHRRequired: commentPages !== 1,
                 },
-                comments: Array.from(comments).map(comment => {
-                    const body = comment.querySelector('.text_wrapper');
-                    const author = comment.querySelector('.nick');
-                    const time = comment.querySelector('.time');
-                    const upVotes = comment.querySelector('.btn_like .num');
-                    const downVotes = comment.querySelector(
-                        '.btn_dislike .num',
-                    );
-                    const isReply = comment.classList.contains('child');
-                    const control_box = comment.querySelector('.control_box');
-                    const isRemoved = !comment.getAttribute('id');
-
-                    if (isReply && control_box) {
-                        body.removeChild(control_box);
-                    }
-
-                    return isRemoved
-                        ? {
-                              isReply,
-                              isRemoved,
-                              body: body.innerText.trim(),
-                          }
-                        : {
-                              isReply,
-                              isRemoved,
-                              author: author.innerText,
-                              time: time.innerText.split(' ')[1],
-                              body: body.innerText.trim(),
-                              upVotes: parseInt(upVotes.innerText) || 0,
-                              downVotes: parseInt(downVotes.innerText) || 0,
-                          };
-                }),
             };
         });
+
+        postDetail.comments = await this.page.evaluate(this.processComments);
 
         const { isXHRRequired, nCommentPages } = postDetail.extraData;
 
