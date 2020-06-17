@@ -9,21 +9,31 @@
             body.style.overflowY === 'hidden' ? 'auto' : 'hidden';
     }
 
-    function setImageSrc(imageEl) {
-        const nextImage = imageBoxes[zoomedImageIndex];
-        let src = nextImage.src;
-
-        if (nextImage.tagName === 'VIDEO') {
-            src = nextImage.querySelector('source').src;
-        }
-
-        imageEl.src = src;
+    function closePopupImage() {
+        const popupBox = document.querySelector('.popup-image-box');
+        document.removeEventListener('keydown', popupImageKeyEvent);
+        popupBox.remove();
+        toggleLockScroll();
     }
 
-    function nextImage(e) {
-        const imageEl = document
-            .querySelector('.popup-image-box')
-            .querySelector('img, video');
+    function changeToNextImage(popupImageBox) {
+        const imageEl = popupImageBox.querySelector('img, video');
+        const nameEl = popupImageBox.querySelector('.name');
+
+        const nextImageEl = imageBoxes[zoomedImageIndex];
+        const nextNameEl = nextImageEl.parentNode.querySelector('.name');
+
+        if (nextImageEl.tagName === 'VIDEO') {
+            imageEl.src = nextImageEl.querySelector('source').src;
+        } else {
+            imageEl.src = nextImageEl.src;
+        }
+
+        nameEl.innerText = nextNameEl.innerText;
+    }
+
+    function popupImageKeyEvent(e) {
+        const popupImageBox = document.querySelector('.popup-image-box');
 
         switch (e.keyCode) {
             case 37:
@@ -31,26 +41,16 @@
                 zoomedImageIndex = zoomedImageIndex
                     ? zoomedImageIndex - 1
                     : imageBoxes.length - 1;
-                setImageSrc(imageEl);
-                return;
+                return changeToNextImage(popupImageBox);
             case 32:
             case 39:
             case 40: // next
                 zoomedImageIndex = (zoomedImageIndex + 1) % imageBoxes.length;
-                setImageSrc(imageEl);
-                return;
+                return changeToNextImage(popupImageBox);
             case 81:
-            case 27:
-                closePopupImage(document.querySelector('.popup-image-box'));
-                return;
+            case 27: // close
+                return closePopupImage(popupImageBox);
         }
-    }
-
-    function closePopupImage() {
-        const popupBox = document.querySelector('.popup-image-box');
-        document.removeEventListener('keydown', nextImage);
-        popupBox.remove();
-        toggleLockScroll();
     }
 
     function openPopupImage({ target }) {
@@ -67,7 +67,7 @@
         body.appendChild(popupBox);
         popupBox.appendChild(imageBox);
 
-        document.addEventListener('keydown', nextImage);
+        document.addEventListener('keydown', popupImageKeyEvent);
         imageEl.addEventListener('click', closePopupImage);
     }
 

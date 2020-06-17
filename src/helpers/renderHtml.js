@@ -1,3 +1,7 @@
+const { homepage } = require('../../package.json');
+
+const staticPath = '../src/static/';
+
 const renderImageTag = ({ type, value }) => {
     switch (type) {
         case 'gif':
@@ -10,7 +14,7 @@ const renderImageTag = ({ type, value }) => {
     }
 };
 
-module.exports = ({
+const renderHtml = ({
     communityTitle,
     title,
     author,
@@ -24,10 +28,12 @@ module.exports = ({
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${communityTitle} - ${title}</title>
-    <link rel="stylesheet" href="../src/static/css/style.css" />
-
+    <link rel="stylesheet" href="${staticPath}css/style.css" />
 </head>
 <body>
+    <a href=${homepage} aria-label="View source on GitHub" target="_blank">
+        <div class="github"></div>
+    </a>
     <div id="content">
         <h1><a href="${link}" target="_blank">${title} (${
     comments.length
@@ -43,7 +49,9 @@ module.exports = ({
                     )}<div class="name">${name}</div></div>`,
             )
             .join('\n')}
-        <script src="../src/static/js/index.js"></script>
+        <script src="${staticPath}js/index.js"></script>
     </div>
 </body>
 </html>`;
+
+module.exports = renderHtml;
