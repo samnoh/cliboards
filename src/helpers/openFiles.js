@@ -34,15 +34,8 @@ const clearFolder = folderPath => {
     try {
         const exists = fs.existsSync(folderPath);
 
-        if (exists) {
-            const files = fs.readdirSync(folderPath);
-
-            for (const file of files) {
-                fs.unlink(path.join(folderPath, file));
-            }
-        } else {
-            fs.mkdirSync(folderPath, { recursive: true });
-        }
+        exists && fs.rmdirSync(folderPath, { recursive: true });
+        fs.mkdirSync(folderPath, { recursive: true });
     } catch (e) {}
 };
 
