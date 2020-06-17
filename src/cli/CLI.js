@@ -2,6 +2,8 @@ const blessed = require('blessed');
 
 const { updateNotifier, getTheme } = require('../helpers');
 
+const isDevMode = process.env.NODE_ENV === 'development';
+
 class CLI {
     constructor() {
         // theme
@@ -15,7 +17,7 @@ class CLI {
             dockBorders: true,
             fastCSR: true,
             fullUnicode: true,
-            debug: process.env.NODE_ENV === 'development',
+            debug: isDevMode,
         });
         const box = blessed.box({
             parent: this.screen,
@@ -184,6 +186,7 @@ class CLI {
     }
 
     resetScroll(widget, offset = 0) {
+        if (!widget) return;
         widget.scrollTo(offset);
         widget.select(offset);
     }

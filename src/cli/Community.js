@@ -97,6 +97,7 @@ class Community extends CLI {
             this.listList,
             this.detailBox,
         ];
+        this.setAllEvents();
     }
 
     static async start({ theme, reset, startCrawler }) {
@@ -107,15 +108,14 @@ class Community extends CLI {
 
         const community = new Community();
 
-        community.setAllEvents();
         community.communityList.setItems(crawlers);
 
         if (theme) {
-            await openUrls(customThemeFilePath);
-            console.log(
-                'Please edit customTheme.txt in JSON format and restart.',
+            openUrls(customThemeFilePath);
+            return community.terminate(
+                0,
+                'Please edit the file in JSON format and restart',
             );
-            process.exit(0);
         }
 
         if (startCrawler) {
