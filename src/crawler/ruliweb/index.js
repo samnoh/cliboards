@@ -12,6 +12,7 @@ const {
     ignoreBoards,
     boards,
     commentsUrl,
+    search,
 } = require('./constants');
 
 class Ruliweb extends CommunityCrawler {
@@ -20,6 +21,8 @@ class Ruliweb extends CommunityCrawler {
 
         this.title = Ruliweb.toString();
         this.boardTypes = boardTypes;
+        this.getSearchParams = search.getSearchParams;
+        this.searchTypes = search.types;
     }
 
     async getBoards() {
@@ -31,7 +34,11 @@ class Ruliweb extends CommunityCrawler {
     }
 
     async getPosts() {
-        await this.page.goto(getUrl(this.currentBoard.value) + this.pageNumber);
+        await this.page.goto(
+            getUrl(this.currentBoard.value) +
+                this.pageNumber +
+                this.searchParams.value,
+        );
 
         const posts = await this.page.evaluate(() => {
             const lists = document.querySelectorAll('.table_body:not(.inside)');

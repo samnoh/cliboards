@@ -541,7 +541,7 @@ class Community extends CLI {
                     'c: cancel, s: save, up/down arrow: move board',
                 );
             } else {
-                this.crawler.searchParams.value = '';
+                this.crawler.searchParams = {};
                 this.currentPostIndex = 0;
                 this.crawler.changeSortUrl(0);
                 this.setTitleFooterContent(
