@@ -4,71 +4,64 @@
 
     let zoomedImageIndex = 0;
 
-    function toggleLockScroll() {
+    function toggleLockBodyScroll() {
         body.style.overflowY =
             body.style.overflowY === 'hidden' ? 'auto' : 'hidden';
     }
 
-    function closePopupImage() {
-        const popupBox = document.querySelector('.popup-image-box');
-        document.removeEventListener('keydown', popupImageKeyEvent);
-        popupBox.remove();
-        toggleLockScroll();
-    }
-
-    function changeToNextImage(popupImageBox) {
-        const imageEl = popupImageBox.querySelector('img, video');
-        const nameEl = popupImageBox.querySelector('.name');
-
-        const nextImageEl = imageBoxes[zoomedImageIndex];
-        const nextNameEl = nextImageEl.parentNode.querySelector('.name');
-
-        if (nextImageEl.tagName === 'VIDEO') {
-            imageEl.src = nextImageEl.querySelector('source').src;
-        } else {
-            imageEl.src = nextImageEl.src;
-        }
-
-        nameEl.innerText = nextNameEl.innerText;
-    }
-
     function popupImageKeyEvent(e) {
-        const popupImageBox = document.querySelector('.popup-image-box');
-
         switch (e.keyCode) {
             case 37:
             case 38: // prev
                 zoomedImageIndex = zoomedImageIndex
                     ? zoomedImageIndex - 1
                     : imageBoxes.length - 1;
-                return changeToNextImage(popupImageBox);
+                return moveToNextImage();
             case 32:
             case 39:
             case 40: // next
                 zoomedImageIndex = (zoomedImageIndex + 1) % imageBoxes.length;
-                return changeToNextImage(popupImageBox);
+                return moveToNextImage();
             case 81:
             case 27: // close
-                return closePopupImage(popupImageBox);
+                return closePopupImage();
         }
     }
 
-    function openPopupImage({ target }) {
-        toggleLockScroll();
+    function closePopupImage() {
+        const popupImageBox = document.querySelector('.popup-image-box');
+        document.removeEventListener('keydown', popupImageKeyEvent);
+        popupImageBox.remove();
+        toggleLockBodyScroll();
+    }
 
-        const popupBox = document.createElement('div');
-        const imageBox = target.parentNode.cloneNode(true);
+    function moveToNextImage() {
+        const popupImageBox = document.querySelector('.popup-image-box');
+        popupImageBox.childNodes.forEach(function (c) {
+            c.removeEventListener('click', closePopupImage);
+            c.remove();
+        });
+
+        const nextImageEl = imageBoxes[zoomedImageIndex];
+        const imageBox = nextImageEl.parentNode.cloneNode(true);
         const imageEl = imageBox.querySelector('img, video');
 
-        zoomedImageIndex = parseInt(imageBox.dataset.image);
+        popupImageBox.appendChild(imageBox);
+        imageEl.addEventListener('click', closePopupImage);
+    }
 
-        popupBox.classList.add('popup-image-box');
-
-        body.appendChild(popupBox);
-        popupBox.appendChild(imageBox);
+    function openPopupImage(e) {
+        toggleLockBodyScroll();
 
         document.addEventListener('keydown', popupImageKeyEvent);
-        imageEl.addEventListener('click', closePopupImage);
+
+        zoomedImageIndex = parseInt(e.target.parentNode.dataset.image);
+
+        const popupImageBox = document.createElement('div');
+        popupImageBox.classList.add('popup-image-box');
+        body.appendChild(popupImageBox);
+
+        moveToNextImage(popupImageBox);
     }
 
     imageBoxes.forEach(box => {
