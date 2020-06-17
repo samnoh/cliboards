@@ -64,7 +64,7 @@
         moveToNextImage(popupImageBox);
     }
 
-    imageBoxes.forEach(box => {
+    imageBoxes.forEach(function (box) {
         box.addEventListener('click', openPopupImage);
     });
 })();
