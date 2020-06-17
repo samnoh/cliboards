@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.54] - 2020-06-17
+
+### Added
+
+-   GitHub ribbon in image viewer
+
+### Fixed
+
+-   temp files empty bug again
+-   image viewer cannot work properly if switching from mp4 to gif/image or vice versa
+
 ## [1.0.0-beta.53] - 2020-06-16
 
 ### Added
