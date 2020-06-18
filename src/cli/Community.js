@@ -617,7 +617,7 @@ class Community extends CLI {
                         : ''
                 }`,
                 this.autoRefreshTimer
-                    ? `q: back, any key: cancel auto refresh{|}{blue-fg}Refresh every ${this.autoRefreshInterval} sec..{/}`
+                    ? `q: back, any key: cancel auto refresh{|}{${this.colors.bottom_right_color}-fg}Refresh every ${this.autoRefreshInterval} sec..{/}`
                     : `q: back${
                           this.crawler.searchParams.value
                               ? ', c: cancel search'
