@@ -14,11 +14,12 @@
 
     function fadeInBars() {
         clearTimeout(barsTimer);
+
         const barContainer = document.querySelector('.bar-container');
         barContainer.classList.add('fade-in');
         barContainer.classList.remove('fade-out');
 
-        barsTimer = setTimeout(fadeOutBars, 1000);
+        barsTimer = setTimeout(fadeOutBars, 1500);
     }
 
     function fadeOutBars() {
@@ -51,6 +52,8 @@
         }
 
         popupImageBox.appendChild(barContainer);
+
+        document.addEventListener('mousemove', fadeInBars);
     }
 
     function popupImageKeyEvent(e) {
@@ -103,12 +106,14 @@
 
         const bars = document.querySelectorAll('.bar-container .bar');
 
-        if (!bars.length) {
+        if (!bars.length && imageBoxes.length > 1) {
             createBars();
-        } else {
+            fadeInBars();
+        } else if (bars.length) {
             const activeBar = document.querySelector('.bar.active');
-            activeBar && activeBar.classList.remove('active');
+            activeBar.classList.remove('active');
             bars[zoomedImageIndex].classList.add('active');
+            fadeInBars();
         }
 
         const nextImageEl = imageBoxes[zoomedImageIndex];
@@ -118,9 +123,6 @@
         popupImageBox.appendChild(imageBox);
 
         imageEl.addEventListener('click', closePopupImage);
-        document.addEventListener('mousemove', fadeInBars);
-
-        fadeInBars();
     }
 
     function openPopupImage(e) {

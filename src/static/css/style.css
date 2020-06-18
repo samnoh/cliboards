@@ -101,7 +101,7 @@ img {
     position: fixed;
     top: 0;
     font-size: 20px;
-    min-width: 75px;
+    min-width: 80px;
 }
 .bar-container {
     z-index: 10;
@@ -126,6 +126,7 @@ img {
     border-radius: 4px;
     transition: all 0.3s ease;
     flex-grow: 1;
+    box-shadow: 0 16px 6px -6px black;
 }
 .bar-container .bar:last-child {
     margin-right: 0;
