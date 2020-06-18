@@ -35,22 +35,20 @@ const renderHtml = ({
         <div class="github"></div>
     </a>
     <div id="content">
-        <h1><a href="${link}" target="_blank">${title} (${
-    comments.length
-})</a> <span class="author">${author}</span></h1>
+        <h1>
+            <a href="${link}" target="_blank">${title} (${comments.length})</a>
+            <span class="author">${author}</span>
+        </h1>
         ${images
             .map(
-                ({ type, value, name }, index) =>
-                    `<div class="image-box" data-image="${index}">${renderImageTag(
-                        {
-                            type,
-                            value,
-                        },
-                    )}<div class="name">${name}</div></div>`,
+                (image, index) =>
+                    `<div class="image-box" data-image-index=${index}>${renderImageTag(
+                        image,
+                    )}<div class="name">${image.name}</div></div>`,
             )
             .join('\n')}
-        <script src="${staticPath}js/index.js"></script>
     </div>
+    <script src="${staticPath}js/index.js"></script>
 </body>
 </html>`;
 
