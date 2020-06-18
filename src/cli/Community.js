@@ -8,6 +8,8 @@ const {
     resetConfigstore,
     resetCustomTheme,
     customThemeFilePath,
+    tempFolderPath,
+    clearFolder,
 } = require('../helpers');
 const { name, version, homepage } = require('../../package.json');
 
@@ -101,6 +103,8 @@ class Community extends CLI {
     }
 
     static async start({ theme, reset, startCrawler }) {
+        clearFolder(tempFolderPath);
+
         if (reset && !startCrawler) {
             resetConfigstore();
             resetCustomTheme();
