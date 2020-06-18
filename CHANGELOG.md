@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.57] - 2020-06-18
+
+### Added
+
+-   add buttons in image viewer
+
 ## [1.0.0-beta.56] - 2020-06-18
 
 ### Added
@@ -120,6 +126,7 @@ All notable changes to this project will be documented in this file.
 -   fix auto refresh bug
 -   update [README.md](README.md)
 
+[1.0.0-beta.57]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.57
 [1.0.0-beta.56]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.56
 [1.0.0-beta.54]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.54
 [1.0.0-beta.53]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.53
