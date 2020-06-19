@@ -152,8 +152,9 @@ class Dcinside extends CommunityCrawler {
                     type = isGif ? 'gif' : 'image';
                     value = item.dataset.original;
                     text.innerText = `${type.toUpperCase()}_${index + 1} `;
-                    item.insertAdjacentElement('afterend', text);
                 }
+
+                item.insertAdjacentElement('afterend', text);
 
                 return {
                     type,
