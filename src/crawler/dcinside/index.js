@@ -132,20 +132,33 @@ class Dcinside extends CommunityCrawler {
             const _time = document
                 .querySelector('.btm .ginfo2 li:nth-child(2)')
                 .innerText.match(/[0-9]{2}:[0-9]{2}/)[0];
-            const imagesEl = Array.from(body.querySelectorAll('img.lazy'));
-            const images = imagesEl.map((image, index) => {
+            const imagesEl = Array.from(
+                body.querySelectorAll(
+                    'img.lazy, iframe[src^="https://www.youtube.com/embed"]',
+                ),
+            );
+            const images = imagesEl.map((item, index) => {
                 const text = document.createElement('span');
+                let type, value;
 
-                const isGif =
-                    image.classList.contains('gif-mp4') ||
-                    image.dataset.original.split('.').pop() === 'gif';
-                text.innerText = `${isGif ? 'GIF' : 'IMAGE'}_${index + 1} `;
-                image.insertAdjacentElement('afterend', text);
+                if (item.tagName === 'IFRAME') {
+                    type = 'youtube';
+                    text.innerText = `YOUTUBE_${index + 1}`;
+                    value = item.src;
+                } else {
+                    const isGif =
+                        item.classList.contains('gif-mp4') ||
+                        item.dataset.original.split('.').pop() === 'gif';
+                    type = isGif ? 'gif' : 'image';
+                    value = item.dataset.original;
+                    text.innerText = `${type.toUpperCase()}_${index + 1} `;
+                    item.insertAdjacentElement('afterend', text);
+                }
 
                 return {
-                    type: 'image',
+                    type,
                     name: text.innerText,
-                    value: image.dataset.original,
+                    value,
                 };
             });
 

@@ -143,7 +143,9 @@ class Clien extends CommunityCrawler {
             const commentsEl = document.querySelectorAll('.comment_row');
             const time = document.querySelector('.post_author span');
             const images = Array.from(
-                body.querySelectorAll('img, .fr-video'),
+                body.querySelectorAll(
+                    'img, .fr-video, iframe[src^="https://www.youtube.com/embed"]',
+                ),
             ).map((item, index) => {
                 let value, type;
 
@@ -151,6 +153,10 @@ class Clien extends CommunityCrawler {
                     type = 'mp4';
                     value = item.querySelector('source').getAttribute('src');
                     item.textContent = `GIF_${index + 1}`;
+                } else if (item.tagName === 'IFRAME') {
+                    type = 'youtube';
+                    value = item.src;
+                    item.textContent = `YOUTUBE_${index + 1}`;
                 } else {
                     type = 'image';
                     value = item.getAttribute('src');

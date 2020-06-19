@@ -172,12 +172,14 @@ class CommunityCrawler extends Crawler {
         if (!this.imageXhrRequired) return images;
 
         try {
-            const requests = images.map(url =>
-                axios.get(url.value, {
-                    headers: { Referer: this.page.url() },
-                    responseType: 'stream',
-                }),
-            );
+            const requests = images
+                .filter(i => i.type !== 'youtube')
+                .map(url =>
+                    axios.get(url.value, {
+                        headers: { Referer: this.page.url() },
+                        responseType: 'stream',
+                    }),
+                );
 
             return axios.all(requests).then(
                 axios.spread((...responses) =>
@@ -200,13 +202,16 @@ class CommunityCrawler extends Crawler {
                                 res.data.pipe(file);
                             });
                         }),
-                    ).then(files =>
-                        files.map((file, index) => ({
-                            type: 'image',
-                            value: file.path.split('/').pop(),
-                            name: images[index].name,
-                        })),
-                    ),
+                    ).then(files => {
+                        return [
+                            ...files.map((file, index) => ({
+                                type: 'image',
+                                value: file.path.split('/').pop(),
+                                name: images[index].name,
+                            })),
+                            ...images.filter(i => i.type === 'youtube'),
+                        ];
+                    }),
                 ),
             );
         } catch (e) {

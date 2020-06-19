@@ -12,7 +12,8 @@ const renderImageTag = ({ type, value }) => {
         case 'mp4':
             return `<video autoplay loop muted><source src="${value}" type="video/mp4"></video>`;
         case 'youtube':
-            return `<iframe class="youtube-video" src="${value}?enablejsapi=1" frameborder="0" allowfullscreen></iframe>`;
+            const src = value.split('?')[0] + '?enablejsapi=1';
+            return `<iframe class="youtube-video" src="${src}" frameborder="0" allowfullscreen></iframe>`;
         default:
             return '';
     }

@@ -99,17 +99,32 @@ class DVDPrime extends CommunityCrawler {
             const time = document
                 .querySelector('#view_datetime')
                 .innerText.match(/[0-9]{2}:[0-9]{2}:[0-9]{2}/)[0];
-            const images = Array.from(body.querySelectorAll('img')).map(
-                (image, index) => {
-                    image.textContent = `IMAGE_${index + 1} `;
+            const images = Array.from(
+                body.querySelectorAll(
+                    'img, video, iframe[src^="https://www.youtube.com/embed"]',
+                ),
+            ).map((item, index) => {
+                let type, value, name;
 
-                    return {
-                        type: 'image',
-                        value: image.getAttribute('src'),
-                        name: image.textContent,
-                    };
-                },
-            );
+                if (item.tagName === 'VIDEO') {
+                    type = 'mp4';
+                    value = item.querySelector('source').src;
+                    name = `GIF_${index + 1}`;
+                    item.parentNode.innerText = name;
+                } else if (item.tagName === 'IFRAME') {
+                    type = 'youtube';
+                    value = item.src;
+                    name = `YOUTUBE_${index + 1}`;
+                } else {
+                    type = 'image';
+                    value = item.src;
+                    name = `IMAGE_${index + 1} `;
+                }
+
+                item.textContent = name;
+
+                return { type, value, name };
+            });
 
             return {
                 link: window.location.href,
@@ -145,9 +160,13 @@ class DVDPrime extends CommunityCrawler {
                         body.removeChild(spoilerWarning);
                     }
 
-                    body.querySelectorAll('.view_image img').forEach(
-                        (image, index) => {
-                            image.textContent = `IMAGE_${index + 1} `;
+                    body.querySelectorAll('.view_image img, video').forEach(
+                        (item, index) => {
+                            if (item.tagName === 'VIDEO') {
+                                item.parentNode.innerText = `GIF_${index + 1}`;
+                            } else {
+                                item.innerText = `IMAGE_${index + 1}`;
+                            }
                         },
                     );
 
