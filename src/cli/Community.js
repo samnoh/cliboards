@@ -761,7 +761,7 @@ class Community extends CLI {
     rednerDetailBody() {
         this.detailBox.setContent(
             this.post.body.replace(
-                /(GIF_\d+|IMAGE_\d+)/g,
+                /(GIF_\d+|IMAGE_\d+|YOUTUBE_\d+)/g,
                 '{inverse}$&{/inverse}',
             ),
         );

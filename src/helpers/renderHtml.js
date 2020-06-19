@@ -9,6 +9,8 @@ const renderImageTag = ({ type, value }) => {
             return `<img src="${value}">`;
         case 'mp4':
             return `<video autoplay loop muted><source src=${value} type="video/mp4"></video>`;
+        case 'youtube':
+            return `<iframe width="560" height="315" src=${value} frameborder="0" allowfullscreen></iframe>`;
         default:
             return '';
     }

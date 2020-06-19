@@ -96,8 +96,13 @@ class Ruliweb extends CommunityCrawler {
             const body = document.querySelector('.view_content');
             const upVotes = document.querySelector('.like');
             const time = document.querySelector('.regdate');
+            const commentPages = document.querySelectorAll(
+                '.comment_count_wrapper .paging_wrapper a.btn_num',
+            ).length;
             const images = Array.from(
-                document.querySelectorAll('.img_load img, .gifct'),
+                body.querySelectorAll(
+                    'img, .gifct, iframe[src^="https://www.youtube.com/embed"]',
+                ),
             ).map((item, index) => {
                 let value = item.getAttribute('src'),
                     type = 'image';
@@ -110,6 +115,10 @@ class Ruliweb extends CommunityCrawler {
                         value = video.getAttribute('src');
                     }
                     item.innerHTML = `GIF_${index + 1}`;
+                } else if (item.tagName === 'IFRAME') {
+                    type = 'youtube';
+                    value = item.src;
+                    item.textContent = `YOUTUBE_${index + 1}`;
                 } else {
                     item.textContent = `IMAGE_${index + 1}`;
                 }
@@ -117,15 +126,14 @@ class Ruliweb extends CommunityCrawler {
                 return (
                     value && {
                         type,
-                        value: 'https:' + value,
+                        value:
+                            value.slice(0, 6) === 'https:'
+                                ? value
+                                : 'https:' + value,
                         name: item.textContent,
                     }
                 );
             });
-
-            const commentPages = document.querySelectorAll(
-                '.comment_count_wrapper .paging_wrapper a.btn_num',
-            ).length;
 
             return {
                 link: window.location.href,

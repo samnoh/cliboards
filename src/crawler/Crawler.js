@@ -38,7 +38,7 @@ class Crawler {
                 if (
                     this.ignoreRequests.indexOf(request.resourceType()) !==
                         -1 ||
-                    request.url().startsWith('https://www.youtube.com') ||
+                    // request.url().startsWith('https://www.youtube.com') ||
                     !request.url().startsWith(this.baseUrl)
                 ) {
                     request.abort();
