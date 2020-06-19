@@ -9,6 +9,7 @@ const {
     boards,
     search,
 } = require('./constants');
+const { getYoutubeVideoId } = require('../../helpers');
 
 class Ppomppu extends CommunityCrawler {
     constructor() {
@@ -210,32 +211,49 @@ class Ppomppu extends CommunityCrawler {
             const body = document.querySelector('#KH_Content');
             const comments = document.querySelectorAll('.cmAr .sect-cmt');
             const imagesEl = Array.from(
-                body.querySelectorAll('img, video'),
+                body.querySelectorAll(
+                    'img, video, iframe[src^="https://www.youtube.com/embed"], a[href^="https://www.youtube.com/watch?v="]',
+                ),
             ).filter(item => item.getAttribute('alt') !== '다운로드 버튼');
             const images = imagesEl.map((item, index) => {
                 const text = document.createElement('span');
-                const isVideo = item.tagName === 'VIDEO';
 
-                let value;
+                let value, type, name;
 
-                if (isVideo) {
+                if (item.tagName === 'VIDEO') {
                     const videoDiv = item.parentNode.parentNode;
-                    value = item.querySelector('source').getAttribute('src');
-
-                    text.innerText = `GIF_${index + 1}`;
+                    type = 'mp4';
+                    value = item.querySelector('source').src;
+                    name = `GIF_${index + 1}`;
+                    text.innerText = name;
                     videoDiv.insertAdjacentElement('afterend', text);
                     videoDiv.removeChild(item.parentNode);
+                } else if (item.tagName === 'IFRAME' || item.tagName === 'A') {
+                    name = `YOUTUBE_${index + 1}`;
+                    type = 'youtube';
+                    item.parentNode.innerText = name;
+
+                    if (item.tagName === 'IFRAME') {
+                        value = item.src;
+                    } else {
+                        const id = item.href.match(
+                            /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/,
+                        )[5];
+                        value = `https://youtube.com/embed/${id}`;
+                    }
                 } else {
-                    value = item.getAttribute('src');
-                    text.innerText = `IMAGE_${index + 1}`;
+                    name = `IMAGE_${index + 1}`;
+                    type = 'image';
+                    value = item.src;
+                    text.innerText = name;
                     item.insertAdjacentElement('afterend', text);
                 }
 
                 return {
-                    type: isVideo ? 'mp4' : 'image',
+                    type,
                     value:
                         value.slice(0, 4) === 'http' ? value : 'http:' + value,
-                    name: text.innerText,
+                    name,
                 };
             });
 
