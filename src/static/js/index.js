@@ -3,9 +3,21 @@
 (function () {
     const body = document.querySelector('body');
     const imageBoxes = body.querySelectorAll('img, video');
+    const youtubeVideos = body.querySelectorAll('.youtube-video');
 
     let zoomedImageIndex = 0;
     let barsTimer = null;
+
+    function pauseYoutubeVideos() {
+        if (!youtubeVideos.length) return;
+
+        youtubeVideos.forEach(ytVideo => {
+            ytVideo.contentWindow.postMessage(
+                '{"event":"command","func":"' + 'pauseVideo' + '","args":""}',
+                '*',
+            );
+        });
+    }
 
     function toggleLockBodyScroll() {
         body.style.overflowY =
@@ -127,6 +139,8 @@
 
     function openPopupImage(e) {
         toggleLockBodyScroll();
+
+        pauseYoutubeVideos();
 
         document.addEventListener('keydown', popupImageKeyEvent);
 

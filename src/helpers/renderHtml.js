@@ -2,15 +2,17 @@ const { homepage } = require('../../package.json');
 
 const staticPath = '../src/static/';
 
+let imageIndex = 0;
+
 const renderImageTag = ({ type, value }) => {
     switch (type) {
         case 'gif':
         case 'image':
             return `<img src="${value}">`;
         case 'mp4':
-            return `<video autoplay loop muted><source src=${value} type="video/mp4"></video>`;
+            return `<video autoplay loop muted><source src="${value}" type="video/mp4"></video>`;
         case 'youtube':
-            return `<iframe width="560" height="315" src=${value} frameborder="0" allowfullscreen></iframe>`;
+            return `<iframe class="youtube-video" src="${value}?enablejsapi=1" frameborder="0" allowfullscreen></iframe>`;
         default:
             return '';
     }
@@ -23,7 +25,10 @@ const renderHtml = ({
     link,
     comments,
     images,
-}) => `
+}) => {
+    imageIndex = 0;
+
+    return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,16 +47,22 @@ const renderHtml = ({
             <span class="author">${author}</span>
         </h1>
         ${images
-            .map(
-                (image, index) =>
-                    `<div class="image-box" data-image-index=${index}>${renderImageTag(
-                        image,
-                    )}<div class="name">${image.name}</div></div>`,
-            )
+            .map(item => {
+                const name = `<div class="name">${item.name}</div>`;
+
+                if (item.type !== 'youtube')
+                    return `<div class="image-box" data-image-index=${imageIndex++}>${renderImageTag(
+                        item,
+                    )}${name}</div>`;
+                return `<div class="iframe-box">${renderImageTag(
+                    item,
+                )}${name}</div>`;
+            })
             .join('\n')}
     </div>
     <script src="${staticPath}js/index.js"></script>
 </body>
 </html>`;
+};
 
 module.exports = renderHtml;
