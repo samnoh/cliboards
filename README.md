@@ -42,7 +42,7 @@ cliboards --reset
 # Reset data for given community only
 cliboards <index|name> --reset
 
-# Update theme
+# Update theme (color customizations)
 cliboards --theme
 ```
 
