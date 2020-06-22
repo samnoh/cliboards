@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+    const barTimerSecond = 0.5;
     const body = document.querySelector('body');
     const imageBoxes = body.querySelectorAll('img, video');
     const youtubeVideos = body.querySelectorAll('.youtube-video');
@@ -31,7 +32,7 @@
         barContainer.classList.add('fade-in');
         barContainer.classList.remove('fade-out');
 
-        barsTimer = setTimeout(fadeOutBars, 500);
+        barsTimer = setTimeout(fadeOutBars, barTimerSecond * 1000);
     }
 
     function fadeOutBars() {
