@@ -2,11 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.60] - 2020-06-22
+
+### Added
+
+-   new color options
+    -   top_left_info_color (gray)
+    -   top_left_search_keyword_color (blue)
+    -   top_left_search_info_color (gray)
+-   search filter indicator on search result screen
+
 ## [1.0.0-beta.58] - 2020-06-19
 
 ### Added
 
--   add YouTube indicator
+-   YouTube indicator
 -   embed YouTube videos in image viewer
 
 ### Fixed
@@ -17,7 +27,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
--   add buttons in image viewer
+-   new buttons in image viewer
 
 ## [1.0.0-beta.56] - 2020-06-18
 
@@ -137,6 +147,7 @@ All notable changes to this project will be documented in this file.
 -   fix auto refresh bug
 -   update [README.md](README.md)
 
+[1.0.0-beta.60]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.60
 [1.0.0-beta.58]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.58
 [1.0.0-beta.57]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.57
 [1.0.0-beta.56]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.56
