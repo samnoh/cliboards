@@ -196,7 +196,6 @@ class Community extends CLI {
                                 this.crawler.boards.length,
                             );
                         } catch (e) {
-                            this.textBox.focus();
                             this.textBox.emit('failure');
                             this.setTitleFooterContent(
                                 '잘못된 입력입니다: ' + e.message,
@@ -333,7 +332,7 @@ class Community extends CLI {
                     return;
 
                 this.setTitleContent(
-                    '필터를 선택하세요',
+                    '옵션을 선택하세요',
                     this.crawler.title + ' 검색',
                 );
 
@@ -353,20 +352,22 @@ class Community extends CLI {
                             try {
                                 this.crawler.currentPageNumber = 0;
                                 this.crawler.setSearchParams = {
+                                    type: name,
                                     value,
                                     keyword,
                                 };
 
                                 await this.refreshPosts();
+
                                 if (this.posts.length === 0) {
                                     this.posts = prevPosts;
                                     this.crawler.pageNumber = prevPageNumber;
                                     throw new Error('결과가 없습니다');
                                 }
+
                                 this.textBox.destroy();
                                 this.listList.focus();
                             } catch (e) {
-                                this.textBox.focus();
                                 this.textBox.emit('failure');
                                 this.crawler.searchParams = {};
                                 this.setTitleFooterContent(
@@ -605,11 +606,12 @@ class Community extends CLI {
             this.setTitleFooterContent(
                 `${this.crawler.boards[this.crawler.currentBoardIndex].name} ${
                     this.crawler.searchParams.keyword
-                        ? '{blue-fg}' +
-                          this.crawler.searchParams.keyword +
-                          '{/} {gray-fg}검색 결과'
-                        : '{gray-fg}' +
-                          this.crawler.boardTypes[this.currentBoardTypeIndex]
+                        ? `{${this.colors.top_left_search_keyword_color}-fg}${this.crawler.searchParams.keyword}{/} {${top_left_search_info_color}-fg}${this.crawler.searchParams.type} 검색 결과`
+                        : `{${this.colors.top_left_info_color}-fg} ${
+                              this.crawler.boardTypes[
+                                  this.currentBoardTypeIndex
+                              ]
+                          }`
                 }{/}`,
                 `${
                     this.crawler.currentBoard.singlePage
@@ -621,7 +623,7 @@ class Community extends CLI {
                         : ''
                 }`,
                 this.autoRefreshTimer
-                    ? `q: back, any key: cancel auto refresh{|}{${this.colors.bottom_right_color}-fg}Refresh every ${this.autoRefreshInterval} sec..{/}`
+                    ? `q: back, any key: cancel auto refresh{|} {${this.colors.bottom_right_color}-fg}Refresh every ${this.autoRefreshInterval} sec..{/}`
                     : `q: back${
                           this.crawler.searchParams.value
                               ? ', c: cancel search'
@@ -872,6 +874,7 @@ class Community extends CLI {
         this.textBox.on('failure', () => {
             this.textBox.style.bg = this.colors.text_input_failure_bg;
             this.textBox.style.fg = this.colors.text_input_failure_color;
+            this.textBox.focus();
         });
 
         this.textBox.on('destroy', () => {

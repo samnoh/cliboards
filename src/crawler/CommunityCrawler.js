@@ -151,8 +151,9 @@ class CommunityCrawler extends Crawler {
         return true;
     }
 
-    set setSearchParams({ value, keyword }) {
+    set setSearchParams({ type, value, keyword }) {
         this.searchParams = {
+            type,
             keyword,
             value: this.getSearchParams(value, keyword),
         };
