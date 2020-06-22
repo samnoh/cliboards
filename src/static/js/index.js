@@ -31,7 +31,7 @@
         barContainer.classList.add('fade-in');
         barContainer.classList.remove('fade-out');
 
-        barsTimer = setTimeout(fadeOutBars, 1500);
+        barsTimer = setTimeout(fadeOutBars, 500);
     }
 
     function fadeOutBars() {
