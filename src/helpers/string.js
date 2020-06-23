@@ -6,13 +6,12 @@ const getYoutubeVideoId = url => {
     )[5];
 };
 
-const spoilerWords = ['스포', '슾호', 'spoiler'];
-const nonSpoilerWords = ['노스포', '노슾호'];
-
 const hasSpoilerWord = str => {
     if (typeof str !== 'string') return false;
 
-    let lowerStr = str.toLowerCase();
+    const spoilerWords = ['스포', '슾호', 'spoiler'];
+    const nonSpoilerWords = ['노스포', '노슾호'];
+    const lowerStr = str.toLowerCase();
 
     const hasNonSpoilerContent = nonSpoilerWords.filter(w =>
         lowerStr.includes(w),
