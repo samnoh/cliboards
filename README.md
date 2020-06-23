@@ -10,6 +10,7 @@
 -   Supports color customizations
 -   Loads faster with a slow Internect connection
 -   Shurtcut for viewing images on web browser
+-   Spoiler protection
 -   Hide screen instantly (`space` key)
 
 ## Installation
@@ -44,6 +45,9 @@ cliboards <index|name> --reset
 
 # Update theme (color customizations)
 cliboards --theme
+
+# Disable spoiler protection
+cliboards --disableSP
 ```
 
 ## Changelog

@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.61] - 2020-06-23
+
+### Added
+
+-   spoiler protection (`v` to view contents)
+-   add command-line argument: `--disableSP`
+    -   `--disableSP`: disable spoiler protection
+
+### Fixed
+
+-   new color error when search
+
 ## [1.0.0-beta.60] - 2020-06-22
 
 ### Added
@@ -147,6 +159,7 @@ All notable changes to this project will be documented in this file.
 -   fix auto refresh bug
 -   update [README.md](README.md)
 
+[1.0.0-beta.61]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.61
 [1.0.0-beta.60]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.60
 [1.0.0-beta.58]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.58
 [1.0.0-beta.57]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.57

@@ -92,7 +92,7 @@ class Community extends CLI {
             },
         });
         this.autoRefreshInterval = 10; // refresh every 10 seconds; do not make it too low
-        this.isSpoilerPrevented = true;
+        this.disableSP = false;
         this.hasSpoiler = false;
         this.autoRefreshTimer = null;
         this.widgets = [
@@ -104,7 +104,7 @@ class Community extends CLI {
         this.setAllEvents();
     }
 
-    static async start({ theme, reset, startCrawler }) {
+    static async start({ theme, reset, startCrawler, disableSP }) {
         clearFolder(tempFolderPath);
 
         if (reset && !startCrawler) {
@@ -122,6 +122,10 @@ class Community extends CLI {
                 0,
                 'Please edit the file in JSON format and restart',
             );
+        }
+
+        if (disableSP) {
+            community.disableSP = true;
         }
 
         if (startCrawler) {
@@ -676,7 +680,7 @@ class Community extends CLI {
             );
 
             if (this.hasSpoiler) {
-                this.setFooterContent('v: view content');
+                this.setFooterContent('v: view contents');
             } else {
                 this.setFooterContent(
                     `r: refresh, o: open, ${
@@ -774,15 +778,11 @@ class Community extends CLI {
         }
     }
 
-    rednerDetailBody(disableSpoilerProtection = false) {
+    rednerDetailBody(_disableSP = false) {
         this.hasSpoiler =
-            this.post.title.includes('스포') && !disableSpoilerProtection;
+            !_disableSP && !this.disableSP && this.post.title.includes('스포');
 
-        if (
-            !disableSpoilerProtection &&
-            this.isSpoilerPrevented &&
-            this.hasSpoiler
-        ) {
+        if (this.hasSpoiler) {
             this.detailBox.setContent(
                 '{center}\n\n{inverse}Spoiler protection{/inverse} - press v to view{/center}',
             );
