@@ -41,7 +41,9 @@ class Ruliweb extends CommunityCrawler {
         );
 
         const posts = await this.page.evaluate(() => {
-            const lists = document.querySelectorAll('.table_body:not(.inside)');
+            const lists = document.querySelectorAll(
+                '.table_body:not(.inside):not(.notice):not(.list_inner)',
+            );
 
             return Array.from(lists)
                 .map(list => {
