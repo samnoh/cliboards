@@ -10,6 +10,7 @@ const {
     customThemeFilePath,
     tempFolderPath,
     clearFolder,
+    hasSpoilerWord,
 } = require('../helpers');
 const { name, version, homepage } = require('../../package.json');
 
@@ -780,7 +781,7 @@ class Community extends CLI {
 
     rednerDetailBody(_disableSP = false) {
         this.hasSpoiler =
-            !_disableSP && !this.disableSP && this.post.title.includes('스포');
+            !_disableSP && !this.disableSP && hasSpoilerWord(this.post.title);
 
         if (this.hasSpoiler) {
             this.detailBox.setContent(
