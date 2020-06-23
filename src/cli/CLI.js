@@ -165,8 +165,10 @@ class CLI {
         this.screen.render();
     }
 
-    setFoooterContent(footerText) {
-        this.footerBox.setContent(footerText);
+    setFooterContent(footerText) {
+        this.footerBox.setContent(
+            `q: ${this.currentWidgetIndex ? 'back' : 'quit'}, ${footerText}`,
+        );
         this.screen.render();
     }
 
@@ -176,7 +178,7 @@ class CLI {
         footerText = '',
     ) {
         this.setTitleContent(leftTitleText, rightTitleText);
-        this.setFoooterContent(footerText);
+        this.setFooterContent(footerText);
     }
 
     resetScroll(widget, offset = 0) {

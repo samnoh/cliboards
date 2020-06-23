@@ -92,6 +92,8 @@ class Community extends CLI {
             },
         });
         this.autoRefreshInterval = 10; // refresh every 10 seconds; do not make it too low
+        this.isSpoilerPrevented = true;
+        this.hasSpoiler = false;
         this.autoRefreshTimer = null;
         this.widgets = [
             this.communityList,
@@ -401,10 +403,16 @@ class Community extends CLI {
             if (!this.post) return;
 
             switch (full) {
+                case 'v':
+                    if (!this.hasSpoiler) return;
+                    this.rednerDetailBody(true);
+
+                    return this.detailBox.focus();
                 case 'r':
+                    if (this.hasSpoiler) return;
                     return await this.refreshPostDetail();
                 case 'i':
-                    if (!this.post.hasImages) return;
+                    if (!this.post.hasImages && this.hasSpoiler) return;
 
                     this.footerBox.focus();
 
@@ -414,15 +422,16 @@ class Community extends CLI {
 
                     this.detailBox.focus();
 
-                    return !images
-                        ? null
-                        : await openImages({
-                              communityTitle: this.crawler.title,
-                              ...this.post,
-                              images,
-                          });
-
+                    if (images) {
+                        await openImages({
+                            communityTitle: this.crawler.title,
+                            ...this.post,
+                            images,
+                        });
+                    }
+                    return;
                 case 'o':
+                    if (this.hasSpoiler) return;
                     return await openUrls(
                         this.posts[this.currentPostIndex].link,
                     );
@@ -506,9 +515,7 @@ class Community extends CLI {
                 await this.getPostDetail(index);
 
                 this.posts[index].hasRead = true;
-                this.moveToWidget('next', () => {
-                    this.rednerDetailBody();
-                });
+                this.moveToWidget('next', () => this.rednerDetailBody());
             } catch (e) {
                 this.moveToWidget('next');
             }
@@ -527,7 +534,7 @@ class Community extends CLI {
                 this.isColorsError
                     ? '{gray-fg}Invalid JSON format for color theme - default theme now{/}'
                     : '',
-                `q: quit, o: open GitHub{|}${name} ${version}`,
+                `o: open GitHub{|}${name} ${version}`,
             );
         });
 
@@ -549,13 +556,13 @@ class Community extends CLI {
                 this.setTitleFooterContent(
                     this.crawler.title,
                     this.crawler.boardTypes[this.currentBoardTypeIndex],
-                    `q: back${
+                    `${
                         this.crawler.canAddBoards
-                            ? ', a: add board, d: delete board'
+                            ? 'a: add board, d: delete board'
                             : ''
                     }${
                         this.crawler.boardTypes.length > 1
-                            ? ', s: sort board, left/right arrow: prev/next page'
+                            ? 's: sort board, left/right arrow: prev/next page'
                             : ''
                     }`,
                 );
@@ -565,7 +572,7 @@ class Community extends CLI {
         this.listList.on('focus', () => {
             if (!this.posts.length) {
                 this.listList.setItems([]);
-                return this.setTitleFooterContent('Error', '', 'q: back');
+                return this.setTitleFooterContent('Error');
             }
 
             this.listList.setItems(
@@ -606,7 +613,7 @@ class Community extends CLI {
             this.setTitleFooterContent(
                 `${this.crawler.boards[this.crawler.currentBoardIndex].name} ${
                     this.crawler.searchParams.keyword
-                        ? `{${this.colors.top_left_search_keyword_color}-fg}${this.crawler.searchParams.keyword}{/} {${top_left_search_info_color}-fg}${this.crawler.searchParams.type} 검색 결과`
+                        ? `{${this.colors.top_left_search_keyword_color}-fg}${this.crawler.searchParams.keyword}{/} {${this.colors.top_left_search_info_color}-fg}${this.crawler.searchParams.type} 검색 결과`
                         : `{${this.colors.top_left_info_color}-fg} ${
                               this.crawler.boardTypes[
                                   this.currentBoardTypeIndex
@@ -623,16 +630,16 @@ class Community extends CLI {
                         : ''
                 }`,
                 this.autoRefreshTimer
-                    ? `q: back, any key: cancel auto refresh{|} {${this.colors.bottom_right_color}-fg}Refresh every ${this.autoRefreshInterval} sec..{/}`
-                    : `q: back${
+                    ? `any key: cancel auto refresh{|} {${this.colors.bottom_right_color}-fg}Refresh every ${this.autoRefreshInterval} sec..{/}`
+                    : `${
                           this.crawler.searchParams.value
-                              ? ', c: cancel search'
+                              ? 'c: cancel search, '
                               : ''
                       }${
-                          this.crawler.searchTypes ? ', w: search' : ''
-                      }, r: refresh, a: auto refresh${
-                          this.crawler.sortUrl ? ', s: sort' : ''
-                      }, left/right arrow: prev/next page`,
+                          this.crawler.searchTypes ? 'w: search, ' : ''
+                      }r: refresh, a: auto refresh, ${
+                          this.crawler.sortUrl ? 's: sort, ' : ''
+                      }left/right arrow: prev/next page`,
             );
         });
 
@@ -640,7 +647,7 @@ class Community extends CLI {
             if (!this.post) {
                 this.detailBox.setContent('');
                 this.flushComments();
-                return this.setTitleFooterContent('Error', '', 'q: back');
+                return this.setTitleFooterContent('Error');
             }
 
             const {
@@ -655,7 +662,7 @@ class Community extends CLI {
                 hasImages,
             } = this.post;
 
-            this.setTitleFooterContent(
+            this.setTitleContent(
                 `${
                     category
                         ? `{${this.colors.top_info_color}-fg}` +
@@ -666,14 +673,21 @@ class Community extends CLI {
                     comments.length
                 }{/}`,
                 `${author}‧${hit}‧${upVotes}‧${time}`,
-                `q: back, r: refresh, o: open, ${
-                    hasImages
-                        ? `i: view ${images.length} image${
-                              images.length !== 1 ? 's' : ''
-                          }, `
-                        : ''
-                }left/right arrow: prev/next post`,
             );
+
+            if (this.hasSpoiler) {
+                this.setFooterContent('v: view content');
+            } else {
+                this.setFooterContent(
+                    `r: refresh, o: open, ${
+                        hasImages
+                            ? `i: view ${images.length} image${
+                                  images.length !== 1 ? 's' : ''
+                              }, `
+                            : ''
+                    }left/right arrow: prev/next post`,
+                );
+            }
         });
     }
 
@@ -760,14 +774,29 @@ class Community extends CLI {
         }
     }
 
-    rednerDetailBody() {
-        this.detailBox.setContent(
-            this.post.body.replace(
-                /(GIF_\d+|IMAGE_\d+|YOUTUBE_\d+)/g,
-                '{inverse}$&{/inverse}',
-            ),
-        );
-        this.renderComments();
+    rednerDetailBody(disableSpoilerProtection = false) {
+        this.hasSpoiler =
+            this.post.title.includes('스포') && !disableSpoilerProtection;
+
+        if (
+            !disableSpoilerProtection &&
+            this.isSpoilerPrevented &&
+            this.hasSpoiler
+        ) {
+            this.detailBox.setContent(
+                '{center}\n\n{inverse}Spoiler protection{/inverse} - press v to view{/center}',
+            );
+            this.flushComments();
+        } else {
+            this.detailBox.setContent(
+                this.post.body.replace(
+                    /(GIF_\d+|IMAGE_\d+|YOUTUBE_\d+)/g,
+                    '{inverse}$&{/inverse}',
+                ),
+            );
+            this.renderComments();
+        }
+
         this.detailBox.scrollTo(0);
     }
 
