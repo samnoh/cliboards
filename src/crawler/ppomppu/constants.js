@@ -1,8 +1,11 @@
+const defaultConstants = require('../defaultConstants');
+
 const baseUrl = 'http://m.ppomppu.co.kr';
 
 const boardTypes = ['커뮤니티', '뽐뿌'];
 
 module.exports = {
+    ...defaultConstants,
     baseUrl,
     getUrl: (board, page, sort, search = '') => {
         return `${baseUrl}/new/${sort}.php?id=${board}&page=${page}&bot_type=${sort}${search}`;
@@ -21,14 +24,6 @@ module.exports = {
             value: 'hot_bbs',
             name: 'HOT게시글',
         },
-    ],
-    ignoreRequests: [
-        'image',
-        'stylesheet',
-        'media',
-        'font',
-        'imageset',
-        'script',
     ],
     boards: [
         {

@@ -1,21 +1,14 @@
+const defaultConstants = require('../defaultConstants');
+
 const baseUrl = 'https://dvdprime.com';
 
 const boardTypes = ['영화‧드라마‧음악', '홈시어터', '커뮤니티'];
 
 module.exports = {
+    ...defaultConstants,
     baseUrl,
     getUrl: board => `${baseUrl}/g2/bbs/board.php?bo_table=${board}&page=`,
-    sortUrls: [],
     boardTypes,
-    ignoreBoards: [],
-    ignoreRequests: [
-        'image',
-        'stylesheet',
-        'media',
-        'font',
-        'imageset',
-        'script',
-    ],
     boards: [
         {
             name: '영화이야기',

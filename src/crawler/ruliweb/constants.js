@@ -1,22 +1,15 @@
+const defaultConstants = require('../defaultConstants');
+
 const baseUrl = 'https://bbs.ruliweb.com';
 
 const boardTypes = ['PS4/5', 'SWITCH', 'XBO/SX', 'PC', '취미갤'];
 
 module.exports = {
+    ...defaultConstants,
     baseUrl,
     commentsUrl: 'https://api.ruliweb.com/commentView',
     getUrl: board => `${baseUrl}${board}?page=`,
-    sortUrls: [],
     boardTypes,
-    ignoreBoards: [],
-    ignoreRequests: [
-        'image',
-        'stylesheet',
-        'media',
-        'font',
-        'imageset',
-        'script',
-    ],
     boards: [
         {
             name: '유저 정보',

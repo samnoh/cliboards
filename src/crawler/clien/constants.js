@@ -1,8 +1,11 @@
+const defaultConstants = require('../defaultConstants');
+
 const baseUrl = 'https://www.clien.net';
 
 const boardTypes = ['커뮤니티', '소모임'];
 
 module.exports = {
+    ...defaultConstants,
     baseUrl,
     getUrl: board => `${baseUrl}${board}?&po=`,
     sortUrls: [
@@ -26,14 +29,6 @@ module.exports = {
         '알뜰구매',
         '임시소모임',
         '직접홍보',
-    ],
-    ignoreRequests: [
-        'image',
-        'stylesheet',
-        'media',
-        'font',
-        'imageset',
-        'script',
     ],
     boards: [
         {

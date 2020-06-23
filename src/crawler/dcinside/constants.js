@@ -1,21 +1,14 @@
+const defaultConstants = require('../defaultConstants');
+
 const baseUrl = 'https://m.dcinside.com';
 
 const boardTypes = ['1 페이지', '2 페이지', '3 페이지'];
 
 module.exports = {
+    ...defaultConstants,
     baseUrl,
     getUrl: board => `${baseUrl}/board/${board}?page=`,
-    sortUrls: [],
     boardTypes,
-    ignoreBoards: [],
-    ignoreRequests: [
-        'image',
-        'stylesheet',
-        'media',
-        'font',
-        'imageset',
-        'script',
-    ],
     boards: [
         {
             name: '인터넷방송',
