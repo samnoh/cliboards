@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.64] - 2020-06-24
+
+### Fixed
+
+-   Left swipe in board list
+
 ## [1.0.0-beta.63] - 2020-06-23
 
 ### Fixed

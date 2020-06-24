@@ -297,7 +297,7 @@ class Community extends CLI {
             }
         });
 
-        this.listList.on('keypress', async (_, { full }) => {
+        this.listList.on('keypress', async (_, { name, full, shift }) => {
             if (this.autoRefreshTimer) {
                 this.autoRefreshTimer = clearTimeout(this.autoRefreshTimer);
                 this.listList.focus();
@@ -319,18 +319,25 @@ class Community extends CLI {
                 this.autoRefreshTimer = setInterval(async () => {
                     await this.refreshPosts();
                 }, this.autoRefreshInterval * 1000);
-            } else if (full === 's') {
+            } else if (name === 's') {
                 if (
                     this.crawler.currentBoard.noSortUrl ||
                     !this.crawler.sortUrl
                 )
                     return;
-                else {
-                    const sortUrlsLength = this.crawler.sortUrls.length;
-                    this.crawler.changeSortUrl(
-                        (this.crawler.sortListIndex + 1) % sortUrlsLength,
-                    );
+
+                const sortUrlsLength = this.crawler.sortUrls.length;
+                let index;
+
+                if (shift) {
+                    index = this.crawler.sortListIndex
+                        ? this.crawler.sortListIndex - 1
+                        : sortUrlsLength - 1;
+                } else {
+                    index = (this.crawler.sortListIndex + 1) % sortUrlsLength;
                 }
+
+                this.crawler.changeSortUrl(index);
             } else if (full === 'w') {
                 if (
                     !this.crawler.searchTypes ||
