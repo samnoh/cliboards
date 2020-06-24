@@ -83,7 +83,13 @@ class CLI {
                     );
                 case 'space':
                     return this.screen.children.forEach(c => {
-                        c.visible ? c.hide() : c.show();
+                        if (c.visible) {
+                            this.footerBox.focus();
+                            c.hide();
+                        } else {
+                            this.widgets[this.currentWidgetIndex].focus();
+                            c.show();
+                        }
                         this.screen.render();
                     });
             }

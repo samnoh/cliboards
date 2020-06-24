@@ -411,18 +411,18 @@ class Community extends CLI {
             }
         });
 
-        this.detailBox.on('keypress', async (_, { full }) => {
+        this.detailBox.on('keypress', async (_, { full, shift }) => {
             if (!this.post) return;
 
             switch (full) {
                 case 'v':
                     if (!this.hasSpoiler) return;
                     this.rednerDetailBody(true);
-
                     return this.detailBox.focus();
+                case 'S-r':
                 case 'r':
                     if (this.hasSpoiler) return;
-                    return await this.refreshPostDetail();
+                    return await this.refreshPostDetail(shift ? 100 : 0);
                 case 'i':
                     if (!this.post.hasImages || this.hasSpoiler) return;
 
@@ -774,13 +774,13 @@ class Community extends CLI {
         }
     }
 
-    async refreshPostDetail() {
+    async refreshPostDetail(offsetPrec = 0) {
         try {
             const index = this.currentPostIndex;
             await this.getPostDetail(index);
             this.listList.select(index);
             this.rednerDetailBody();
-        } catch (e) {
+            this.detailBox.setScrollPerc(offsetPrec);
         } finally {
             this.detailBox.focus();
         }

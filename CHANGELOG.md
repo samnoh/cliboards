@@ -7,11 +7,13 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 -   `Shift + S` to go back to prev sort filter in post list
--   Automatically close exsiting image viewer once it opens new image viewer
+-   `Shift + r` to refresh and then scroll to the bottom in post detail page
+-   automatically close exsiting image viewer once it opens new image viewer
 
 ### Fixed
 
--   Left swipe in board list
+-   left swipe cannot work properly in board list
+-   controlable when hiding screen
 
 ## [1.0.0-beta.63] - 2020-06-23
 
