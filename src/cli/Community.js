@@ -424,7 +424,7 @@ class Community extends CLI {
                     if (this.hasSpoiler) return;
                     return await this.refreshPostDetail();
                 case 'i':
-                    if (!this.post.hasImages && this.hasSpoiler) return;
+                    if (!this.post.hasImages || this.hasSpoiler) return;
 
                     this.footerBox.focus();
 
