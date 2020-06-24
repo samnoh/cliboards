@@ -265,8 +265,8 @@ class Community extends CLI {
                         return;
 
                     this.currentBoardTypeIndex = this.currentBoardTypeIndex
-                        ? boardTypesLength - 1
-                        : (this.currentBoardTypeIndex - 1) % boardTypesLength;
+                        ? this.currentBoardTypeIndex - 1
+                        : boardTypesLength - 1;
 
                     return await this.getBoards(this.currentBoardTypeIndex);
                 case 'up':
