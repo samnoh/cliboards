@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 -   `Shift + S` to go back to prev sort filter in post list
+-   Automatically close exsiting image viewer once it opens new image viewer
 
 ### Fixed
 
