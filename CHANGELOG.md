@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [1.0.0-beta.64] - 2020-06-24
 
+### Added
+
+-   `Shift + S` to go back to prev sort filter in post list
+
 ### Fixed
 
 -   Left swipe in board list
@@ -171,6 +175,7 @@ All notable changes to this project will be documented in this file.
 -   fix auto refresh bug
 -   update [README.md](README.md)
 
+[1.0.0-beta.64]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.64
 [1.0.0-beta.63]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.63
 [1.0.0-beta.61]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.61
 [1.0.0-beta.60]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.60
