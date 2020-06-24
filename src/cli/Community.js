@@ -781,6 +781,7 @@ class Community extends CLI {
             this.listList.select(index);
             this.rednerDetailBody();
             this.detailBox.setScrollPerc(offsetPrec);
+        } catch (e) {
         } finally {
             this.detailBox.focus();
         }
