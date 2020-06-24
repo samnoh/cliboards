@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.65] - 2020-06-24
+
+### Added
+
+-   reply levels in `DVDPrime`
+-   format links in `DVDPrime`
+
+### Fixed
+
+-   post & comment format in `DVDPrime`
+-   remove series display in `DVDPrime`
+
 ## [1.0.0-beta.64] - 2020-06-24
 
 ### Added

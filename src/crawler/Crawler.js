@@ -36,10 +36,7 @@ class Crawler {
 
             this.page.on('request', request => {
                 if (
-                    this.ignoreRequests.indexOf(request.resourceType()) !==
-                        -1 ||
-                    // request.url().startsWith('https://www.youtube.com') ||
-                    !request.url().startsWith(this.baseUrl)
+                    this.ignoreRequests.indexOf(request.resourceType()) !== -1
                 ) {
                     request.abort();
                 } else {

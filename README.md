@@ -11,6 +11,7 @@
 -   Loads faster with a slow Internect connection
 -   Shurtcut for viewing images on web browser
 -   Spoiler protection
+-   Search posts
 -   Hide screen instantly (`space` key)
 
 ## Installation

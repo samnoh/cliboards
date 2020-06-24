@@ -110,7 +110,6 @@ class DVDPrime extends CommunityCrawler {
                     type = 'mp4';
                     value = item.querySelector('source').src;
                     name = `GIF_${index + 1}`;
-                    item.parentNode.innerText = name;
                 } else if (item.tagName === 'IFRAME') {
                     type = 'youtube';
                     value = item.src;
@@ -121,9 +120,16 @@ class DVDPrime extends CommunityCrawler {
                     name = `IMAGE_${index + 1} `;
                 }
 
-                item.textContent = name;
+                item.parentNode.innerText = name;
 
                 return { type, value, name };
+            });
+
+            const seriesDiv = document.querySelector('.view_series_div');
+            seriesDiv && body.removeChild(seriesDiv);
+
+            body.querySelectorAll('.article_link').forEach(link => {
+                link.innerHTML = link.href;
             });
 
             return {
@@ -132,11 +138,7 @@ class DVDPrime extends CommunityCrawler {
                 author: author.innerText.trim(),
                 hit: hit.innerText.trim(),
                 time,
-                body: body.textContent
-                    .split('\n')
-                    .map(b => b.trim())
-                    .join('\n')
-                    .trim(),
+                body: body.innerText.trim(),
                 upVotes: parseInt(upVotes.innerText),
                 images,
                 hasImages: images.length,
@@ -149,33 +151,37 @@ class DVDPrime extends CommunityCrawler {
                     const upVotes = comment.querySelector(
                         '.comment_title_right .c_r_num',
                     );
-                    const isReply = comment.querySelector(
-                        '.comment_reply_line',
+                    const replyEl = comment.querySelector(
+                        '.comment_content_container_reply',
                     );
-                    const spoilerWarning = body.querySelector(
-                        '.view_warning_div',
+                    const isReply = replyEl
+                        ? parseInt(replyEl.className.replace(/[^0-9]/g, ''))
+                        : 0;
+
+                    const spoilerWarning = body.querySelectorAll(
+                        '.view_warning_div, .view_warning_stoptalking',
                     );
 
-                    if (spoilerWarning) {
-                        body.removeChild(spoilerWarning);
+                    if (spoilerWarning.length) {
+                        body.removeChild(spoilerWarning[0]);
                     }
 
-                    body.querySelectorAll('.view_image img, video').forEach(
-                        (item, index) => {
-                            if (item.tagName === 'VIDEO') {
-                                item.parentNode.innerText = `GIF_${index + 1}`;
-                            } else {
-                                item.innerText = `IMAGE_${index + 1}`;
-                            }
-                        },
-                    );
+                    body.querySelectorAll(
+                        'img:not([src$=".gif"]), video',
+                    ).forEach((item, index) => {
+                        if (item.tagName === 'VIDEO') {
+                            item.parentNode.innerText = `GIF_${index + 1}`;
+                        } else {
+                            item.parentNode.innerText = `IMAGE_${index + 1}`;
+                        }
+                    });
 
                     return {
-                        isReply: !!isReply,
+                        isReply,
                         isRemoved: false,
                         author: author.innerText,
                         time,
-                        body: body.textContent.trim(),
+                        body: body.innerText.trim(),
                         upVotes: parseInt(upVotes.innerText),
                     };
                 }),
