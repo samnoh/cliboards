@@ -4,7 +4,7 @@
     "description": "Surf your online communities on CLI",
     "main": "src/index.js",
     "scripts": {
-        "start": "nodemon -I src/index.js",
+        "start": "nodemon -I --exitcrash src/index.js",
         "format": "prettier --write 'src/**/*.js'"
     },
     "repository": {

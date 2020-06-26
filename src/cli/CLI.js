@@ -2,10 +2,11 @@ const blessed = require('blessed');
 
 const { updateNotifier, getTheme } = require('../helpers');
 
-const isDevMode = process.env.NODE_ENV === 'development';
-
 class CLI {
     constructor() {
+        // dev
+        this.isDevMode = process.env.NODE_ENV === 'development';
+
         // theme
         const [colors, isError] = getTheme();
         this.colors = colors;
@@ -17,7 +18,7 @@ class CLI {
             dockBorders: true,
             fastCSR: true,
             fullUnicode: true,
-            debug: isDevMode,
+            debug: this.isDevMode,
         });
         const box = blessed.box({
             parent: this.screen,
@@ -73,7 +74,7 @@ class CLI {
         this.screen.on('keypress', async (_, { full }) => {
             switch (full) {
                 case 'C-c':
-                    return await this.terminate();
+                    return await this.terminate(this.isDevMode ? 1 : 0);
                 case 'escape':
                 case 'q':
                     return (
@@ -155,7 +156,7 @@ class CLI {
 
                 nextWidget.focus();
             } else {
-                this.terminate();
+                this.terminate(this.isDevMode ? 1 : 0);
             }
         } catch (e) {
             this.terminate(1, e);
