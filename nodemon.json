@@ -1,0 +1,7 @@
+{
+    "ignore": [".git", "*.json", "node_modules", ".temp"],
+    "restartable": false,
+    "env": {
+        "NODE_ENV": "development"
+    }
+}

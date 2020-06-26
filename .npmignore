@@ -1,6 +1,7 @@
+.temp/
 img/
 .github/
 CODE_OF_CONDUCT.md
+.editorconfig
 *.txt
 *.json
-.temp/
