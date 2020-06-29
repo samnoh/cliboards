@@ -1,6 +1,7 @@
 const blessed = require('blessed');
 
 const CLI = require('./CLI');
+const cliOptions = require('./CLIOptions');
 const { getCrawler, crawlers } = require('../crawler');
 const {
     openUrls,
@@ -20,78 +21,11 @@ class Community extends CLI {
 
         this.communityList = blessed.list({
             parent: this.bodyBox,
-            tags: true,
-            scrollbar: {
-                ch: ' ',
-                style: {
-                    inverse: true,
-                },
-            },
-            style: {
-                selected: {
-                    bg: this.colors.cursor_bg,
-                    fg: this.colors.cursor_color,
-                },
-                bg: this.colors.list_bg,
-                fg: this.colors.list_left_color,
-            },
-            keys: true,
-            vi: true,
+            ...cliOptions.community,
         });
-        this.boardsList = blessed.list({
-            scrollbar: {
-                ch: ' ',
-                style: {
-                    inverse: true,
-                },
-            },
-            style: {
-                selected: {
-                    bg: this.colors.cursor_bg,
-                    fg: this.colors.cursor_color,
-                },
-                bg: this.colors.list_bg,
-                fg: this.colors.list_left_color,
-            },
-            keys: true,
-            vi: true,
-        });
-        this.listList = blessed.list({
-            width: '100%',
-            tags: true,
-            scrollbar: {
-                ch: ' ',
-                style: {
-                    inverse: true,
-                },
-            },
-            style: {
-                selected: {
-                    bg: this.colors.cursor_bg,
-                    fg: this.colors.cursor_color,
-                },
-                bg: this.colors.list_bg,
-                fg: this.colors.list_left_color,
-            },
-            keys: true,
-            vi: true,
-        });
-        this.detailBox = blessed.box({
-            scrollable: true,
-            tags: true,
-            keys: true,
-            vi: true,
-            alwaysScroll: true,
-            width: '100%',
-            scrollbar: {
-                ch: ' ',
-                inverse: true,
-            },
-            style: {
-                bg: this.colors.post_bg,
-                fg: this.colors.post_color,
-            },
-        });
+        this.boardsList = blessed.list(cliOptions.board);
+        this.listList = blessed.list(cliOptions.postList);
+        this.detailBox = blessed.box(cliOptions.postDetail);
         this.autoRefreshInterval = 10; // refresh every 10 seconds; do not make it too low
         this.disableSP = false;
         this.hasSpoiler = false;

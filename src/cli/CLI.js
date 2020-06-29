@@ -1,6 +1,7 @@
 const blessed = require('blessed');
 
-const { updateNotifier, getTheme } = require('../helpers');
+const { updateNotifier } = require('../helpers');
+const cliOptions = require('./CLIOptions');
 
 class CLI {
     constructor() {
@@ -8,62 +9,28 @@ class CLI {
         this.isDevMode = process.env.NODE_ENV === 'development';
 
         // theme
-        const [colors, isError] = getTheme();
+        const { colors, isError } = cliOptions.colors;
         this.colors = colors;
         this.isColorsError = isError;
 
         // cli
         this.currentWidgetIndex = 0;
-        this.screen = blessed.screen({
-            dockBorders: true,
-            fastCSR: true,
-            fullUnicode: true,
-            debug: this.isDevMode,
-        });
+        this.screen = blessed.screen(cliOptions.screen);
         const box = blessed.box({
+            ...cliOptions.defaultBox,
             parent: this.screen,
-            width: '100%',
-            height: '100%',
         });
         this.titleBox = blessed.box({
+            ...cliOptions.title,
             parent: box,
-            tags: true,
-            top: 0,
-            width: '100%',
-            height: 1,
-            padding: {
-                left: 2,
-                right: 2,
-            },
-            style: {
-                bg: this.colors.top_bg,
-                fg: this.colors.top_left_color,
-            },
         });
         this.bodyBox = blessed.box({
+            ...cliOptions.body,
             parent: box,
-            top: 1,
-            bottom: 1,
-            width: '100%',
-            scrollbar: {
-                ch: ' ',
-                inverse: true,
-            },
         });
         this.footerBox = blessed.box({
+            ...cliOptions.footer,
             parent: box,
-            tags: true,
-            width: '100%',
-            top: '100%-1',
-            height: 1,
-            padding: {
-                left: 2,
-                right: 2,
-            },
-            style: {
-                fg: this.colors.bottom_left_color,
-                bg: this.colors.bottom_bg,
-            },
         });
 
         // update
