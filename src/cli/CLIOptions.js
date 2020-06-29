@@ -14,6 +14,14 @@ const defaultOptions = {
         keys: true,
         vi: true,
         tags: true,
+        style: {
+            selected: {
+                bg: colors.cursor_bg,
+                fg: colors.cursor_color,
+            },
+            bg: colors.list_bg,
+            fg: colors.list_left_color,
+        },
     },
     padding: { left: 2, right: 2 },
 };
@@ -22,6 +30,7 @@ defaultOptions.list.scrollbar = defaultOptions.listScrollbar;
 
 module.exports = {
     defaultBox: defaultOptions.box,
+    defaultList: defaultOptions.list,
     screen: {
         _type: 'screen',
         dockBorders: true,
@@ -54,39 +63,6 @@ module.exports = {
         style: {
             fg: colors.bottom_left_color,
             bg: colors.bottom_bg,
-        },
-    },
-    community: {
-        ...defaultOptions.list,
-        style: {
-            selected: {
-                bg: colors.cursor_bg,
-                fg: colors.cursor_color,
-            },
-            bg: colors.list_bg,
-            fg: colors.list_left_color,
-        },
-    },
-    board: {
-        ...defaultOptions.list,
-        style: {
-            selected: {
-                bg: colors.cursor_bg,
-                fg: colors.cursor_color,
-            },
-            bg: colors.list_bg,
-            fg: colors.list_left_color,
-        },
-    },
-    postList: {
-        ...defaultOptions.list,
-        style: {
-            selected: {
-                bg: colors.cursor_bg,
-                fg: colors.cursor_color,
-            },
-            bg: colors.list_bg,
-            fg: colors.list_left_color,
         },
     },
     postDetail: {

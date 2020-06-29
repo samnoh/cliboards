@@ -19,23 +19,24 @@ class Community extends CLI {
     constructor() {
         super();
 
-        this.communityList = blessed.list({
-            parent: this.bodyBox,
-            ...cliOptions.community,
-        });
-        this.boardsList = blessed.list(cliOptions.board);
-        this.listList = blessed.list(cliOptions.postList);
+        // cli
+        this.communityList = blessed.list(cliOptions.defaultList);
+        this.boardsList = blessed.list(cliOptions.defaultList);
+        this.listList = blessed.list(cliOptions.defaultList);
         this.detailBox = blessed.box(cliOptions.postDetail);
-        this.autoRefreshInterval = 10; // refresh every 10 seconds; do not make it too low
-        this.disableSP = false;
-        this.hasSpoiler = false;
-        this.autoRefreshTimer = null;
         this.widgets = [
             this.communityList,
             this.boardsList,
             this.listList,
             this.detailBox,
         ];
+
+        // options
+        this.autoRefreshInterval = 10; // refresh every 10 seconds; do not make it too low
+        this.disableSP = false;
+        this.hasSpoiler = false;
+        this.autoRefreshTimer = null;
+
         this.setAllEvents();
     }
 
@@ -49,6 +50,7 @@ class Community extends CLI {
 
         const community = new Community();
 
+        community.bodyBox.append(community.communityList);
         community.communityList.setItems(crawlers);
 
         if (theme) {
