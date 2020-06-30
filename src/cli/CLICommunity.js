@@ -15,7 +15,7 @@ const {
 } = require('../helpers');
 const { name, version, homepage } = require('../../package.json');
 
-class Community extends CLI {
+class CLICommunity extends CLI {
     constructor() {
         super();
 
@@ -48,7 +48,7 @@ class Community extends CLI {
             resetCustomTheme();
         }
 
-        const community = new Community();
+        const community = new CLICommunity();
 
         community.bodyBox.append(community.communityList);
         community.communityList.setItems(crawlers);
@@ -934,4 +934,4 @@ class Community extends CLI {
     }
 }
 
-module.exports = Community;
+module.exports = CLICommunity;
