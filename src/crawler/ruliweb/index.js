@@ -80,14 +80,15 @@ class Ruliweb extends CommunityCrawler {
 
         return posts.map(post => ({
             ...post,
-            hasRead: this.postsRead.has(post.link),
+            hasRead: this.postsRead.has(this.title + post.link),
         }));
     }
 
-    async getPostDetail(link) {
+    async getPostDetail({ link, id }) {
         await this.page.goto(link);
 
-        this.postsRead.add(this.currentBaseUrl); // set post that you read
+        // TODO: add id here
+        this.postsRead.add(this.title + link); // set post that you read
 
         const postDetail = await this.page.evaluate(() => {
             const title = document.querySelector('.subject_text');

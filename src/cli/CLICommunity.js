@@ -722,10 +722,10 @@ class CLICommunity extends CLI {
             this.footerBox.focus();
             this.currentPostIndex = index;
 
-            if (this.posts[index]) {
-                this.post = await this.crawler.getPostDetail(
-                    this.posts[index].link,
-                );
+            const currPost = this.posts[index];
+
+            if (currPost) {
+                this.post = await this.crawler.getPostDetail(currPost);
             }
         } catch (e) {
             this.post = null;

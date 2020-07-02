@@ -81,14 +81,14 @@ class DVDPrime extends CommunityCrawler {
 
         return posts.map(post => ({
             ...post,
-            hasRead: this.postsRead.has(post.link),
+            hasRead: this.postsRead.has(this.title + post.id),
         }));
     }
 
-    async getPostDetail(link) {
+    async getPostDetail({ link, id }) {
         await this.page.goto(link);
 
-        this.postsRead.add(this.currentBaseUrl); // set post that you read
+        this.postsRead.add(this.title + id); // set post that you read
 
         return await this.page.evaluate(() => {
             const title = document.querySelector('#writeSubject');

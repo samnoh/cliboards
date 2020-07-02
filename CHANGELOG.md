@@ -10,6 +10,10 @@ All notable changes to this project will be documented in this file.
 -   new color option
     -   list_new_post_color (green)
 
+### Fixed
+
+-   indicator for posts that user has read is not properly shown
+
 ## [1.0.0-beta.65] - 2020-06-24
 
 ### Added
