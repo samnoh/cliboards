@@ -244,14 +244,18 @@ class CLICommunity extends CLI {
             const prevPageNumber = this.crawler.currentPageNumber;
             const prevPosts = this.posts;
             const prevPostIndex = this.currentPostIndex;
+            let passPrevPosts = false;
 
             if (full === 'r') {
                 // refresh
+                passPrevPosts = true;
             } else if (full === 'c') {
                 if (!this.crawler.searchParams.value) return;
                 this.crawler.currentPageNumber = 0;
                 this.crawler.searchParams = {};
             } else if (full === 'a') {
+                passPrevPosts = true;
+
                 this.autoRefreshTimer = setInterval(async () => {
                     await this.refreshPosts(prevPosts);
                 }, this.autoRefreshInterval * 1000);
@@ -336,7 +340,7 @@ class CLICommunity extends CLI {
                 this.crawler.navigatePage = 1;
             } else return;
 
-            await this.refreshPosts(full === 'r' ? prevPosts : null);
+            await this.refreshPosts(passPrevPosts ? prevPosts : null);
 
             if (!this.posts.length) {
                 // no more pages -> go back to the previous page
