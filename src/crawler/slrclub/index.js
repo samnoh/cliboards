@@ -57,14 +57,16 @@ class SLRClub extends CommunityCrawler {
                         : 0;
                     const hasImages = list.querySelector('.subject .li_ic');
                     const numberOfComments = list.querySelector('.cmt2');
+                    const link = baseUrl + title.getAttribute('href');
 
                     return {
+                        id: link.replace(/\?.*$/, '').split('/').pop(),
                         category: null,
                         title: title.innerText.trim(),
                         author: author.innerText.trim(),
                         hit: hit,
                         time: time,
-                        link: baseUrl + title.getAttribute('href'),
+                        link,
                         upVotes: parseInt(upVotes),
                         numberOfComments: numberOfComments.innerText,
                         hasImages: !!hasImages,

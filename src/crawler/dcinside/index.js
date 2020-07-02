@@ -64,7 +64,8 @@ class Dcinside extends CommunityCrawler {
                 .map(list => {
                     const link = list
                         .querySelector('a.lt')
-                        .getAttribute('href');
+                        .getAttribute('href')
+                        .replace('undefined', '');
                     const title = list.querySelector('.detail-txt');
                     const infoEl = list.querySelectorAll('.ginfo li');
 
@@ -82,10 +83,12 @@ class Dcinside extends CommunityCrawler {
                     const upVotes = infoEl[infoIndex++];
                     const numberOfComments = list.querySelector('.ct');
                     const hasImages = list.querySelector('.sp-lst-img');
+                    const id = link.replace(/\?.*$/, '').split('/').pop();
 
                     return (
                         title &&
                         title.innerText && {
+                            id,
                             category: category && category.innerText,
                             title: title.innerText.trim(),
                             author: author.innerText.trim(),

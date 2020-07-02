@@ -17,6 +17,7 @@ module.exports = {
     list_right_color: 'gray',
     list_read_color: 'gray',
     list_info_color: 'gray',
+    list_new_post_color: 'green',
     post_bg: 'inverse',
     post_color: 'white',
     comment_bg: 'inverse',

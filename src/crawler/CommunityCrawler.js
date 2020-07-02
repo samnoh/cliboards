@@ -20,6 +20,7 @@ class CommunityCrawler extends Crawler {
         this.canAddBoards = false;
         this.searchParams = {};
         this.imageXhrRequired = false;
+        this.postLinks = {};
     }
 
     getBoards(boards, ignoreBoards) {

@@ -253,7 +253,7 @@ class CLICommunity extends CLI {
                 this.crawler.searchParams = {};
             } else if (full === 'a') {
                 this.autoRefreshTimer = setInterval(async () => {
-                    await this.refreshPosts();
+                    await this.refreshPosts(prevPosts);
                 }, this.autoRefreshInterval * 1000);
             } else if (name === 's') {
                 if (
@@ -336,7 +336,7 @@ class CLICommunity extends CLI {
                 this.crawler.navigatePage = 1;
             } else return;
 
-            await this.refreshPosts();
+            await this.refreshPosts(full === 'r' ? prevPosts : null);
 
             if (!this.posts.length) {
                 // no more pages -> go back to the previous page
@@ -532,8 +532,13 @@ class CLICommunity extends CLI {
                         author,
                         hasRead,
                         hasImages,
+                        isNewPost,
                     }) =>
                         `${
+                            isNewPost
+                                ? `{${this.colors.list_new_post_color}-fg}‧{/}`
+                                : ' '
+                        }${
                             category
                                 ? `{${this.colors.list_info_color}-fg}` +
                                   category +
@@ -641,6 +646,12 @@ class CLICommunity extends CLI {
 
     setBlurEvent() {
         super.setBlurEvent();
+
+        this.detailBox.on('blur', () => {
+            this.posts = this.posts.map(p => {
+                return { ...p, isNewPost: p.hasRead ? false : p.isNewPost };
+            });
+        });
     }
 
     async getBoards(index, scrollOffset = 0) {
@@ -674,22 +685,34 @@ class CLICommunity extends CLI {
         );
     }
 
-    async getPosts(index) {
+    async getPosts(index, filtreredBoard = []) {
         try {
             this.footerBox.focus();
             this.posts = await this.crawler.changeBoard(
-                this.getFilteredBoards()[index],
+                filtreredBoard[index] || this.getFilteredBoards()[index],
             );
         } catch (e) {
             this.posts = [];
         }
     }
 
-    async refreshPosts() {
-        const index = this.getFilteredBoards().indexOf(
+    async refreshPosts(prevPosts) {
+        const filtreredBoard = this.getFilteredBoards();
+        const index = filtreredBoard.indexOf(
             this.crawler.boards[this.crawler.currentBoardIndex],
         );
-        await this.getPosts(index);
+        await this.getPosts(index, filtreredBoard);
+
+        if (prevPosts) {
+            this.screen.debug(prevPosts[0].id, ' - ', this.posts[0].id);
+            this.posts = this.posts.map(post => {
+                if (!prevPosts.find(p => p.id === post.id)) {
+                    post.isNewPost = true;
+                }
+                return post;
+            });
+        }
+
         this.currentPostIndex = 0;
         this.listList.focus();
     }

@@ -99,11 +99,12 @@ class Clien extends CommunityCrawler {
                     return (
                         title &&
                         title.innerText && {
+                            id: link.getAttribute('href').split('/').pop(),
                             category: category && category.innerText,
                             title: title.innerText.trim(),
                             author:
                                 author.innerText.trim() ||
-                                author.querySelector('img').getAttribute('alt'),
+                                author.querySelector('img').alt,
                             hit: hit.innerText.trim(),
                             time: time.innerText.trim(),
                             link: baseUrl + link.getAttribute('href'),

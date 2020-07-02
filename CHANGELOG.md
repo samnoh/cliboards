@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.67] - 2020-07-02
+
+### Added
+
+-   new posts indicator
+-   new color option
+    -   list_new_post_color (green)
+
 ## [1.0.0-beta.65] - 2020-06-24
 
 ### Added

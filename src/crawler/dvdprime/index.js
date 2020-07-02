@@ -61,6 +61,7 @@ class DVDPrime extends CommunityCrawler {
                     return (
                         title &&
                         title.innerText && {
+                            id: link.match(/wr_id=(\d*)/)[1],
                             category: category.innerText,
                             title: title.innerText.trim(),
                             author: author.innerText.trim(),

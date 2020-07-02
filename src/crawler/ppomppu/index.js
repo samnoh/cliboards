@@ -94,16 +94,18 @@ class Ppomppu extends CommunityCrawler {
                             let link = list.getAttribute('href');
 
                             if (link && !link.includes('/new/')) {
-                                if (currentBoard === 'ppomppu2') {
-                                    link = '/new/bbs_view.php' + link;
-                                } else {
-                                    link = '/new/' + link;
-                                }
+                                link =
+                                    `/new/${
+                                        currentBoard === 'ppomppu2'
+                                            ? 'bbs_view.php'
+                                            : ''
+                                    }` + link;
                             }
 
                             return (
                                 author &&
                                 author.innerText && {
+                                    id: link.match(/&no=(\d*)/)[1],
                                     category,
                                     title: title.innerText.trim(),
                                     link: baseUrl + link,
