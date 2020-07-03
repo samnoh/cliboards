@@ -177,11 +177,7 @@ class Dcinside extends CommunityCrawler {
                 author: author.innerText.trim(),
                 hit: hit.innerText.replace(/[^0-9]/g, ''),
                 time: _time,
-                body: body.innerText
-                    .split('\n\n')
-                    .map(b => (!b ? '\n' : b))
-                    .join('')
-                    .trim(),
+                body: body.innerText.trim(),
                 images,
                 hasImages: images.length,
                 upVotes: parseInt(upVotes.innerText.replace(/[^0-9]/g, '')),
