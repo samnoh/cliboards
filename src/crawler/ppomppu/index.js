@@ -281,11 +281,7 @@ class Ppomppu extends CommunityCrawler {
                 author,
                 hit: parseInt(hit),
                 time,
-                body: body.innerText
-                    .split('\n')
-                    .map(b => b.trim())
-                    .join('\n')
-                    .trim(),
+                body: body.innerText.split('\n\n').join('\n').trim(),
                 upVotes: parseInt(upVotes),
                 images,
                 hasImages: images.length,
