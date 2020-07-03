@@ -236,7 +236,7 @@ class CLICommunity extends CLI {
         this.listList.on('keypress', async (_, { name, full, shift }) => {
             if (this.autoRefreshTimer) {
                 this.autoRefreshTimer = clearTimeout(this.autoRefreshTimer);
-                this.listList.focus();
+                this[full === 'enter' ? 'footerBox' : 'listList'].focus();
             }
 
             if (!this.posts.length) return;

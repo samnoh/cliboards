@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.70] - 2020-07-03
+
+### Fixed
+
+-   `enter` input while auto-refreshing may cause error
+
 ## [1.0.0-beta.68] - 2020-07-03
 
 ### Added
@@ -210,6 +216,7 @@ All notable changes to this project will be documented in this file.
 -   fix auto refresh bug
 -   update [README.md](README.md)
 
+[1.0.0-beta.70]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.70
 [1.0.0-beta.68]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.68
 [1.0.0-beta.67]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.67
 [1.0.0-beta.65]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.65
