@@ -139,7 +139,7 @@ class DVDPrime extends CommunityCrawler {
                 author: author.innerText.trim(),
                 hit: hit.innerText.trim(),
                 time,
-                body: body.innerText.trim(),
+                body: body.innerText.split('\n\n').join('\n').trim(),
                 upVotes: parseInt(upVotes.innerText),
                 images,
                 hasImages: images.length,
