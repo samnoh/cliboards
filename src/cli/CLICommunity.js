@@ -791,6 +791,21 @@ class CLICommunity extends CLI {
 
         if (!comments || !comments.length) return;
 
+        const detailBoxWidth = this.detailBox.width;
+        const commentBoxStyle = {
+            width: '100%-1',
+            parent: this.detailBox,
+            border: {
+                type: 'line',
+                fg: this.colors.comment_border_color,
+            },
+            style: {
+                bg: this.colors.comment_bg,
+                fg: this.colors.comment_bottom_color,
+            },
+            tags: true,
+        };
+
         let prevTop = this.detailBox.getScreenLines().length + 1;
 
         this.commentBoxes = comments.map(
@@ -819,10 +834,8 @@ class CLICommunity extends CLI {
                 }${time}{/}\n`;
 
                 const commentBox = blessed.box({
-                    parent: this.detailBox,
                     top: prevTop,
-                    width: '100%-1',
-                    height: parseInt(body.length / this.detailBox.width) + 5,
+                    height: parseInt(body.length / detailBoxWidth) + 5,
                     content: isRemoved
                         ? body
                         : info +
@@ -830,15 +843,7 @@ class CLICommunity extends CLI {
                               /(GIF_\d+|IMAGE_\d+)/g,
                               '{inverse}$&{/inverse}',
                           ),
-                    border: {
-                        type: 'line',
-                        fg: this.colors.comment_border_color,
-                    },
-                    style: {
-                        bg: this.colors.comment_bg,
-                        fg: this.colors.comment_bottom_color,
-                    },
-                    tags: true,
+                    ...commentBoxStyle,
                 });
 
                 commentBox.padding.left = isReply * 4;
