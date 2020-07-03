@@ -729,7 +729,7 @@ class CLICommunity extends CLI {
 
             if (currPost) {
                 this.post = await this.crawler.getPostDetail(currPost);
-                const { title, upVotes, comments } = this.post;
+                const { title, comments } = this.post;
 
                 currPost.title = title;
                 currPost.numberOfComments = comments.length;

@@ -178,9 +178,9 @@ class Dcinside extends CommunityCrawler {
                 hit: hit.innerText.replace(/[^0-9]/g, ''),
                 time: _time,
                 body: body.innerText
-                    .split('\n')
-                    .map(b => b.trim())
-                    .join('\n')
+                    .split('\n\n')
+                    .map(b => (!b ? '\n' : b))
+                    .join('')
                     .trim(),
                 images,
                 hasImages: images.length,
