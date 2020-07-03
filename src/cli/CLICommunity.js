@@ -708,7 +708,6 @@ class CLICommunity extends CLI {
         await this.getPosts(index, filtreredBoard);
 
         if (prevPosts) {
-            this.screen.debug(prevPosts[0].id, ' - ', this.posts[0].id);
             this.posts = this.posts.map(post => {
                 if (!prevPosts.find(p => p.id === post.id)) {
                     post.isNewPost = true;
@@ -739,14 +738,27 @@ class CLICommunity extends CLI {
 
     async refreshPostDetail(offsetPrec = 0) {
         try {
+            const prevPost = this.post;
             const index = this.currentPostIndex;
+
             await this.getPostDetail(index);
+
+            if (prevPost.id === this.post.id) {
+                this.post.comments = this.post.comments.map(comment => {
+                    if (!prevPost.comments.find(c => c.id === comment.id)) {
+                        comment.isNewComment = true;
+                    }
+                    return comment;
+                });
+            }
+
             this.listList.select(index);
             this.rednerDetailBody();
-            this.detailBox.setScrollPerc(offsetPrec);
         } catch (e) {
         } finally {
             this.detailBox.focus();
+            this.detailBox.setScrollPerc(offsetPrec);
+            this.screen.render();
         }
     }
 
@@ -790,10 +802,13 @@ class CLICommunity extends CLI {
                 time,
                 upVotes,
                 downVotes,
+                isNewComment,
             }) => {
-                const info = `{${
-                    this.colors.comment_top_color
-                }-fg}${author}{|} ${
+                const info = `${
+                    isNewComment
+                        ? `{${this.colors.comment_new_color}-fg}‧{/}`
+                        : ''
+                }{${this.colors.comment_top_color}-fg}${author}{|} ${
                     upVotes
                         ? `{${this.colors.comment_top_color_likes}-fg}${upVotes}{/${this.colors.comment_top_color_likes}-fg}‧`
                         : ''

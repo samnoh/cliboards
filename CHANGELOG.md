@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.68] - 2020-07-03
+
+### Added
+
+-   new comments indicator
+-   new color option
+    -   comment_new_color (green)
+
 ## [1.0.0-beta.67] - 2020-07-02
 
 ### Added
@@ -30,8 +38,8 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
--   `Shift + S` to go back to prev sort filter in post list
--   `Shift + r` to refresh and then scroll to the bottom in post detail page
+-   `shift + s` to go back to prev sort filter in post list
+-   `shift + r` to refresh and then scroll to the bottom in post detail page
 -   automatically close exsiting image viewer once it opens new image viewer
 
 ### Fixed
@@ -202,6 +210,7 @@ All notable changes to this project will be documented in this file.
 -   fix auto refresh bug
 -   update [README.md](README.md)
 
+[1.0.0-beta.68]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.68
 [1.0.0-beta.67]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.67
 [1.0.0-beta.65]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.65
 [1.0.0-beta.64]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.64

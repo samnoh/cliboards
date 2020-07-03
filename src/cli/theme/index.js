@@ -26,6 +26,7 @@ module.exports = {
     comment_bottom_color: 'inverse',
     comment_top_color_likes: 'green',
     comment_top_color_dislikes: 'red',
+    comment_new_color: 'green',
     text_input_bg: '',
     text_input_color: 'inverse',
     text_input_success_bg: 'green',

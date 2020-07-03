@@ -180,7 +180,7 @@ class Ppomppu extends CommunityCrawler {
 
         this.postsRead.add(this.title + id); // set post that you read
 
-        return await this.page.evaluate(() => {
+        const postDetail = await this.page.evaluate(() => {
             const h4 = document.querySelector('h4');
             const listComment = h4.querySelector('.list_comment');
 
@@ -345,6 +345,7 @@ class Ppomppu extends CommunityCrawler {
                             !isHot && {
                                 isReply,
                                 isRemoved: false,
+                                id: author.innerText + time.innerText,
                                 author: author.innerText.trim(),
                                 time: time.innerText.match(
                                     /[0-9]{2}:[0-9]{2}/,
@@ -360,6 +361,8 @@ class Ppomppu extends CommunityCrawler {
                     .filter(comment => comment),
             };
         });
+
+        return { ...postDetail, id };
     }
 
     static toString() {

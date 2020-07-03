@@ -198,7 +198,7 @@ class Clien extends CommunityCrawler {
             ? await this.getAllComments()
             : await this.page.evaluate(this.processComments);
 
-        return postDetail;
+        return { ...postDetail, id };
     }
 
     processComments() {
@@ -236,7 +236,7 @@ class Clien extends CommunityCrawler {
                 }
             }
 
-            return {
+            const output = {
                 isReply,
                 isRemoved,
                 author:
@@ -249,6 +249,10 @@ class Clien extends CommunityCrawler {
                         : body.innerText,
                 upVotes: parseInt(upVotes.innerText.trim()),
             };
+
+            output.id = output.author + output.time;
+
+            return output;
         });
     }
 

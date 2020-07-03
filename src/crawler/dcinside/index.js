@@ -119,7 +119,7 @@ class Dcinside extends CommunityCrawler {
 
         this.postsRead.add(this.title + id); // set post that you read
 
-        return await this.page.evaluate(() => {
+        const postDetail = await this.page.evaluate(() => {
             const _title = document.querySelector('.gallview-tit-box .tit');
             const author = document.querySelector(
                 '.btm .ginfo2 li:nth-child(1)',
@@ -202,17 +202,23 @@ class Dcinside extends CommunityCrawler {
                             image.textContent = `IMAGE_${index + 1} `;
                         });
 
-                        return {
+                        const output = {
                             isReply: !!isReply,
                             isRemoved: false,
                             author: author.innerText,
                             time: time.innerText.match(/[0-9]{2}:[0-9]{2}/)[0],
                             body: body.textContent.trim(),
                         };
+
+                        output.id = output.author + output.time;
+
+                        return output;
                     })
                     .filter(comment => comment),
             };
         });
+
+        return { ...postDetail, id };
     }
 
     async addBoard(link, type) {

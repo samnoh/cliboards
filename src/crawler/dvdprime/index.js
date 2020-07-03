@@ -90,7 +90,7 @@ class DVDPrime extends CommunityCrawler {
 
         this.postsRead.add(this.title + id); // set post that you read
 
-        return await this.page.evaluate(() => {
+        const postDetail = await this.page.evaluate(() => {
             const title = document.querySelector('#writeSubject');
             const author = document.querySelector('#view_nickname');
             const hit = document.querySelector('#view_hit');
@@ -177,7 +177,7 @@ class DVDPrime extends CommunityCrawler {
                         }
                     });
 
-                    return {
+                    const output = {
                         isReply,
                         isRemoved: false,
                         author: author.innerText,
@@ -185,9 +185,15 @@ class DVDPrime extends CommunityCrawler {
                         body: body.innerText.trim(),
                         upVotes: parseInt(upVotes.innerText),
                     };
+
+                    output.id = output.author + output.time;
+
+                    return output;
                 }),
             };
         });
+
+        return { ...postDetail, id };
     }
 
     static toString() {

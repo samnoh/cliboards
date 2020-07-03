@@ -173,7 +173,7 @@ class Ruliweb extends CommunityCrawler {
             postDetail.comments = [...postDetail.comments, ...newComments];
         }
 
-        return postDetail;
+        return { ...postDetail, id };
     }
 
     processComments() {
@@ -200,6 +200,7 @@ class Ruliweb extends CommunityCrawler {
                 : {
                       isReply,
                       isRemoved,
+                      id: author.innerText + time.innerText,
                       author: author.innerText,
                       time: time.innerText.split(' ')[1],
                       body: body.innerText.trim(),

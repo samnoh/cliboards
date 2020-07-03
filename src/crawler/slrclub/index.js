@@ -151,17 +151,17 @@ class SLRClub extends CommunityCrawler {
             );
         }
 
-        return postDetail;
+        return { ...postDetail, id };
     }
 
-    async getComments(data) {
+    async getComments({ bbsid, tos, cmrno, splno }) {
         const form = new FormData();
 
-        form.append('id', data.bbsid);
-        form.append('tos', data.tos);
-        form.append('no', data.cmrno);
+        form.append('id', bbsid);
+        form.append('tos', tos);
+        form.append('no', cmrno);
         form.append('sno', '1');
-        form.append('spl', data.splno);
+        form.append('spl', splno);
 
         try {
             const response = await axios({
@@ -175,16 +175,17 @@ class SLRClub extends CommunityCrawler {
                 throw new Error();
             }
 
-            return response.data.c.map(comment => ({
-                isRemoved: !!comment.del,
-                isReply: !!comment.th,
-                author: comment.name,
-                body: comment.memo
+            return response.data.c.map(({ del, th, name, memo, dt, vt }) => ({
+                id: name + dt,
+                isRemoved: !!del,
+                isReply: !!th,
+                author: name,
+                body: memo
                     .trim()
                     .replace(/<br \/>/g, '\n')
                     .replace(/<[^>]*>/g, 'IMAGE_1'),
-                time: comment.dt,
-                upVotes: comment.vt,
+                time: dt,
+                upVotes: vt,
             }));
         } catch (e) {
             return [];
