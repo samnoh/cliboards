@@ -148,27 +148,25 @@ class Clien extends CommunityCrawler {
                     'img, .fr-video, iframe[src^="https://www.youtube.com/embed"]',
                 ),
             ).map((item, index) => {
-                let value, type;
+                let value, type, name;
 
                 if (item.classList.contains('fr-video')) {
                     type = 'mp4';
                     value = item.querySelector('source').getAttribute('src');
-                    item.textContent = `GIF_${index + 1}`;
+                    name = `GIF_${index + 1}`;
                 } else if (item.tagName === 'IFRAME') {
                     type = 'youtube';
                     value = item.src;
-                    item.textContent = `YOUTUBE_${index + 1}`;
+                    name = `YOUTUBE_${index + 1}`;
                 } else {
                     type = 'image';
                     value = item.getAttribute('src');
-                    item.textContent = `IMAGE_${index + 1}`;
+                    name = `IMAGE_${index + 1}`;
                 }
 
-                return {
-                    type,
-                    value,
-                    name: item.textContent,
-                };
+                item.parentNode.innerText = name;
+
+                return { type, value, name };
             });
 
             return {
@@ -180,10 +178,10 @@ class Clien extends CommunityCrawler {
                     author.querySelector('img').getAttribute('alt'),
                 hit: hit.innerText.trim(),
                 time: time.innerText.trim().split(' ')[1],
-                body: body.textContent
-                    .split('\n')
-                    .map(b => b.trim())
-                    .join('\n')
+                body: body.innerText
+                    .split('\n\n')
+                    .filter(a => a.trim())
+                    .join('\n\n')
                     .trim(),
                 upVotes: parseInt(upVotes.innerText),
                 images,
