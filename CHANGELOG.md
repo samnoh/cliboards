@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 -   recommended posts in `dcinside`
+-   auto close option in image viewer
 
 ## [1.0.0-beta.71] - 2020-07-03
 
