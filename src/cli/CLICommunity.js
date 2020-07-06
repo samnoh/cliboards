@@ -747,7 +747,9 @@ class CLICommunity extends CLI {
 
             await this.getPostDetail(index);
 
-            if (prevPost.id === this.post.id) {
+            const isSamePost = prevPost.id === this.post.id;
+
+            if (isSamePost) {
                 this.post.comments = this.post.comments.map(comment => {
                     if (!prevPost.comments.find(c => c.id === comment.id)) {
                         comment.isNewComment = true;
@@ -757,7 +759,7 @@ class CLICommunity extends CLI {
             }
 
             this.listList.select(index);
-            this.rednerDetailBody();
+            this.rednerDetailBody(isSamePost);
         } catch (e) {
         } finally {
             this.detailBox.focus();
