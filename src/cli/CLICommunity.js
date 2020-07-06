@@ -233,7 +233,7 @@ class CLICommunity extends CLI {
             }
         });
 
-        this.listList.on('keypress', async (_, { name, full, shift }) => {
+        this.listList.on('keypress', async (_, { name, full, shift, ctrl }) => {
             if (this.autoRefreshTimer) {
                 this.autoRefreshTimer = clearTimeout(this.autoRefreshTimer);
                 this[full === 'enter' ? 'footerBox' : 'listList'].focus();
@@ -267,17 +267,22 @@ class CLICommunity extends CLI {
                     return;
 
                 const sortUrlsLength = this.crawler.sortUrls.length;
-                let index;
 
-                if (shift) {
-                    index = this.crawler.sortListIndex
-                        ? this.crawler.sortListIndex - 1
-                        : sortUrlsLength - 1;
+                if (ctrl && this.crawler.filterOptions) {
+                    this.crawler.toggleFilterMode();
                 } else {
-                    index = (this.crawler.sortListIndex + 1) % sortUrlsLength;
-                }
+                    let index;
 
-                this.crawler.changeSortUrl(index);
+                    if (shift) {
+                        index = this.crawler.sortListIndex
+                            ? this.crawler.sortListIndex - 1
+                            : sortUrlsLength - 1;
+                    } else {
+                        index =
+                            (this.crawler.sortListIndex + 1) % sortUrlsLength;
+                    }
+                    this.crawler.changeSortUrl(index);
+                }
             } else if (full === 'w') {
                 if (
                     !this.crawler.searchTypes ||
@@ -582,6 +587,10 @@ class CLICommunity extends CLI {
                         ? ''
                         : this.crawler.pageNumber + ' 페이지'
                 }${
+                    this.crawler.filterOptions
+                        ? '‧' + this.crawler.currFilterOption.name
+                        : ''
+                }${
                     this.crawler.sortUrl && !this.crawler.currentBoard.noSortUrl
                         ? '‧' + this.crawler.sortUrl.name
                         : ''
@@ -596,6 +605,8 @@ class CLICommunity extends CLI {
                           this.crawler.searchTypes ? 'w: search, ' : ''
                       }r: refresh, a: auto refresh, ${
                           this.crawler.sortUrl ? 's: sort, ' : ''
+                      }${
+                          this.crawler.filterOptions ? 'C-s: filter, ' : ''
                       }left/right arrow: prev/next page`,
             );
         });

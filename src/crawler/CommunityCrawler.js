@@ -168,6 +168,26 @@ class CommunityCrawler extends Crawler {
         configstore.delete(this.title);
     }
 
+    get currFilterOption() {
+        return this.filterOptions.filters[this.filterOptions.activeFilterIndex];
+    }
+
+    toggleFilterMode(isBackward = false) {
+        let index;
+
+        if (isBackward) {
+            index = this.filterOptions.activeFilterIndex
+                ? this.filterOptions.activeFilterIndex - 1
+                : this.filterOptions.filters.length - 1;
+        } else {
+            index =
+                (this.filterOptions.activeFilterIndex + 1) %
+                this.filterOptions.filters.length;
+        }
+
+        this.filterOptions.activeFilterIndex = index;
+    }
+
     async downloadImages(images) {
         clearFolder(tempFolderPath);
 

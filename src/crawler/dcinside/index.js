@@ -10,7 +10,9 @@ const {
     ignoreBoards,
     boards,
     search,
+    filterOptions,
 } = require('./constants');
+const { doc } = require('prettier');
 
 class Dcinside extends CommunityCrawler {
     constructor() {
@@ -22,6 +24,7 @@ class Dcinside extends CommunityCrawler {
         this.getSearchParams = search.getSearchParams;
         this.searchTypes = search.types;
         this.imageXhrRequired = true;
+        this.filterOptions = filterOptions;
     }
 
     getBoards() {
@@ -34,12 +37,15 @@ class Dcinside extends CommunityCrawler {
 
     async getPosts() {
         const _sortUrl = this.sortUrl ? this.sortUrl.value : '';
+        const { value: boardValue } = this.currentBoard;
+        const { value: filterValue } = this.currFilterOption;
+        const { value: searchValue } = this.searchParams;
 
         await this.page.goto(
-            getUrl(this.currentBoard.value) +
+            getUrl(boardValue, filterValue) +
                 this.pageNumber +
                 _sortUrl +
-                this.searchParams.value,
+                searchValue,
         );
 
         await this.getSortUrls(() => {

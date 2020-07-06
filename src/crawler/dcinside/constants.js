@@ -7,7 +7,7 @@ const boardTypes = ['1 페이지', '2 페이지', '3 페이지'];
 module.exports = {
     ...defaultConstants,
     baseUrl,
-    getUrl: board => `${baseUrl}/board/${board}?page=`,
+    getUrl: (board, filter) => `${baseUrl}/board/${board}?${filter}}&page=`,
     boardTypes,
     boards: [
         {
@@ -53,6 +53,19 @@ module.exports = {
             {
                 name: '제목+내용',
                 value: 'subject_m',
+            },
+        ],
+    },
+    filterOptions: {
+        activeFilterIndex: 0,
+        filters: [
+            {
+                name: '전체',
+                value: '',
+            },
+            {
+                name: '개념글',
+                value: 'recommend=1',
             },
         ],
     },
