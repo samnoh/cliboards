@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.74] - 2020-07-06
+
+### Added
+
+-   recommended posts in `dcinside`
+
 ## [1.0.0-beta.71] - 2020-07-03
 
 ### Fixed
@@ -222,6 +228,7 @@ All notable changes to this project will be documented in this file.
 -   fix auto refresh bug
 -   update [README.md](README.md)
 
+[1.0.0-beta.74]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.74
 [1.0.0-beta.71]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.71
 [1.0.0-beta.70]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.70
 [1.0.0-beta.68]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.68
