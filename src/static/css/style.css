@@ -43,6 +43,17 @@ img {
     border-bottom-right-radius: 0;
     cursor: zoom-in;
 }
+.options {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: #f1f1f0;
+}
+.options label,
+.options input[type='checkbox'] {
+    cursor: pointer;
+    user-select: none;
+}
 .github {
     position: absolute;
     border: 0;

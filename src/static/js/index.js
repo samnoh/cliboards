@@ -158,13 +158,3 @@
         box.addEventListener('click', openPopupImage);
     });
 })();
-
-document.addEventListener(
-    'visibilitychange',
-    function () {
-        if (document.hidden || document.webkitHidden || document.msHidden) {
-            window.close();
-        }
-    },
-    false,
-);

@@ -43,6 +43,9 @@ const renderHtml = ({
         <div class="github"></div>
     </a>
     <div id="content">
+        <div class="options">
+            <input type="checkbox" id="auto-close" checked><label for="auto-close"> 자동 창닫기</label>
+        </div>
         <h1>
             <a href="${link}" target="_blank">${title} (${comments.length})</a>
             <span class="author">${author}</span>
@@ -62,6 +65,7 @@ const renderHtml = ({
             .join('\n')}
     </div>
     <script src="${staticPath}js/index.js"></script>
+    <script src="${staticPath}js/autoClose.js"></script>
 </body>
 </html>`;
 };
