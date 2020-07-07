@@ -12,7 +12,6 @@ const {
     search,
     filterOptions,
 } = require('./constants');
-const { doc } = require('prettier');
 
 class Dcinside extends CommunityCrawler {
     constructor() {
