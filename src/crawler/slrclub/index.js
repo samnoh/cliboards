@@ -1,6 +1,3 @@
-const axios = require('axios');
-const FormData = require('form-data');
-
 const CommunityCrawler = require('../CommunityCrawler');
 const {
     baseUrl,
@@ -155,27 +152,27 @@ class SLRClub extends CommunityCrawler {
     }
 
     async getComments({ bbsid, tos, cmrno, splno }) {
-        const form = new FormData();
-
-        form.append('id', bbsid);
-        form.append('tos', tos);
-        form.append('no', cmrno);
-        form.append('sno', '1');
-        form.append('spl', splno);
-
         try {
-            const response = await axios({
-                method: 'post',
-                url: commentsUrl,
-                data: form,
-                headers: { Referer: this.currentBaseUrl, ...form.getHeaders() },
-            });
+            const comments = await this.page.evaluate(
+                ({ bbsid, tos, cmrno, splno }, commentsUrl) => {
+                    const form = new FormData();
 
-            if (!response.data.c) {
-                throw new Error();
-            }
+                    form.append('id', bbsid);
+                    form.append('tos', tos);
+                    form.append('no', cmrno);
+                    form.append('sno', '1');
+                    form.append('spl', splno);
 
-            return response.data.c.map(({ del, th, name, memo, dt, vt }) => ({
+                    return fetch(commentsUrl, {
+                        method: 'post',
+                        body: form,
+                    }).then(data => data.json());
+                },
+                { bbsid, tos, cmrno, splno },
+                commentsUrl,
+            );
+
+            return comments.c.map(({ del, th, name, memo, dt, vt }) => ({
                 id: name + dt,
                 isRemoved: !!del,
                 isReply: !!th,

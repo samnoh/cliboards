@@ -26,7 +26,6 @@
         "axios": "0.19.2",
         "blessed": "0.1.81",
         "configstore": "5.0.1",
-        "form-data": "3.0.0",
         "minimist": "1.2.5",
         "open": "7.0.4",
         "puppeteer": "3.3.0",

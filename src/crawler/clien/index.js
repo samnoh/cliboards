@@ -1,5 +1,3 @@
-const axios = require('axios');
-
 const CommunityCrawler = require('../CommunityCrawler');
 const {
     baseUrl,
@@ -257,13 +255,14 @@ class Clien extends CommunityCrawler {
     async getAllComments() {
         try {
             const baseLink = this.currentBaseUrl;
-            const params = {
-                order: 'data',
-                po: 0,
-                ps: 999999,
-            };
 
-            const { data } = await axios.get(`${baseLink}/comment`, { params });
+            const data = await this.page.evaluate(baseLink => {
+                return fetch(`${baseLink}/comment?order=date&po=0&ps=999999`, {
+                    headers: {
+                        Host: 'www.clien.net',
+                    },
+                }).then(data => data.text());
+            }, baseLink);
 
             await this.page.setContent(data);
 
@@ -271,6 +270,7 @@ class Clien extends CommunityCrawler {
 
             return comments;
         } catch (e) {
+            console.log(e);
             return [];
         }
     }
