@@ -186,19 +186,6 @@ class SLRClub extends CommunityCrawler {
                 formData,
                 commentsUrl,
             );
-
-            return comments.c.map(({ del, th, name, memo, dt, vt }) => ({
-                id: name + dt,
-                isRemoved: !!del,
-                isReply: !!th,
-                author: name,
-                body: memo
-                    .trim()
-                    .replace(/<br \/>/g, '\n')
-                    .replace(/<[^>]*>/g, 'IMAGE_1'),
-                time: dt,
-                upVotes: vt,
-            }));
         } catch (e) {
             return [];
         }
