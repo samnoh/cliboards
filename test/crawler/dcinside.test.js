@@ -102,8 +102,6 @@ describe('Dcinside class methods', () => {
         await dcinside.addBoard('dog', dcinside.boardTypes[1]);
         await dcinside.getBoards();
 
-        console.log(dcinside.boards);
-
         expect(
             dcinside.boards.filter(b => b.type === dcinside.boardTypes[0])
                 .length,
