@@ -104,7 +104,7 @@ class Ppomppu extends CommunityCrawler {
 
                             return (
                                 author &&
-                                author.innerText && {
+                                author.innerText.trim() && {
                                     id: link.match(/&no=(\d*)/)[1],
                                     category,
                                     title: title.innerText.trim(),
