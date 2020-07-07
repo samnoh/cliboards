@@ -151,9 +151,9 @@ class SLRClub extends CommunityCrawler {
         return { ...postDetail, id };
     }
 
-    async getComments({ bbsid, tos, cmrno, splno }) {
+    async getComments(formData) {
         try {
-            const comments = await this.page.evaluate(
+            return await this.page.evaluate(
                 ({ bbsid, tos, cmrno, splno }, commentsUrl) => {
                     const form = new FormData();
 
@@ -166,9 +166,24 @@ class SLRClub extends CommunityCrawler {
                     return fetch(commentsUrl, {
                         method: 'post',
                         body: form,
-                    }).then(data => data.json());
+                    })
+                        .then(data => data.json())
+                        .then(({ c }) =>
+                            c.map(({ del, th, name, memo, dt, vt }) => ({
+                                id: name + dt,
+                                isRemoved: !!del,
+                                isReply: !!th,
+                                author: name,
+                                body: memo
+                                    .trim()
+                                    .replace(/<br \/>/g, '\n')
+                                    .replace(/<[^>]*>/g, 'IMAGE_1'),
+                                time: dt,
+                                upVotes: vt,
+                            })),
+                        );
                 },
-                { bbsid, tos, cmrno, splno },
+                formData,
                 commentsUrl,
             );
 
