@@ -141,7 +141,9 @@ class CLI {
 
     setFooterContent(footerText) {
         this.footerBox.setContent(
-            `q: ${this.currentWidgetIndex ? 'back' : 'quit'}, ${footerText}`,
+            `q: ${this.currentWidgetIndex ? 'back' : 'quit'}${
+                footerText ? ', ' + footerText : ''
+            }`,
         );
         this.screen.render();
     }
