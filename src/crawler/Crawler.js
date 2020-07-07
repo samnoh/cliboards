@@ -36,7 +36,9 @@ class Crawler {
 
             this.page.on('request', request => {
                 if (
-                    this.ignoreRequests.indexOf(request.resourceType()) !== -1
+                    this.ignoreRequests.indexOf(request.resourceType()) !==
+                        -1 ||
+                    !request.url().startsWith(this.baseUrl)
                 ) {
                     request.abort();
                 } else {
