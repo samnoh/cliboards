@@ -6,3 +6,4 @@ CODE_OF_CONDUCT.md
 *.txt
 *.json
 test/
+jest.config.js

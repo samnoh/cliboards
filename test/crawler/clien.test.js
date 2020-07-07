@@ -1,4 +1,4 @@
-const Clien = require('../src/crawler/clien/');
+const Clien = require('../../src/crawler/clien');
 
 let clien;
 
