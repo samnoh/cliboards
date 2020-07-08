@@ -15,6 +15,10 @@ afterAll(async () => {
 
 describe('Dcinside', () => {
     describe('properties', () => {
+        test('baseUrl', () => {
+            expect(dcinside.baseUrl).toEqual('https://m.dcinside.com');
+        });
+
         test('title', () => {
             expect(dcinside.title).toEqual('dcinside');
         });

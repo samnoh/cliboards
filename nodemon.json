@@ -1,5 +1,5 @@
 {
-    "ignore": [".git", "*.json", "node_modules", ".temp", "src/static"],
+    "ignore": [".git", "*.json", "node_modules", ".temp", "src/static", "test"],
     "env": {
         "NODE_ENV": "development"
     }
