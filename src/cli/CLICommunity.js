@@ -314,6 +314,8 @@ class CLICommunity extends CLI {
                                     keyword,
                                 };
 
+                                this.screen.debug(value);
+
                                 await this.refreshPosts();
 
                                 if (this.posts.length === 0) {

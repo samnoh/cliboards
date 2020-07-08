@@ -1,4 +1,11 @@
 const Dvdprime = require('../../src/crawler/dvdprime/');
+const {
+    baseUrl,
+    boardTypes,
+    boards,
+    search: { types: searchTypes, getSearchParams },
+} = require('../../src/crawler/dvdprime/constants');
+const { checkResponseStatus } = require('../helpers/page');
 
 let dvdprime;
 
@@ -15,7 +22,7 @@ afterAll(async () => {
 describe('DVDPrime', () => {
     describe('properties', () => {
         test('baseUrl', () => {
-            expect(dvdprime.baseUrl).toEqual('https://dvdprime.com');
+            expect(dvdprime.baseUrl).toEqual(baseUrl);
         });
 
         test('title', () => {
@@ -23,44 +30,11 @@ describe('DVDPrime', () => {
         });
 
         test('boardTypes', () => {
-            expect(dvdprime.boardTypes).toEqual([
-                '영화‧드라마‧음악',
-                '홈시어터',
-                '커뮤니티',
-            ]);
+            expect(dvdprime.boardTypes).toEqual(boardTypes);
         });
 
         test('searchTypes', () => {
-            expect(dvdprime.searchTypes).toEqual([
-                {
-                    name: '제목',
-                    value: 'wr_subject',
-                },
-                {
-                    name: '제목+내용',
-                    value: 'wr_subject%7C%7Cwr_content',
-                },
-                {
-                    name: '내용',
-                    value: 'wr_content',
-                },
-                {
-                    name: '닉네임(본문)',
-                    value: 'wr_name',
-                },
-                {
-                    name: '닉네임(코멘트)',
-                    value: 'wr_name%2C0',
-                },
-                {
-                    name: '아이디(본문)',
-                    value: 'mb_id%2C1',
-                },
-                {
-                    name: '아이디(코멘트)',
-                    value: 'mb_id%2C0',
-                },
-            ]);
+            expect(dvdprime.searchTypes).toEqual(searchTypes);
         });
     });
 
@@ -70,7 +44,7 @@ describe('DVDPrime', () => {
         test('getBoards()', async () => {
             await dvdprime.getBoards();
 
-            expect(dvdprime.boards.length).toEqual(10);
+            expect(dvdprime.boards).toEqual(boards);
         });
 
         test('getPosts()', async () => {
@@ -89,6 +63,26 @@ describe('DVDPrime', () => {
             expect(post.time).toBeTruthy();
             expect(post.upVotes).not.toBeUndefined();
             expect(Array.isArray(post.comments)).toBeTruthy();
+        });
+
+        test('setSearchParams()', async () => {
+            const { name, value } = dvdprime.searchTypes[0];
+            const keyword = '영화';
+
+            dvdprime.page.on('response', checkResponseStatus(200));
+            dvdprime.setSearchParams = { type: name, keyword, value };
+            posts = await dvdprime.changeBoard(dvdprime.boards[0]);
+
+            expect(posts.length).not.toBe(0);
+            expect(dvdprime.searchParams).toEqual({
+                type: name,
+                keyword,
+                value: getSearchParams(value, keyword),
+            });
+
+            // clean up
+            dvdprime.searchParams = {};
+            dvdprime.page.removeListener('response', checkResponseStatus(200));
         });
     });
 });

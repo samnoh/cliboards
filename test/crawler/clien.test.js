@@ -1,9 +1,15 @@
 const Clien = require('../../src/crawler/clien');
+const {
+    baseUrl,
+    boardTypes,
+    sortUrls,
+} = require('../../src/crawler/clien/constants');
 
 let clien;
 
 beforeAll(async () => {
     clien = new Clien();
+    clien.resetBoards();
     await clien.start();
 });
 
@@ -13,33 +19,20 @@ afterAll(async () => {
 
 describe('Clien', () => {
     describe('properties', () => {
+        test('baseUrl', () => {
+            expect(clien.baseUrl).toEqual(baseUrl);
+        });
+
         test('title', () => {
             expect(clien.title).toEqual('Clien');
         });
 
         test('boardTypes', () => {
-            expect(clien.boardTypes).toEqual(['커뮤니티', '소모임']);
+            expect(clien.boardTypes).toEqual(boardTypes);
         });
 
         test('sortUrls', () => {
-            expect(clien.sortUrls).toEqual([
-                {
-                    name: '등록일순',
-                    value: '&od=T31',
-                },
-                {
-                    name: '공감순',
-                    value: '&od=T33',
-                },
-                {
-                    name: '댓글순',
-                    value: '&od=T34',
-                },
-            ]);
-        });
-
-        test('baseUrl', () => {
-            expect(clien.baseUrl).toEqual('https://www.clien.net');
+            expect(clien.sortUrls).toEqual(sortUrls);
         });
     });
 

@@ -1,4 +1,12 @@
 const Dcinside = require('../../src/crawler/dcinside');
+const {
+    baseUrl,
+    boardTypes,
+    boards,
+    filterOptions,
+    search: { types: searchTypes, getSearchParams },
+} = require('../../src/crawler/dcinside/constants');
+const { checkResponseStatus } = require('../helpers/page');
 
 let dcinside;
 
@@ -16,7 +24,7 @@ afterAll(async () => {
 describe('Dcinside', () => {
     describe('properties', () => {
         test('baseUrl', () => {
-            expect(dcinside.baseUrl).toEqual('https://m.dcinside.com');
+            expect(dcinside.baseUrl).toEqual(baseUrl);
         });
 
         test('title', () => {
@@ -24,52 +32,15 @@ describe('Dcinside', () => {
         });
 
         test('boardTypes', () => {
-            expect(dcinside.boardTypes).toEqual([
-                '1 페이지',
-                '2 페이지',
-                '3 페이지',
-            ]);
+            expect(dcinside.boardTypes).toEqual(boardTypes);
         });
 
         test('searchTypes', () => {
-            expect(dcinside.searchTypes).toEqual([
-                {
-                    name: '전체',
-                    value: 'all',
-                },
-                {
-                    name: '제목',
-                    value: 'subject',
-                },
-                {
-                    name: '내용',
-                    value: 'memo',
-                },
-                {
-                    name: '글쓴이',
-                    value: 'name',
-                },
-                {
-                    name: '제목+내용',
-                    value: 'subject_m',
-                },
-            ]);
+            expect(dcinside.searchTypes).toEqual(searchTypes);
         });
 
         test('filterOptions', () => {
-            expect(dcinside.filterOptions).toEqual({
-                activeFilterIndex: 0,
-                filters: [
-                    {
-                        name: '전체',
-                        value: '',
-                    },
-                    {
-                        name: '개념글',
-                        value: 'recommend=1',
-                    },
-                ],
-            });
+            expect(dcinside.filterOptions).toEqual(filterOptions);
         });
     });
 
@@ -79,9 +50,8 @@ describe('Dcinside', () => {
         test('getBoards()', async () => {
             await dcinside.getBoards();
             expect(
-                dcinside.boards.filter(b => b.type === dcinside.boardTypes[0])
-                    .length,
-            ).toEqual(4);
+                dcinside.boards.filter(b => b.type === dcinside.boardTypes[0]),
+            ).toEqual(boards);
         });
 
         test('getPosts()', async () => {
@@ -150,6 +120,26 @@ describe('Dcinside', () => {
             } catch (e) {
                 expect(e.message).toEqual('Error: Response status is 403');
             }
+        });
+
+        test('setSearchParams()', async () => {
+            const { name, value } = dcinside.searchTypes[0];
+            const keyword = 'ㅋ';
+
+            dcinside.page.on('response', checkResponseStatus(200));
+            dcinside.setSearchParams = { type: name, keyword, value };
+            posts = await dcinside.changeBoard(dcinside.boards[0]);
+
+            expect(posts.length).not.toBe(0);
+            expect(dcinside.searchParams).toEqual({
+                type: name,
+                keyword,
+                value: getSearchParams(value, keyword),
+            });
+
+            // clean up
+            dcinside.searchParams = {};
+            dcinside.page.removeListener('response', checkResponseStatus(200));
         });
     });
 });
