@@ -239,7 +239,7 @@ class Dcinside extends CommunityCrawler {
 
             await super.addBoard(getUrl(value), value, type, getNameCallback);
         } catch (e) {
-            throw new Error(e.message);
+            throw new Error(e);
         }
     }
 

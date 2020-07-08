@@ -140,9 +140,7 @@ class CLICommunity extends CLI {
                             );
                         } catch (e) {
                             this.textBox.emit('failure');
-                            this.setTitleFooterContent(
-                                '잘못된 입력입니다: ' + e.message,
-                            );
+                            this.setTitleFooterContent(e.message);
                         }
                     });
                 case 's':

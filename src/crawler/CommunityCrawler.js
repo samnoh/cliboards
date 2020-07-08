@@ -94,32 +94,29 @@ class CommunityCrawler extends Crawler {
     }
 
     async addBoard(link, value, type, callback) {
-        try {
-            if (link.includes('javascript:')) {
-                throw new Error('Invalid input');
-            }
+        if (link.includes('javascript:')) {
+            throw new Error(`Invalid input - ${value}`);
+        }
 
-            const response = await this.page.goto(link);
+        const response = await this.page.goto(link);
+        const status = response.status();
 
-            if (response.status() >= 300) {
-                throw new Error(`Response status is ${response.status()}`);
-            }
+        if (status >= 300) {
+            throw new Error(`Response status is ${status}`);
+        }
 
-            const name = await this.page.evaluate(callback);
-            const isDuplicate = this.boards.filter(
-                board => board.value === value,
-            ).length;
+        const name = await this.page.evaluate(callback);
+        const exBoard = this.boards.find(b => b.value === value);
 
-            if (!isDuplicate || !name) {
-                configstore.set(this.title, [
-                    ...this.boards,
-                    { name, value, type },
-                ]);
-            } else {
-                throw new Error('Duplicated input');
-            }
-        } catch (e) {
-            throw new Error(e.message);
+        if (!exBoard || !name) {
+            configstore.set(this.title, [
+                ...this.boards,
+                { name, value, type },
+            ]);
+        } else {
+            throw new Error(
+                `Duplicated input - ${exBoard.name} on ${exBoard.type}`,
+            );
         }
     }
 

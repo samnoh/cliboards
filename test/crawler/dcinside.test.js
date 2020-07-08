@@ -97,7 +97,7 @@ describe('Dcinside', () => {
             expect(Array.isArray(post.comments)).toBeTruthy();
         });
 
-        test('addBoard()', async () => {
+        test('addBoard() - handle board id', async () => {
             await dcinside.addBoard('cat', dcinside.boardTypes[0]);
             await dcinside.getBoards();
             await dcinside.addBoard('dog', dcinside.boardTypes[1]);
@@ -111,6 +111,41 @@ describe('Dcinside', () => {
                 dcinside.boards.filter(b => b.type === dcinside.boardTypes[1])
                     .length,
             ).toEqual(1);
+        });
+
+        test('addBoard() - handle url', async () => {
+            await dcinside.addBoard(
+                'https://gall.dcinside.com/mgallery/board/lists/?id=game_nintendo',
+                dcinside.boardTypes[2],
+            );
+            await dcinside.getBoards();
+
+            const newBoard = dcinside.boards[dcinside.boards.length - 1];
+            expect(newBoard.name).toEqual('닌텐도');
+            expect(newBoard.value).toEqual('game_nintendo');
+            expect(newBoard.type).toEqual(dcinside.boardTypes[2]);
+        });
+
+        test('addBoard() - handle mobile url', async () => {
+            await dcinside.addBoard(
+                'https://m.dcinside.com/board/aoegame',
+                dcinside.boardTypes[2],
+            );
+            await dcinside.getBoards();
+
+            const newBoard = dcinside.boards[dcinside.boards.length - 1];
+            expect(newBoard.name).toEqual('중세게임');
+            expect(newBoard.value).toEqual('aoegame');
+            expect(newBoard.type).toEqual(dcinside.boardTypes[2]);
+        });
+
+        test('addBoard() - handle error', async () => {
+            try {
+                await dcinside.addBoard('test', dcinside.boardTypes[0]);
+                expect(false).toBeTruthy(); // always fail
+            } catch (e) {
+                expect(e.message).toEqual('Error: Response status is 403');
+            }
         });
     });
 });
