@@ -44,7 +44,7 @@ class Dcinside extends CommunityCrawler {
             getUrl(boardValue, filterValue) +
                 this.pageNumber +
                 _sortUrl +
-                searchValue,
+                (searchValue || ''),
         );
 
         await this.getSortUrls(() => {
@@ -53,7 +53,7 @@ class Dcinside extends CommunityCrawler {
             return Array.from(sortsEl).map(sort => {
                 const value =
                     '&headid=' +
-                    sort.getAttribute('href').replace(/[^0-9]/g, '');
+                    (sort.getAttribute('href').replace(/[^0-9]/g, '') || '');
                 const name = sort.innerText;
 
                 return { value, name };
@@ -69,8 +69,7 @@ class Dcinside extends CommunityCrawler {
                 .map(list => {
                     const link = list
                         .querySelector('a.lt')
-                        .getAttribute('href')
-                        .replace('undefined', '');
+                        .getAttribute('href');
                     const title = list.querySelector('.detail-txt');
                     const infoEl = list.querySelectorAll('.ginfo li');
 

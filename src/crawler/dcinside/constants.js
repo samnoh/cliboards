@@ -7,7 +7,7 @@ const boardTypes = ['1 페이지', '2 페이지', '3 페이지'];
 module.exports = {
     ...defaultConstants,
     baseUrl,
-    getUrl: (board, filter) => `${baseUrl}/board/${board}?${filter}}&page=`,
+    getUrl: (board, filter) => `${baseUrl}/board/${board}?${filter}&page=`,
     boardTypes,
     boards: [
         {
