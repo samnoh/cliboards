@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.75] - 2020-07-09
+
+### Fixed
+
+-   `dcinside` url
+
 ## [1.0.0-beta.74] - 2020-07-06
 
 ### Added
