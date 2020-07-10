@@ -43,7 +43,7 @@ describe('Clien', () => {
             await clien.getBoards();
 
             expect(
-                clien.boards.filter(b => b.type === '커뮤니티').length,
+                clien.boards.filter(b => b.type === clien.boardTypes[0]).length,
             ).toEqual(11);
         });
 
