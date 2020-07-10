@@ -65,7 +65,7 @@ class DVDPrime extends CommunityCrawler {
                             category: category.innerText,
                             title: title.innerText.trim(),
                             author: author.innerText.trim(),
-                            hit: hit.innerText.trim(),
+                            hit: hit.innerText.trim() || 0,
                             time: time.innerText.trim(),
                             link: baseUrl + link,
                             upVotes: parseInt(upVotes.innerText) || 0,

@@ -49,31 +49,49 @@ describe('Clien', () => {
 
         test('getPosts()', async () => {
             posts = await clien.changeBoard(clien.boards[0]);
-
             expect(posts.length).not.toBe(0);
+
+            const firstPost = posts[0];
+            expect(firstPost.title).toBeDefined();
+            expect(firstPost.id).toBeDefined();
+            expect(firstPost.category).toBeDefined();
+            expect(firstPost.author).toBeDefined();
+            expect(firstPost.hit).toBeDefined();
+            expect(firstPost.time).toBeDefined();
+            expect(firstPost.link).toBeDefined();
+            expect(firstPost.upVotes).toBeDefined();
+            expect(firstPost.numberOfComments).toBeDefined();
+            expect(firstPost.hasImages).toBeDefined();
         });
 
         test('getPostDetail()', async () => {
             const post = await clien.getPostDetail(posts[0]);
 
-            expect(post.category).not.toBeUndefined();
-            expect(post.author).toBeTruthy();
-            expect(post.title).toBeTruthy();
-            expect(post.body).toBeTruthy();
-            expect(post.hit).toBeTruthy();
-            expect(post.time).toBeTruthy();
-            expect(Array.isArray(post.comments)).toBeTruthy();
+            expect(post.category).toBeDefined();
+            expect(post.author).toBeDefined();
+            expect(post.title).toBeDefined();
+            expect(post.body).toBeDefined();
+            expect(post.hit).toBeDefined();
+            expect(post.time).toBeDefined();
+            expect(post.comments).toBeDefined();
         });
 
         test('processComments()', async () => {
             const postWithComments = posts.find(p => p.numberOfComments);
-            const post = await clien.getPostDetail(postWithComments);
-            const comment = post.comments[0];
+            if (postWithComments) {
+                const post = await clien.getPostDetail(postWithComments);
+                const comment = post.comments.find(c => !c.isRemoved);
 
-            expect(comment.id).toBeTruthy();
-            expect(comment.author).toBeTruthy();
-            expect(comment.body).toBeTruthy();
-            expect(comment.time).toBeTruthy();
+                if (comment) {
+                    expect(comment.isReply).toBeDefined();
+                    expect(comment.isRemoved).toBeDefined();
+                    expect(comment.author).toBeDefined();
+                    expect(comment.body).toBeDefined();
+                    expect(comment.time).toBeDefined();
+                    expect(comment.upVotes).toBeDefined();
+                    expect(comment.id).toBeDefined();
+                }
+            }
         });
 
         test('getAllComments()', async () => {

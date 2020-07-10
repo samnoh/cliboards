@@ -49,20 +49,45 @@ describe('DVDPrime', () => {
 
         test('getPosts()', async () => {
             posts = await dvdprime.changeBoard(dvdprime.boards[0]);
-
             expect(posts.length).not.toBe(0);
+
+            const firstPost = posts[0];
+            expect(firstPost.title).toBeDefined();
+            expect(firstPost.id).toBeDefined();
+            expect(firstPost.category).toBeDefined();
+            expect(firstPost.author).toBeDefined();
+            expect(firstPost.hit).toBeDefined();
+            expect(firstPost.time).toBeDefined();
+            expect(firstPost.link).toBeDefined();
+            expect(firstPost.upVotes).toBeDefined();
+            expect(firstPost.numberOfComments).toBeDefined();
+            expect(firstPost.hasImages).toBeDefined();
         });
 
         test('getPostDetail()', async () => {
-            const post = await dvdprime.getPostDetail(posts[0]);
+            const postWithComments = posts.find(p => p.numberOfComments);
 
-            expect(post.author).toBeTruthy();
-            expect(post.title).toBeTruthy();
-            expect(post.body).toBeTruthy();
-            expect(post.hit).toBeTruthy();
-            expect(post.time).toBeTruthy();
-            expect(post.upVotes).not.toBeUndefined();
-            expect(Array.isArray(post.comments)).toBeTruthy();
+            if (postWithComments) {
+                const post = await dvdprime.getPostDetail(postWithComments);
+
+                expect(post.author).toBeDefined();
+                expect(post.title).toBeDefined();
+                expect(post.body).toBeDefined();
+                expect(post.hit).toBeDefined();
+                expect(post.time).toBeDefined();
+                expect(post.upVotes).toBeDefined();
+                expect(Array.isArray(post.comments)).toBeDefined();
+
+                const comment = post.comments[0];
+                if (comment) {
+                    expect(comment.isReply).toBeDefined();
+                    expect(comment.isRemoved).toBeDefined();
+                    expect(comment.author).toBeDefined();
+                    expect(comment.time).toBeDefined();
+                    expect(comment.body).toBeDefined();
+                    expect(comment.upVotes).toBeDefined();
+                }
+            }
         });
 
         test('setSearchParams()', async () => {
