@@ -1,6 +1,6 @@
 # cliboards &middot; [![Made with Node.js](https://img.shields.io/badge/Made%20with-Node.js-darkgreen)](https://nodejs.org) [![npm version](https://img.shields.io/npm/v/cliboards)](https://www.npmjs.com/package/cliboards) [![npm downloads](https://img.shields.io/npm/dt/cliboards?color=red)](https://npm-stat.com/charts.html?package=cliboards) [![GitHub last commit](https://img.shields.io/github/last-commit/samnoh/cliboards?color=blue)](https://github.com/samnoh/cliboards/commits/master) [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/samnoh/cliboards/Node.js%20CI)](https://github.com/samnoh/cliboards/actions?query=workflow%3A%22Node.js+CI%22)
 
-> Surf your online communities on CLI
+> ⌨️ Surf your online communities on CLI
 
 ![screenshot](img/screenshot-01.jpg)
 
