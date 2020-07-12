@@ -8,6 +8,12 @@ const {
     clearFolder,
     tempFolderPath,
 } = require('./openFiles');
+const {
+    setFavorite,
+    getFavorites,
+    getFavoritesById,
+    deleteFavoritesById,
+} = require('./favoritePosts');
 
 module.exports = {
     updateNotifier,
@@ -22,4 +28,8 @@ module.exports = {
     openImages,
     clearFolder,
     tempFolderPath,
+    setFavorite,
+    getFavorites,
+    getFavoritesById,
+    deleteFavoritesById,
 };

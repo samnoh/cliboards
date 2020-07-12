@@ -12,6 +12,10 @@ const {
     tempFolderPath,
     clearFolder,
     hasSpoilerWord,
+    setFavorite,
+    getFavorites,
+    getFavoritesById,
+    deleteFavoritesById,
 } = require('../helpers');
 const { name, version, homepage } = require('../../package.json');
 
@@ -360,7 +364,19 @@ class CLICommunity extends CLI {
             if (!this.post) return;
 
             switch (full) {
-                case 'v':
+                case 'a': // to add this post to favoruite list
+                    this.footerBox.focus();
+                    if (getFavoritesById(this.crawler.title, this.post.id)) {
+                        deleteFavoritesById(this.crawler.title, this.post.id);
+                    } else
+                        setFavorite(
+                            this.crawler.title,
+                            this.crawler.currentBoard,
+                            this.post,
+                        );
+
+                    return setTimeout(() => this.detailBox.focus(), 250);
+                case 'v': //to cancel SP
                     if (!this.hasSpoiler) return;
                     this.rednerDetailBody(true);
                     return this.detailBox.focus();
@@ -647,7 +663,11 @@ class CLICommunity extends CLI {
                 this.setFooterContent('v: view contents');
             } else {
                 this.setFooterContent(
-                    `r: refresh, o: open, ${
+                    `r: refresh, a: ${
+                        getFavoritesById(this.crawler.title, this.post.id)
+                            ? 'delete'
+                            : 'add to'
+                    } favorite, o: open, ${
                         hasImages
                             ? `i: view ${images.length} image${
                                   images.length !== 1 ? 's' : ''
