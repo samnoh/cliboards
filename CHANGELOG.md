@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.80] - 2020-07-12
+
+### Added
+
+-   you can add posts to favorites
+    -   on the post detail page
+        -   press `a` to add the current post
+        -   press `d` to delete the current post
+    -   on the board selection page
+        -   press `f` to view list
+
 ## [1.0.0-beta.79] - 2020-07-09
 
 ### Fixed
@@ -235,6 +246,7 @@ All notable changes to this project will be documented in this file.
 -   fix auto refresh bug
 -   update [README.md](README.md)
 
+[1.0.0-beta.80]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.80
 [1.0.0-beta.79]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.79
 [1.0.0-beta.74]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.74
 [1.0.0-beta.71]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.71

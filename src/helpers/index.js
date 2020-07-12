@@ -9,6 +9,7 @@ const {
     tempFolderPath,
 } = require('./openFiles');
 const {
+    clearFavorites,
     setFavorite,
     getFavorites,
     getFavoritesById,
@@ -29,6 +30,7 @@ module.exports = {
     openImages,
     clearFolder,
     tempFolderPath,
+    clearFavorites,
     setFavorite,
     getFavorites,
     getFavoritesById,

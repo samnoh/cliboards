@@ -6,13 +6,14 @@
 
 ## Features
 
--   Communities: `Clien`, `dcinside`, `DVDPrime`, `Ruliweb`, `PPOMPPU` and `SLRClub`
+-   View online communities: `Clien`, `dcinside`, `DVDPrime`, `Ruliweb`, `PPOMPPU` and `SLRClub`
 -   Supports color customizations
 -   Loads faster with a slow Internect connection
 -   Shurtcut for viewing images on web browser
 -   Spoiler protection
 -   Search posts
 -   Hide screen instantly (`space` key)
+-   Favorites
 
 ## Installation
 
@@ -38,7 +39,7 @@ cliboards <index>
 # Display community for given name
 cliboards <name>
 
-# Reset all data
+# Reset all data including favorites
 cliboards --reset
 
 # Reset data for given community only

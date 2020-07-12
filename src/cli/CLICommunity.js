@@ -12,6 +12,7 @@ const {
     tempFolderPath,
     clearFolder,
     hasSpoilerWord,
+    clearFavorites,
     setFavorite,
     getFavorites,
     getFavoritesById,
@@ -49,6 +50,7 @@ class CLICommunity extends CLI {
         clearFolder(tempFolderPath);
 
         if (reset && !startCrawler) {
+            clearFavorites();
             resetConfigstore();
             resetCustomTheme();
         }
@@ -91,7 +93,10 @@ class CLICommunity extends CLI {
                 community.communityList.emit('select', null, index);
 
                 process.nextTick(() => {
-                    reset && community.crawler.resetBoards();
+                    if (reset) {
+                        community.crawler.resetBoards();
+                        clearFavorites(community.crawler.title);
+                    }
                 });
             }
         } else {
@@ -117,6 +122,7 @@ class CLICommunity extends CLI {
 
             switch (full) {
                 case 'f':
+                    if (this.sortBoardsMode) return;
                     this.isFavMode = true;
                     this.posts = getFavorites(this.crawler.title);
                     return this.moveToWidget('next');
@@ -257,6 +263,11 @@ class CLICommunity extends CLI {
                     this.posts = getFavorites(this.crawler.title);
                     this.listList.focus();
                 }
+                // else if (full === 'r') {
+                // clearFavorites(this.crawler.title);
+                // this.posts = [];
+                // this.listList.focus();
+                // }
                 return;
             }
 
@@ -381,33 +392,34 @@ class CLICommunity extends CLI {
             if (!this.post) return;
 
             switch (full) {
-                case 'a': // to add this post to favorite list
-                    this.footerBox.focus();
-                    if (getFavoritesById(this.crawler.title, this.post.id)) {
-                        deleteFavoritesById(this.crawler.title, this.post.id);
-                    } else
-                        setFavorite(
-                            this.crawler.title,
-                            this.crawler.currentBoard,
-                            this.post,
-                        );
+                case 'd': // to delete this post from favorite list
+                    if (!getFavoritesById(this.crawler.title, this.post.id))
+                        return;
 
+                    this.footerBox.focus();
+                    deleteFavoritesById(this.crawler.title, this.post.id);
+                    return setTimeout(() => this.detailBox.focus(), 250);
+                case 'a': // to add this post to favorite list
+                    if (getFavoritesById(this.crawler.title, this.post.id))
+                        return;
+
+                    this.footerBox.focus();
+                    setFavorite(
+                        this.crawler.title,
+                        this.crawler.currentBoard,
+                        this.post,
+                    );
                     return setTimeout(() => this.detailBox.focus(), 250);
                 case 'v': //to cancel SP
-                    if (!this.hasSpoiler || this.isFavMode) return;
+                    if (!this.hasSpoiler) return;
                     this.rednerDetailBody(true);
                     return this.detailBox.focus();
                 case 'S-r':
                 case 'r':
-                    if (this.hasSpoiler || this.isFavMode) return;
+                    if (this.hasSpoiler) return;
                     return await this.refreshPostDetail(shift ? 100 : 0);
                 case 'i':
-                    if (
-                        !this.post.hasImages ||
-                        this.hasSpoiler ||
-                        this.isFavMode
-                    )
-                        return;
+                    if (!this.post.hasImages || this.hasSpoiler) return;
 
                     this.footerBox.focus();
 
@@ -426,7 +438,7 @@ class CLICommunity extends CLI {
                     }
                     return;
                 case 'o':
-                    if (this.hasSpoiler || this.isFavMode) return;
+                    if (this.hasSpoiler) return;
                     return await openUrls(
                         this.posts[this.currentPostIndex].link,
                     );
@@ -556,7 +568,7 @@ class CLICommunity extends CLI {
                 this.setTitleFooterContent(
                     this.crawler.title,
                     this.crawler.boardTypes[this.currentBoardTypeIndex],
-                    `f: view favorites${
+                    `f: favorites${
                         this.crawler.canAddBoards
                             ? ', a: add board, d: delete board'
                             : ''
@@ -573,7 +585,7 @@ class CLICommunity extends CLI {
             if (!this.posts.length) {
                 this.listList.setItems([]);
                 return this.setTitleFooterContent(
-                    this.isFavMode ? 'No favorite' : 'Error',
+                    this.isFavMode ? 'No favorites' : 'Error',
                 );
             }
 
@@ -619,7 +631,7 @@ class CLICommunity extends CLI {
 
             if (this.isFavMode) {
                 return this.setTitleFooterContent(
-                    'Favorites',
+                    `Favorites {${this.colors.top_right_color}-fg}${this.posts.length}{/}`,
                     this.crawler.title,
                     'd: delete',
                 );
@@ -705,10 +717,10 @@ class CLICommunity extends CLI {
                 this.setFooterContent('v: view contents');
             } else {
                 this.setFooterContent(
-                    `r: refresh, a: ${
+                    `r: refresh, ${
                         getFavoritesById(this.crawler.title, this.post.id)
-                            ? 'delete'
-                            : 'add to'
+                            ? 'd: delete'
+                            : 'a: add to'
                     } favorite, o: open, ${
                         hasImages
                             ? `i: view ${images.length} image${
@@ -728,6 +740,10 @@ class CLICommunity extends CLI {
             this.posts = this.posts.map(p => {
                 return { ...p, isNewPost: p.hasRead ? false : p.isNewPost };
             });
+
+            if (this.isFavMode) {
+                this.posts = getFavorites(this.crawler.title);
+            }
         });
     }
 
