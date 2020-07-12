@@ -2,7 +2,9 @@ const Configstore = require('configstore');
 
 const { name } = require('../../package.json');
 
-const configstore = new Configstore(name, null);
+const isDevMode = process.env.NODE_ENV === 'development';
+
+const configstore = new Configstore(`${name}${isDevMode ? '/dev' : ''}`, null);
 
 const resetConfigstore = () => configstore.clear();
 
