@@ -118,7 +118,7 @@ class Dcinside extends CommunityCrawler {
         }));
     }
 
-    async getPostDetail({ link, id }) {
+    async getPostDetail({ link, id, category }) {
         await this.page.goto(link);
 
         this.postsRead.add(this.title + id); // set post that you read
@@ -218,7 +218,7 @@ class Dcinside extends CommunityCrawler {
             };
         });
 
-        return { ...postDetail, id };
+        return { ...postDetail, id, category };
     }
 
     async addBoard(link, type) {

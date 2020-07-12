@@ -123,7 +123,7 @@ class Clien extends CommunityCrawler {
         }));
     }
 
-    async getPostDetail({ link, id }) {
+    async getPostDetail({ link, id, category }) {
         await this.page.goto(link);
 
         this.postsRead.add(this.title + id); // set post that you read
@@ -194,7 +194,7 @@ class Clien extends CommunityCrawler {
             ? await this.getAllComments()
             : await this.page.evaluate(this.processComments);
 
-        return { ...postDetail, id };
+        return { ...postDetail, id, category };
     }
 
     processComments() {

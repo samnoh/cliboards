@@ -81,7 +81,7 @@ class SLRClub extends CommunityCrawler {
         }));
     }
 
-    async getPostDetail({ link, id }) {
+    async getPostDetail({ link, id, category }) {
         await this.page.goto(link);
 
         this.postsRead.add(this.title + id); // set post that you read
@@ -148,7 +148,7 @@ class SLRClub extends CommunityCrawler {
             );
         }
 
-        return { ...postDetail, id };
+        return { ...postDetail, id, category };
     }
 
     async getComments(formData) {

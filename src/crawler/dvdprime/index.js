@@ -85,7 +85,7 @@ class DVDPrime extends CommunityCrawler {
         }));
     }
 
-    async getPostDetail({ link, id }) {
+    async getPostDetail({ link, id, category }) {
         await this.page.goto(link);
 
         this.postsRead.add(this.title + id); // set post that you read
@@ -193,7 +193,7 @@ class DVDPrime extends CommunityCrawler {
             };
         });
 
-        return { ...postDetail, id };
+        return { ...postDetail, id, category };
     }
 
     static toString() {

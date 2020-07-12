@@ -24,8 +24,7 @@ const setFavorite = (crawler, boardType, post) => {
     const favs = configstore.get(key);
 
     const newData = {
-        crawler,
-        boardType,
+        category: `${boardType.name}`,
         title: post.title,
         link: post.link,
         author: post.author,
@@ -36,7 +35,8 @@ const setFavorite = (crawler, boardType, post) => {
 };
 
 const getFavorites = crawler => {
-    return configstore.get(getConfigKey(crawler) || globalKey);
+    initFavoriteConfig(crawler);
+    return configstore.get(crawler ? getConfigKey(crawler) : globalKey);
 };
 
 const getFavoritesById = (crawler, id) => {
@@ -50,6 +50,13 @@ const deleteFavoritesById = (crawler, id) => {
     configstore.set(key, newData);
 };
 
+const deleteFavoritesByIndex = (crawler, index) => {
+    const key = getConfigKey(crawler);
+    const newData = configstore.get(key);
+    newData.splice(index, 1);
+    configstore.set(key, newData);
+};
+
 // clearAllFavorites();
 
 module.exports = {
@@ -59,4 +66,5 @@ module.exports = {
     getFavorites,
     getFavoritesById,
     deleteFavoritesById,
+    deleteFavoritesByIndex,
 };

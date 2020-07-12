@@ -16,6 +16,7 @@ const {
     getFavorites,
     getFavoritesById,
     deleteFavoritesById,
+    deleteFavoritesByIndex,
 } = require('../helpers');
 const { name, version, homepage } = require('../../package.json');
 
@@ -115,6 +116,10 @@ class CLICommunity extends CLI {
             const index = this.boardsList.getScroll();
 
             switch (full) {
+                case 'f':
+                    this.isFavMode = true;
+                    this.posts = getFavorites(this.crawler.title);
+                    return this.moveToWidget('next');
                 case 'a':
                     if (!this.crawler.canAddBoards || this.sortBoardsMode) {
                         return;
@@ -243,6 +248,18 @@ class CLICommunity extends CLI {
 
             if (!this.posts.length) return;
 
+            if (this.isFavMode) {
+                if (full === 'd') {
+                    deleteFavoritesByIndex(
+                        this.crawler.title,
+                        this.listList.getScroll(),
+                    );
+                    this.posts = getFavorites(this.crawler.title);
+                    this.listList.focus();
+                }
+                return;
+            }
+
             const prevPageNumber = this.crawler.currentPageNumber;
             const prevPosts = this.posts;
             const prevPostIndex = this.currentPostIndex;
@@ -364,7 +381,7 @@ class CLICommunity extends CLI {
             if (!this.post) return;
 
             switch (full) {
-                case 'a': // to add this post to favoruite list
+                case 'a': // to add this post to favorite list
                     this.footerBox.focus();
                     if (getFavoritesById(this.crawler.title, this.post.id)) {
                         deleteFavoritesById(this.crawler.title, this.post.id);
@@ -377,15 +394,20 @@ class CLICommunity extends CLI {
 
                     return setTimeout(() => this.detailBox.focus(), 250);
                 case 'v': //to cancel SP
-                    if (!this.hasSpoiler) return;
+                    if (!this.hasSpoiler || this.isFavMode) return;
                     this.rednerDetailBody(true);
                     return this.detailBox.focus();
                 case 'S-r':
                 case 'r':
-                    if (this.hasSpoiler) return;
+                    if (this.hasSpoiler || this.isFavMode) return;
                     return await this.refreshPostDetail(shift ? 100 : 0);
                 case 'i':
-                    if (!this.post.hasImages || this.hasSpoiler) return;
+                    if (
+                        !this.post.hasImages ||
+                        this.hasSpoiler ||
+                        this.isFavMode
+                    )
+                        return;
 
                     this.footerBox.focus();
 
@@ -404,7 +426,7 @@ class CLICommunity extends CLI {
                     }
                     return;
                 case 'o':
-                    if (this.hasSpoiler) return;
+                    if (this.hasSpoiler || this.isFavMode) return;
                     return await openUrls(
                         this.posts[this.currentPostIndex].link,
                     );
@@ -412,13 +434,13 @@ class CLICommunity extends CLI {
                 case 'left':
                     if (this.currentPostIndex) {
                         this.currentPostIndex -= 1;
-                        this.posts[this.currentPostIndex].hasRead = true;
+                        this.setHasRead(true);
                         await this.refreshPostDetail();
                     } else if (this.crawler.pageNumber > 1) {
                         this.crawler.navigatePage = -1;
                         await this.refreshPosts();
                         this.currentPostIndex = this.posts.length - 1;
-                        this.posts[this.currentPostIndex].hasRead = true;
+                        this.setHasRead(true);
                         await this.refreshPostDetail();
                     }
                     return;
@@ -427,7 +449,10 @@ class CLICommunity extends CLI {
                     this.currentPostIndex += 1;
 
                     if (this.currentPostIndex === this.posts.length) {
-                        if (this.crawler.currentBoard.singlePage) {
+                        if (
+                            this.crawler.currentBoard.singlePage ||
+                            this.isFavMode
+                        ) {
                             this.currentPostIndex -= 1;
                             return;
                         }
@@ -448,7 +473,8 @@ class CLICommunity extends CLI {
                     }
 
                     await this.refreshPostDetail();
-                    this.posts[this.currentPostIndex].hasRead = true;
+
+                    this.setHasRead(true);
             }
         });
     }
@@ -487,7 +513,7 @@ class CLICommunity extends CLI {
             try {
                 await this.getPostDetail(index);
 
-                this.posts[index].hasRead = true;
+                this.setHasRead(true);
                 this.moveToWidget('next', () => this.rednerDetailBody());
             } catch (e) {
                 this.moveToWidget('next');
@@ -523,19 +549,20 @@ class CLICommunity extends CLI {
                     'c: cancel, s: save, up/down arrow: move board',
                 );
             } else {
+                this.isFavMode = false;
                 this.crawler.searchParams = {};
                 this.currentPostIndex = 0;
                 this.crawler.changeSortUrl(0);
                 this.setTitleFooterContent(
                     this.crawler.title,
                     this.crawler.boardTypes[this.currentBoardTypeIndex],
-                    `${
+                    `f: view favorites${
                         this.crawler.canAddBoards
-                            ? 'a: add board, d: delete board'
+                            ? ', a: add board, d: delete board'
                             : ''
                     }${
                         this.crawler.boardTypes.length > 1
-                            ? 's: sort board, left/right arrow: prev/next page'
+                            ? ', s: sort board, left/right arrow: prev/next page'
                             : ''
                     }`,
                 );
@@ -545,7 +572,9 @@ class CLICommunity extends CLI {
         this.listList.on('focus', () => {
             if (!this.posts.length) {
                 this.listList.setItems([]);
-                return this.setTitleFooterContent('Error');
+                return this.setTitleFooterContent(
+                    this.isFavMode ? 'No favorite' : 'Error',
+                );
             }
 
             this.listList.setItems(
@@ -580,7 +609,7 @@ class CLICommunity extends CLI {
                                 ? '{underline}' +
                                   numberOfComments +
                                   '{/underline}'
-                                : numberOfComments
+                                : numberOfComments || ''
                         }{/}  {|}{${
                             this.colors.list_right_color
                         }-fg}${author}{/}`,
@@ -588,8 +617,16 @@ class CLICommunity extends CLI {
             );
             this.resetScroll(this.listList, this.currentPostIndex);
 
+            if (this.isFavMode) {
+                return this.setTitleFooterContent(
+                    'Favorites',
+                    this.crawler.title,
+                    'd: delete',
+                );
+            }
+
             this.setTitleFooterContent(
-                `${this.crawler.boards[this.crawler.currentBoardIndex].name} ${
+                `${this.crawler.currentBoard.name} ${
                     this.crawler.searchParams.keyword
                         ? `{${this.colors.top_left_search_keyword_color}-fg}${this.crawler.searchParams.keyword}{/} {${this.colors.top_left_search_info_color}-fg}${this.crawler.searchParams.type} 검색 결과`
                         : `{${this.colors.top_left_info_color}-fg} ${
@@ -617,10 +654,15 @@ class CLICommunity extends CLI {
                           this.crawler.searchParams.value
                               ? 'c: cancel search, '
                               : ''
+                      }${this.crawler.searchTypes ? 'w: search, ' : ''}${
+                          this.crawler.currentBoard.isFav
+                              ? ''
+                              : 'r: refresh, a: auto refresh, '
                       }${
-                          this.crawler.searchTypes ? 'w: search, ' : ''
-                      }r: refresh, a: auto refresh, ${
-                          this.crawler.sortUrl ? 's: sort, ' : ''
+                          this.crawler.sortUrl &&
+                          !this.crawler.currentBoard.noSortUrl
+                              ? 's: sort, '
+                              : ''
                       }${
                           this.crawler.filterOptions ? 'C-s: filter, ' : ''
                       }left/right arrow: prev/next page`,
@@ -1015,6 +1057,13 @@ class CLICommunity extends CLI {
         });
 
         this.formBox.focus();
+    }
+
+    setHasRead(hasRead) {
+        if (!this.posts.length) return;
+        else if (!this.isFavMode) {
+            this.posts[this.currentPostIndex].hasRead = hasRead;
+        }
     }
 }
 

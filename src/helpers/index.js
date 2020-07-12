@@ -13,6 +13,7 @@ const {
     getFavorites,
     getFavoritesById,
     deleteFavoritesById,
+    deleteFavoritesByIndex,
 } = require('./favoritePosts');
 
 module.exports = {
@@ -32,4 +33,5 @@ module.exports = {
     getFavorites,
     getFavoritesById,
     deleteFavoritesById,
+    deleteFavoritesByIndex,
 };

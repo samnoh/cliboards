@@ -84,7 +84,7 @@ class Ruliweb extends CommunityCrawler {
         }));
     }
 
-    async getPostDetail({ link, id }) {
+    async getPostDetail({ link, id, category }) {
         await this.page.goto(link);
 
         // TODO: add id here
@@ -173,7 +173,7 @@ class Ruliweb extends CommunityCrawler {
             postDetail.comments = [...postDetail.comments, ...newComments];
         }
 
-        return { ...postDetail, id };
+        return { ...postDetail, id, category };
     }
 
     processComments() {
