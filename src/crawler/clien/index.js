@@ -141,6 +141,7 @@ class Clien extends CommunityCrawler {
             const upVotes = document.querySelector('.symph_count strong');
             const commentsEl = document.querySelectorAll('.comment_row');
             const time = document.querySelector('.post_author span');
+            const source = document.querySelector('.attached_source a');
             const images = Array.from(
                 body.querySelectorAll(
                     'img, .fr-video, iframe[src^="https://www.youtube.com/embed"]',
@@ -166,6 +167,10 @@ class Clien extends CommunityCrawler {
 
                 return { type, value, name };
             });
+
+            if (source) {
+                body.innerText += `\n\n출처 : ${source.getAttribute('href')}`;
+            }
 
             return {
                 link: window.location.href,
