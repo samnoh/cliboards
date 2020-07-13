@@ -15,7 +15,7 @@ const {
     clearFavorites,
     setFavorite,
     getFavorites,
-    getFavoritesById,
+    getFavoriteById,
     deleteFavoritesById,
     deleteFavoritesByIndex,
 } = require('../helpers');
@@ -256,12 +256,13 @@ class CLICommunity extends CLI {
 
             if (this.isFavMode) {
                 if (full === 'd') {
+                    this.footerBox.focus();
                     deleteFavoritesByIndex(
                         this.crawler.title,
                         this.listList.getScroll(),
                     );
                     this.posts = getFavorites(this.crawler.title);
-                    this.listList.focus();
+                    setTimeout(() => this.listList.focus(), 250);
                 }
                 // else if (full === 'r') {
                 // clearFavorites(this.crawler.title);
@@ -393,22 +394,18 @@ class CLICommunity extends CLI {
 
             switch (full) {
                 case 'd': // to delete this post from favorite list
-                    if (!getFavoritesById(this.crawler.title, this.post.id))
-                        return;
-
+                case 'a':
                     this.footerBox.focus();
-                    deleteFavoritesById(this.crawler.title, this.post.id);
-                    return setTimeout(() => this.detailBox.focus(), 250);
-                case 'a': // to add this post to favorite list
-                    if (getFavoritesById(this.crawler.title, this.post.id))
-                        return;
+                    if (!getFavoriteById(this.crawler.title, this.post.id)) {
+                        setFavorite(
+                            this.crawler.title,
+                            this.crawler.currentBoard,
+                            this.post,
+                        );
+                    } else {
+                        deleteFavoritesById(this.crawler.title, this.post.id);
+                    }
 
-                    this.footerBox.focus();
-                    setFavorite(
-                        this.crawler.title,
-                        this.crawler.currentBoard,
-                        this.post,
-                    );
                     return setTimeout(() => this.detailBox.focus(), 250);
                 case 'v': //to cancel SP
                     if (!this.hasSpoiler) return;
@@ -582,11 +579,9 @@ class CLICommunity extends CLI {
         });
 
         this.listList.on('focus', () => {
-            if (!this.posts.length) {
+            if (!this.posts.length && !this.isFavMode) {
                 this.listList.setItems([]);
-                return this.setTitleFooterContent(
-                    this.isFavMode ? 'No favorites' : 'Error',
-                );
+                return this.setTitleFooterContent('Error');
             }
 
             this.listList.setItems(
@@ -718,7 +713,7 @@ class CLICommunity extends CLI {
             } else {
                 this.setFooterContent(
                     `r: refresh, ${
-                        getFavoritesById(this.crawler.title, this.post.id)
+                        getFavoriteById(this.crawler.title, this.post.id)
                             ? 'd: delete'
                             : 'a: add to'
                     } favorite, o: open, ${
@@ -820,8 +815,10 @@ class CLICommunity extends CLI {
                 this.post = await this.crawler.getPostDetail(currPost);
                 const { title, comments } = this.post;
 
-                currPost.title = title;
-                currPost.numberOfComments = comments.length;
+                if (!this.isFavMode) {
+                    currPost.title = title;
+                    currPost.numberOfComments = comments.length;
+                }
             }
         } catch (e) {
             this.post = null;
@@ -838,7 +835,7 @@ class CLICommunity extends CLI {
 
             const isSamePost = prevPost.id === this.post.id;
 
-            if (isSamePost) {
+            if (isSamePost && !this.isFavMode) {
                 this.post.comments = this.post.comments.map(comment => {
                     if (!prevPost.comments.find(c => c.id === comment.id)) {
                         comment.isNewComment = true;
