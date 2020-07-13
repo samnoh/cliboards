@@ -19,7 +19,7 @@ const {
     deleteFavoritesById,
     deleteFavoritesByIndex,
 } = require('../helpers');
-const { name, version, homepage } = require('../../package.json');
+const { name, version, changelog } = require('../../package.json');
 
 class CLICommunity extends CLI {
     constructor() {
@@ -111,8 +111,8 @@ class CLICommunity extends CLI {
 
         this.communityList.on('keypress', async (_, { full }) => {
             switch (full) {
-                case 'o':
-                    return await openUrls(homepage);
+                case 'c':
+                    return await openUrls(changelog);
             }
         });
 
@@ -542,7 +542,7 @@ class CLICommunity extends CLI {
                 this.isColorsError
                     ? '{gray-fg}Invalid JSON format for color theme - default theme now{/}'
                     : '',
-                `o: open GitHub{|}${name} ${version}`,
+                `c: changelog{|}${name} ${version}`,
             );
         });
 

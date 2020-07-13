@@ -253,6 +253,7 @@ All notable changes to this project will be documented in this file.
 -   fix auto refresh bug
 -   update [README.md](README.md)
 
+[1.0.0-beta.81]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.81
 [1.0.0-beta.80]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.80
 [1.0.0-beta.79]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.79
 [1.0.0-beta.74]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.74

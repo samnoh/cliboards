@@ -1,6 +1,6 @@
 {
     "name": "cliboards",
-    "version": "1.0.0-beta.80",
+    "version": "1.0.0-beta.81",
     "description": "⌨️ Surf your online communities on CLI",
     "main": "src/index.js",
     "scripts": {
@@ -22,6 +22,7 @@
         "email": "samnoh.dev@gmail.com"
     },
     "homepage": "https://github.com/samnoh/cliboards",
+    "changelog": "https://github.com/samnoh/cliboards/blob/master/CHANGELOG.md",
     "dependencies": {
         "axios": "0.19.2",
         "blessed": "0.1.81",
