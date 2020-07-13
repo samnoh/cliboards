@@ -419,18 +419,22 @@ class CLICommunity extends CLI {
 
             switch (full) {
                 case 'd': // to delete this post from favorite list
-                case 'a':
-                    this.footerBox.focus();
-                    if (!getFavoriteById(this.crawler.title, this.post.id)) {
-                        setFavorite(
-                            this.crawler.title,
-                            this.crawler.currentBoard,
-                            this.post,
-                        );
-                    } else {
-                        deleteFavoritesById(this.crawler.title, this.post.id);
-                    }
+                    if (!getFavoriteById(this.crawler.title, this.post.id))
+                        return;
 
+                    this.footerBox.focus();
+                    deleteFavoritesById(this.crawler.title, this.post.id);
+                    return setTimeout(() => this.detailBox.focus(), 250);
+                case 'a': // to add this post to favorite list
+                    if (getFavoriteById(this.crawler.title, this.post.id))
+                        return;
+
+                    this.footerBox.focus();
+                    setFavorite(
+                        this.crawler.title,
+                        this.crawler.currentBoard,
+                        this.post,
+                    );
                     return setTimeout(() => this.detailBox.focus(), 250);
                 case 'v': //to cancel SP
                     if (!this.hasSpoiler) return;
@@ -585,7 +589,7 @@ class CLICommunity extends CLI {
                 this.setTitleFooterContent(
                     this.crawler.title,
                     this.crawler.boardTypes[this.currentBoardTypeIndex],
-                    `f: favorites${
+                    `f: favorites, h: histories${
                         this.crawler.canAddBoards
                             ? ', a: add board, d: delete board'
                             : ''
