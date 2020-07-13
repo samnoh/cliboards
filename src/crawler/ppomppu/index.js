@@ -39,7 +39,7 @@ class Ppomppu extends CommunityCrawler {
             ),
         );
 
-        const posts = await this.page.evaluate(
+        return await this.page.evaluate(
             (baseUrl, currentBoard) => {
                 const lists = document.querySelectorAll('.bbsList li a');
 
@@ -168,17 +168,10 @@ class Ppomppu extends CommunityCrawler {
             baseUrl,
             this.currentBoard.value,
         );
-
-        return posts.map(post => ({
-            ...post,
-            hasRead: this.postsRead.has(this.title + post.id),
-        }));
     }
 
     async getPostDetail({ link, id, category }) {
         await this.page.goto(link);
-
-        this.postsRead.add(this.title + id); // set post that you read
 
         const postDetail = await this.page.evaluate(() => {
             const h4 = document.querySelector('h4');

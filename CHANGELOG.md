@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.82] - 2020-07-13
+
+### Added
+
+-   on the board selection page, press `h` to view post histories
+    -   post histories is erased once you quit the app
+-   press `shift + right` or `shift + left` to browse next/prev five pages
+
 ## [1.0.0-beta.81] - 2020-07-13
 
 ### Added
@@ -253,6 +261,7 @@ All notable changes to this project will be documented in this file.
 -   fix auto refresh bug
 -   update [README.md](README.md)
 
+[1.0.0-beta.82]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.82
 [1.0.0-beta.81]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.81
 [1.0.0-beta.80]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.80
 [1.0.0-beta.79]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.79

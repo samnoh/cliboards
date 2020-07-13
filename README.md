@@ -14,6 +14,7 @@
 -   Search posts
 -   Hide screen instantly (`space` key)
 -   Favorites
+-   Histories
 
 ## Installation
 

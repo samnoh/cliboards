@@ -75,16 +75,11 @@ class SLRClub extends CommunityCrawler {
 
         this.currentPageNumber = currentPageNumber;
 
-        return posts.map(post => ({
-            ...post,
-            hasRead: this.postsRead.has(this.title + post.id),
-        }));
+        return posts;
     }
 
     async getPostDetail({ link, id, category }) {
         await this.page.goto(link);
-
-        this.postsRead.add(this.title + id); // set post that you read
 
         const postDetail = await this.page.evaluate(() => {
             const title = document.querySelector('.subject');

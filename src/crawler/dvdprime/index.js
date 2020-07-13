@@ -38,7 +38,7 @@ class DVDPrime extends CommunityCrawler {
                 this.searchParams.value,
         );
 
-        const posts = await this.page.evaluate(baseUrl => {
+        return await this.page.evaluate(baseUrl => {
             const lists = document.querySelectorAll('.list_table_row');
 
             return Array.from(lists)
@@ -78,17 +78,10 @@ class DVDPrime extends CommunityCrawler {
                 })
                 .filter(post => post);
         }, baseUrl);
-
-        return posts.map(post => ({
-            ...post,
-            hasRead: this.postsRead.has(this.title + post.id),
-        }));
     }
 
     async getPostDetail({ link, id, category }) {
         await this.page.goto(link);
-
-        this.postsRead.add(this.title + id); // set post that you read
 
         const postDetail = await this.page.evaluate(() => {
             const title = document.querySelector('#writeSubject');

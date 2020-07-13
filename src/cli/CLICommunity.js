@@ -18,6 +18,10 @@ const {
     getFavoriteById,
     deleteFavoritesById,
     deleteFavoritesByIndex,
+    clearHistory,
+    setHistory,
+    isInPostHistory,
+    getCurrentHistories,
 } = require('../helpers');
 const { name, version, changelog } = require('../../package.json');
 
@@ -121,7 +125,12 @@ class CLICommunity extends CLI {
             const index = this.boardsList.getScroll();
 
             switch (full) {
-                case 'f':
+                case 'h': // go to history page
+                    if (this.sortBoardsMode) return;
+                    this.isHistoryMode = true;
+                    this.posts = getCurrentHistories(this.crawler.title);
+                    return this.moveToWidget('next');
+                case 'f': // go to favorite page
                     if (this.sortBoardsMode) return;
                     this.isFavMode = true;
                     this.posts = getFavorites(this.crawler.title);
@@ -254,6 +263,16 @@ class CLICommunity extends CLI {
 
             if (!this.posts.length) return;
 
+            if (this.isHistoryMode) {
+                if (full === 'r') {
+                    this.footerBox.focus();
+                    clearHistory(this.crawler.title);
+                    this.posts = [];
+                    setTimeout(() => this.listList.focus(), 250);
+                }
+                return;
+            }
+
             if (this.isFavMode) {
                 if (full === 'd') {
                     this.footerBox.focus();
@@ -370,12 +389,18 @@ class CLICommunity extends CLI {
                         });
                     },
                 );
-            } else if (full === 'left' && this.crawler.pageNumber >= 2) {
+            } else if (
+                (full === 'left' || full === 'S-left') &&
+                this.crawler.pageNumber > 1
+            ) {
                 if (this.crawler.currentBoard.singlePage) return;
-                this.crawler.navigatePage = -1;
-            } else if (full === 'right') {
+                this.crawler.navigatePage = shift ? -5 : -1;
+                if (this.crawler.currentPageNumber < 1) {
+                    this.crawler.currentPageNumber = 0;
+                }
+            } else if (full === 'right' || full === 'S-right') {
                 if (this.crawler.currentBoard.singlePage) return;
-                this.crawler.navigatePage = 1;
+                this.crawler.navigatePage = shift ? 5 : 1;
             } else return;
 
             await this.refreshPosts(passPrevPosts ? prevPosts : null);
@@ -460,7 +485,8 @@ class CLICommunity extends CLI {
                     if (this.currentPostIndex === this.posts.length) {
                         if (
                             this.crawler.currentBoard.singlePage ||
-                            this.isFavMode
+                            this.isFavMode ||
+                            this.isHistoryMode
                         ) {
                             this.currentPostIndex -= 1;
                             return;
@@ -492,20 +518,13 @@ class CLICommunity extends CLI {
         super.setSelectEvent();
 
         this.communityList.on('select', async (_, index) => {
-            let postRead;
-
             this.footerBox.focus();
 
             if (this.crawler) {
-                postRead = this.crawler.postsRead;
                 await this.crawler.close();
             }
 
             this.crawler = getCrawler(index);
-
-            if (postRead) {
-                this.crawler.postsRead = postRead;
-            }
             this.screen.title = this.crawler.title;
             await this.crawler.start();
             await this.getBoards(index);
@@ -559,6 +578,7 @@ class CLICommunity extends CLI {
                 );
             } else {
                 this.isFavMode = false;
+                this.isHistoryMode = false;
                 this.crawler.searchParams = {};
                 this.currentPostIndex = 0;
                 this.crawler.changeSortUrl(0);
@@ -579,7 +599,7 @@ class CLICommunity extends CLI {
         });
 
         this.listList.on('focus', () => {
-            if (!this.posts.length && !this.isFavMode) {
+            if (!this.posts.length && !this.isFavMode && !this.isHistoryMode) {
                 this.listList.setItems([]);
                 return this.setTitleFooterContent('Error');
             }
@@ -623,6 +643,14 @@ class CLICommunity extends CLI {
                 ),
             );
             this.resetScroll(this.listList, this.currentPostIndex);
+
+            if (this.isHistoryMode) {
+                return this.setTitleFooterContent(
+                    `History {${this.colors.top_right_color}-fg}${this.posts.length}{/}`,
+                    this.crawler.title,
+                    'r: reset',
+                );
+            }
 
             if (this.isFavMode) {
                 return this.setTitleFooterContent(
@@ -736,6 +764,7 @@ class CLICommunity extends CLI {
                 return { ...p, isNewPost: p.hasRead ? false : p.isNewPost };
             });
 
+            // update if post is deleted
             if (this.isFavMode) {
                 this.posts = getFavorites(this.crawler.title);
             }
@@ -776,9 +805,14 @@ class CLICommunity extends CLI {
     async getPosts(index, filtreredBoard = []) {
         try {
             this.footerBox.focus();
-            this.posts = await this.crawler.changeBoard(
+            const title = this.crawler.title;
+            const posts = await this.crawler.changeBoard(
                 filtreredBoard[index] || this.getFilteredBoards()[index],
             );
+            this.posts = posts.map(p => ({
+                ...p,
+                hasRead: isInPostHistory(title, p.id),
+            }));
         } catch (e) {
             this.posts = [];
         }
@@ -813,9 +847,17 @@ class CLICommunity extends CLI {
 
             if (currPost) {
                 this.post = await this.crawler.getPostDetail(currPost);
+
                 const { title, comments } = this.post;
 
-                if (!this.isFavMode) {
+                if (!this.isFavMode && !this.isHistoryMode) {
+                    // save history; post.hasRead is true now
+                    setHistory(
+                        this.crawler.title,
+                        this.crawler.currentBoard,
+                        this.post,
+                    );
+                    // update changed title and number of comments
                     currPost.title = title;
                     currPost.numberOfComments = comments.length;
                 }
@@ -835,7 +877,7 @@ class CLICommunity extends CLI {
 
             const isSamePost = prevPost.id === this.post.id;
 
-            if (isSamePost && !this.isFavMode) {
+            if (isSamePost && !this.isFavMode && !this.isHistoryMode) {
                 this.post.comments = this.post.comments.map(comment => {
                     if (!prevPost.comments.find(c => c.id === comment.id)) {
                         comment.isNewComment = true;
@@ -1074,7 +1116,7 @@ class CLICommunity extends CLI {
 
     setHasRead(hasRead) {
         if (!this.posts.length) return;
-        else if (!this.isFavMode) {
+        else if (!this.isFavMode && !this.isHistoryMode) {
             this.posts[this.currentPostIndex].hasRead = hasRead;
         }
     }

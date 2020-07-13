@@ -16,7 +16,6 @@ class CommunityCrawler extends Crawler {
         this.currentBoardIndex = 0;
         this.currentPageNumber = 0;
         this.sortListIndex = 0;
-        this.postsRead = new Set();
         this.canAddBoards = false;
         this.searchParams = {};
         this.imageXhrRequired = false;

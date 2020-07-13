@@ -16,6 +16,12 @@ const {
     deleteFavoritesById,
     deleteFavoritesByIndex,
 } = require('./favoritePosts');
+const {
+    clearHistory,
+    setHistory,
+    isInPostHistory,
+    getCurrentHistories,
+} = require('./postHistories');
 
 module.exports = {
     updateNotifier,
@@ -36,4 +42,8 @@ module.exports = {
     getFavoriteById,
     deleteFavoritesById,
     deleteFavoritesByIndex,
+    clearHistory,
+    setHistory,
+    isInPostHistory,
+    getCurrentHistories,
 };
