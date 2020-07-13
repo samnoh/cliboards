@@ -6,9 +6,9 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
--   on the board selection page, press `h` to view post histories
-    -   post histories is erased once you quit the app
--   press `shift + right` or `shift + left` to browse next/prev five pages
+-   on the board selection page, press `h` to view post history
+    -   post history is erased once you quit the app
+-   press `shift + right` or `shift + left` to browse prev/next five pages
 
 ## [1.0.0-beta.81] - 2020-07-13
 

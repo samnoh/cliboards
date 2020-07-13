@@ -589,7 +589,7 @@ class CLICommunity extends CLI {
                 this.setTitleFooterContent(
                     this.crawler.title,
                     this.crawler.boardTypes[this.currentBoardTypeIndex],
-                    `f: favorites, h: histories${
+                    `f: favorite, h: history${
                         this.crawler.canAddBoards
                             ? ', a: add board, d: delete board'
                             : ''
@@ -650,7 +650,7 @@ class CLICommunity extends CLI {
 
             if (this.isHistoryMode) {
                 return this.setTitleFooterContent(
-                    `History {${this.colors.top_right_color}-fg}${this.posts.length}{/}`,
+                    `Post History {${this.colors.top_right_color}-fg}${this.posts.length}{/}`,
                     this.crawler.title,
                     'r: reset',
                 );
