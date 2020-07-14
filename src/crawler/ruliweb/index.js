@@ -37,10 +37,10 @@ class Ruliweb extends CommunityCrawler {
         await this.page.goto(
             getUrl(this.currentBoard.value) +
                 this.pageNumber +
-                this.searchParams.value,
+                (this.searchParams.value || ''),
         );
 
-        return await this.page.evaluate(() => {
+        const posts = await this.page.evaluate(() => {
             const lists = document.querySelectorAll(
                 '.table_body:not(.inside):not(.notice):not(.list_inner)',
             );
@@ -77,6 +77,11 @@ class Ruliweb extends CommunityCrawler {
                 })
                 .filter(post => post);
         });
+
+        return posts.map(p => ({
+            ...p,
+            id: p.link.replace(/\?.*$/, '').split('/').pop(),
+        }));
     }
 
     async getPostDetail({ link, id, category }) {
