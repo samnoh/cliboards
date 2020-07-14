@@ -9,6 +9,7 @@ module.exports = {
     top_right_color: 'gray',
     top_info_color: 'gray',
     top_info_likes: 'green',
+    top_info_dislikes: 'red',
     bottom_bg: '#243B4D',
     bottom_left_color: 'gray',
     bottom_right_color: 'gray',

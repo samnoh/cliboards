@@ -126,8 +126,10 @@ class Dcinside extends CommunityCrawler {
             );
             const body = document.querySelector('.thum-txt');
             const upVotes = document.querySelector(
-                '.gall-thum-btm .ginfo2 li:nth-child(2)',
+                // '.gall-thum-btm .ginfo2 li:nth-child(2)',
+                '#recomm_btn',
             );
+            const downVotes = document.querySelector('#nonrecomm_btn');
             const comments = document.querySelectorAll('.all-comment-lst li');
             const time = document.querySelector('.btm .ginfo2 li:nth-child(2)')
                 .innerText;
@@ -176,7 +178,8 @@ class Dcinside extends CommunityCrawler {
                 body: body.innerText.trim(),
                 images,
                 hasImages: images.length,
-                upVotes: parseInt(upVotes.innerText.replace(/[^0-9]/g, '')),
+                upVotes: parseInt(upVotes.innerText),
+                downVotes: parseInt(downVotes.innerText),
                 comments: Array.from(comments)
                     .map(comment => {
                         const body = comment.querySelector('.txt');

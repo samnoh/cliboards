@@ -8,6 +8,9 @@ All notable changes to this project will be documented in this file.
 
 -   update time format in posts and comments except `slrclub`
 -   update upper box styles and info format
+-   new color options
+    -   top_info_likes (green)
+    -   top_info_dislikes (red); `dcinside` only for now
 
 ## [1.0.0-beta.85] - 2020-07-14
 
@@ -284,6 +287,7 @@ All notable changes to this project will be documented in this file.
 -   fix auto refresh bug
 -   update [README.md](README.md)
 
+[1.0.0-beta.86]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.86
 [1.0.0-beta.85]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.85
 [1.0.0-beta.84]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.84
 [1.0.0-beta.82]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.82

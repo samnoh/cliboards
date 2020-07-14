@@ -721,6 +721,7 @@ class CLICommunity extends CLI {
                 author,
                 hit,
                 upVotes,
+                downVotes,
                 comments,
                 time,
                 images,
@@ -730,6 +731,8 @@ class CLICommunity extends CLI {
             this.setTitleContent(
                 `{${this.colors.top_info_likes}-fg}${
                     upVotes ? upVotes + ' ' : ''
+                }{/}{${this.colors.top_info_dislikes}-fg}${
+                    downVotes ? downVotes + ' ' : ''
                 }{/}${
                     category
                         ? `{${this.colors.top_info_color}-fg}` +
