@@ -143,7 +143,9 @@ class CLICommunity extends CLI {
                     this.setTitleContent('링크나 갤러리 ID를 입력하세요');
 
                     return this.showTextBox(async input => {
-                        if (!input) return;
+                        if (!input) {
+                            return this.textBox.destroy();
+                        }
 
                         this.footerBox.focus();
 
@@ -353,7 +355,9 @@ class CLICommunity extends CLI {
                             name + ' 검색',
                         );
                         this.showTextBox(async keyword => {
-                            if (!keyword) return;
+                            if (!keyword) {
+                                return this.textBox.destroy();
+                            }
 
                             this.footerBox.focus();
                             this.textBox.emit('success');
@@ -365,8 +369,6 @@ class CLICommunity extends CLI {
                                     value,
                                     keyword,
                                 };
-
-                                this.screen.debug(value);
 
                                 await this.refreshPosts();
 
@@ -934,7 +936,7 @@ class CLICommunity extends CLI {
 
         if (!comments || !comments.length) return;
 
-        const detailBoxWidth = this.detailBox.width;
+        const screenWidth = this.screen.width;
         const commentBoxStyle = {
             width: '100%-1',
             parent: this.detailBox,
@@ -978,7 +980,6 @@ class CLICommunity extends CLI {
 
                 const commentBox = blessed.box({
                     top: prevTop,
-                    height: parseInt(body.length / detailBoxWidth) + 5,
                     content: isRemoved
                         ? body
                         : info +
@@ -990,7 +991,12 @@ class CLICommunity extends CLI {
                 });
 
                 commentBox.padding.left = isReply * 4;
-                commentBox.height = commentBox.getScreenLines().length + 2;
+                commentBox.height = isReply
+                    ? Math.ceil(
+                          (commentBox.strWidth(body) + isReply + 6) /
+                              screenWidth,
+                      ) + 3
+                    : commentBox.getScreenLines().length + 2;
                 prevTop += commentBox.height - 1;
 
                 return commentBox;
@@ -1011,9 +1017,9 @@ class CLICommunity extends CLI {
         this.textBox = blessed.textbox({
             parent: this.footerBox,
             height: 1,
-            width: '100%',
+            width: '100%+1',
             top: '100%-1',
-            left: -2,
+            left: -1,
             keys: true,
             inputOnFocus: true,
             style: {
@@ -1033,6 +1039,7 @@ class CLICommunity extends CLI {
         this.textBox.on('success', () => {
             this.textBox.style.bg = this.colors.text_input_success_bg;
             this.textBox.style.fg = this.colors.text_input_success_color;
+            this.screen.render();
         });
 
         this.textBox.on('failure', () => {
@@ -1042,7 +1049,7 @@ class CLICommunity extends CLI {
         });
 
         this.textBox.on('destroy', () => {
-            this.textBox = null;
+            this.widgets[this.currentWidgetIndex].focus();
         });
 
         this.textBox.focus();
@@ -1055,9 +1062,9 @@ class CLICommunity extends CLI {
         this.formBox = blessed.form({
             parent: this.footerBox,
             height: 1,
-            width: '100%',
+            width: '100%+1',
             top: '100%-1',
-            left: -2,
+            left: -1,
         });
 
         let left = 0;

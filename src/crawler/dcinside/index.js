@@ -194,7 +194,10 @@ class Dcinside extends CommunityCrawler {
                         }
 
                         body.querySelectorAll('img').forEach((image, index) => {
-                            image.textContent = `IMAGE_${index + 1} `;
+                            image.insertAdjacentText(
+                                'afterend',
+                                `IMAGE_${index + 1} `,
+                            );
                         });
 
                         const output = {
@@ -202,7 +205,7 @@ class Dcinside extends CommunityCrawler {
                             isRemoved: false,
                             author: author.innerText,
                             time: time.innerText,
-                            body: body.textContent.trim(),
+                            body: body.innerText.trim(),
                         };
 
                         output.id = output.author + output.time;
