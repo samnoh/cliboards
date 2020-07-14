@@ -991,12 +991,7 @@ class CLICommunity extends CLI {
                 });
 
                 commentBox.padding.left = isReply * 4;
-                commentBox.height = isReply
-                    ? Math.ceil(
-                          (commentBox.strWidth(body) + isReply + 6) /
-                              screenWidth,
-                      ) + 3
-                    : commentBox.getScreenLines().length + 2;
+                commentBox.height = commentBox.getScreenLines().length + 2;
                 prevTop += commentBox.height - 1;
 
                 return commentBox;
