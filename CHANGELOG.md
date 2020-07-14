@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.90] - 2020-07-14
+
+### Fixed
+
+-   sorting by '개념글' (recommended posts) is not working for some `dcinside` gallaries
+
 ## [1.0.0-beta.88] - 2020-07-14
 
 ### Fixed
@@ -296,6 +302,7 @@ All notable changes to this project will be documented in this file.
 -   fix auto refresh bug
 -   update [README.md](README.md)
 
+[1.0.0-beta.90]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.90
 [1.0.0-beta.88]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.88
 [1.0.0-beta.86]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.86
 [1.0.0-beta.85]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.85

@@ -312,17 +312,17 @@ class CLICommunity extends CLI {
                     await this.refreshPosts(prevPosts);
                 }, this.autoRefreshInterval * 1000);
             } else if (name === 's') {
-                if (
-                    this.crawler.currentBoard.noSortUrl ||
-                    !this.crawler.sortUrl
-                )
-                    return;
-
-                const sortUrlsLength = this.crawler.sortUrls.length;
-
                 if (ctrl && this.crawler.filterOptions) {
                     this.crawler.toggleFilterMode();
                 } else {
+                    if (
+                        this.crawler.currentBoard.noSortUrl ||
+                        !this.crawler.sortUrl
+                    ) {
+                        return;
+                    }
+
+                    const sortUrlsLength = this.crawler.sortUrls.length;
                     let index;
 
                     if (shift) {
@@ -583,11 +583,14 @@ class CLICommunity extends CLI {
                     'c: cancel, s: save, up/down arrow: move board',
                 );
             } else {
+                if (this.crawler.filterOptions) {
+                    this.crawler.filterOptions.activeFilterIndex = 0;
+                }
+                this.crawler.searchParams = {};
+                this.crawler.changeSortUrl(0);
+                this.currentPostIndex = 0;
                 this.isFavMode = false;
                 this.isHistoryMode = false;
-                this.crawler.searchParams = {};
-                this.currentPostIndex = 0;
-                this.crawler.changeSortUrl(0);
                 this.setTitleFooterContent(
                     this.crawler.title,
                     this.crawler.boardTypes[this.currentBoardTypeIndex],
