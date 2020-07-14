@@ -8,6 +8,7 @@ module.exports = {
     top_left_search_info_color: 'gray',
     top_right_color: 'gray',
     top_info_color: 'gray',
+    top_info_likes: 'green',
     bottom_bg: '#243B4D',
     bottom_left_color: 'gray',
     bottom_right_color: 'gray',

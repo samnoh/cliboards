@@ -728,7 +728,9 @@ class CLICommunity extends CLI {
             } = this.post;
 
             this.setTitleContent(
-                `${
+                `{${this.colors.top_info_likes}-fg}${
+                    upVotes ? upVotes + ' ' : ''
+                }{/}${
                     category
                         ? `{${this.colors.top_info_color}-fg}` +
                           category +
@@ -737,7 +739,7 @@ class CLICommunity extends CLI {
                 }${title} {${this.colors.top_info_color}-fg}${
                     comments.length
                 }{/}`,
-                `${author}‧${hit}‧${upVotes}‧${time}`,
+                `${author}|${hit}|${time}`,
             );
 
             if (this.hasSpoiler) {

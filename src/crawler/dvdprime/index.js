@@ -90,9 +90,7 @@ class DVDPrime extends CommunityCrawler {
             const body = document.querySelector('.resContents');
             const upVotes = document.querySelector('#view_recommend_num');
             const comments = document.querySelectorAll('.comment_container');
-            const time = document
-                .querySelector('#view_datetime')
-                .innerText.match(/[0-9]{2}:[0-9]{2}:[0-9]{2}/)[0];
+            const time = document.querySelector('#view_datetime').innerText;
             const images = Array.from(
                 body.querySelectorAll(
                     'img, video, iframe[src^="https://www.youtube.com/embed"]',
@@ -119,8 +117,8 @@ class DVDPrime extends CommunityCrawler {
                 return { type, value, name };
             });
 
-            const seriesDiv = document.querySelector('.view_series_div');
-            seriesDiv && body.removeChild(seriesDiv);
+            const seriesDivs = body.querySelectorAll('.view_series_div');
+            seriesDivs && seriesDivs.forEach(s => s.remove());
 
             body.querySelectorAll('.article_link').forEach(link => {
                 link.innerHTML = link.href;
@@ -139,9 +137,8 @@ class DVDPrime extends CommunityCrawler {
                 comments: Array.from(comments).map(comment => {
                     const body = comment.querySelector('.comment_content');
                     const author = comment.querySelector('.sideview_a');
-                    const time = comment
-                        .querySelector('.comment_time')
-                        .innerText.match(/[0-9]{2}:[0-9]{2}:[0-9]{2}/)[0];
+                    const time = comment.querySelector('.comment_time')
+                        .innerText;
                     const upVotes = comment.querySelector(
                         '.comment_title_right .c_r_num',
                     );

@@ -23,7 +23,7 @@ const defaultOptions = {
             fg: colors.list_left_color,
         },
     },
-    padding: { left: 2, right: 2 },
+    padding: { left: 1, right: 1 },
 };
 
 defaultOptions.list.scrollbar = defaultOptions.listScrollbar;

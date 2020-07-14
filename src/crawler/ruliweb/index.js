@@ -154,10 +154,7 @@ class Ruliweb extends CommunityCrawler {
                 title: title.innerText.trim().replace(/\[([^)]+)\]\s/, ''),
                 author: author.innerText.trim(),
                 hit: hit[hit.length - 1],
-                time: time.innerText
-                    .trim()
-                    .split(' ')[1]
-                    .replace(/[^0-9:]/g, ''),
+                time: time.innerText.replace(/[^\.\d\s:]/g, ''),
                 body: body.innerText
                     .trim()
                     .split('\n')
@@ -212,7 +209,7 @@ class Ruliweb extends CommunityCrawler {
                       isRemoved,
                       id: author.innerText + time.innerText,
                       author: author.innerText,
-                      time: time.innerText.split(' ')[1],
+                      time: time.innerText.trim(),
                       body: body.innerText.trim(),
                       upVotes: parseInt(upVotes.innerText) || 0,
                       downVotes: parseInt(downVotes.innerText) || 0,

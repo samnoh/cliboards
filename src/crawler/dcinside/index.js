@@ -129,9 +129,8 @@ class Dcinside extends CommunityCrawler {
                 '.gall-thum-btm .ginfo2 li:nth-child(2)',
             );
             const comments = document.querySelectorAll('.all-comment-lst li');
-            const _time = document
-                .querySelector('.btm .ginfo2 li:nth-child(2)')
-                .innerText.match(/[0-9]{2}:[0-9]{2}/)[0];
+            const time = document.querySelector('.btm .ginfo2 li:nth-child(2)')
+                .innerText;
             const imagesEl = Array.from(
                 body.querySelectorAll(
                     'img.lazy, iframe[src^="https://www.youtube.com/embed"]',
@@ -173,7 +172,7 @@ class Dcinside extends CommunityCrawler {
                 title: _title.innerText,
                 author: author.innerText.trim(),
                 hit: hit.innerText.replace(/[^0-9]/g, ''),
-                time: _time,
+                time,
                 body: body.innerText.trim(),
                 images,
                 hasImages: images.length,
@@ -199,7 +198,7 @@ class Dcinside extends CommunityCrawler {
                             isReply: !!isReply,
                             isRemoved: false,
                             author: author.innerText,
-                            time: time.innerText.match(/[0-9]{2}:[0-9]{2}/)[0],
+                            time: time.innerText,
                             body: body.textContent.trim(),
                         };
 

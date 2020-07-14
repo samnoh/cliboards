@@ -133,7 +133,10 @@ class Clien extends CommunityCrawler {
             const body = document.querySelector('.post_article');
             const upVotes = document.querySelector('.symph_count strong');
             const commentsEl = document.querySelectorAll('.comment_row');
-            const time = document.querySelector('.post_author span');
+            const time = document
+                .querySelector('.post_author span')
+                .innerText.trim()
+                .split(' ');
             const source = document.querySelector('.attached_source a');
             const images = Array.from(
                 body.querySelectorAll(
@@ -172,8 +175,8 @@ class Clien extends CommunityCrawler {
                 author:
                     author.innerText.trim() ||
                     author.querySelector('img').getAttribute('alt'),
-                hit: hit.innerText.trim(),
-                time: time.innerText.trim().split(' ')[1],
+                hit: hit.innerText.replace(/,/g, '').trim(),
+                time: time[0] + ' ' + time[1],
                 body: body.innerText
                     .split('\n\n')
                     .filter(a => a.trim())
@@ -236,7 +239,10 @@ class Clien extends CommunityCrawler {
                 author:
                     author.innerText ||
                     author.querySelector('img').getAttribute('alt'),
-                time: time.innerText.split(' ')[1],
+                time:
+                    time.innerText.split(' ')[0] +
+                    ' ' +
+                    time.innerText.split(' ')[1],
                 body:
                     image || gif
                         ? `${image ? 'IMAGE' : 'GIF'}_1\n\n` + body.innerText

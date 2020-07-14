@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.86] - 2020-07-14
+
+### Added
+
+-   update time format in posts and comments except `slrclub`
+-   update upper box styles and info format
+
 ## [1.0.0-beta.85] - 2020-07-14
 
 ### Added
