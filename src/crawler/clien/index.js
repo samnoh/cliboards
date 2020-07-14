@@ -159,7 +159,7 @@ class Clien extends CommunityCrawler {
                     name = `IMAGE_${index + 1}`;
                 }
 
-                item.parentNode.innerText = name;
+                item.insertAdjacentText('afterend', name + ' ');
 
                 return { type, value, name };
             });

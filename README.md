@@ -21,10 +21,10 @@
 Use the package manager [npm](https://www.npmjs.com) to install `cliboards`.
 
 ```bash
-# Install globally (recommended).
+# Install globally (highly recommended) or update to the latest version
 npm i -g cliboards
 
-# Or run directly with npx (installs CLI on every run).
+# Or run directly (installs CLI on every run).
 npx cliboards
 ```
 
