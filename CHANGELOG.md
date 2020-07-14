@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.88] - 2020-07-14
+
+### Fixed
+
+-   `dcinside` comment format
+-   issues with the cursor in the input box
+-   the input box disappears after an empty string is entered
+-   partial display of comment replies
+
 ## [1.0.0-beta.86] - 2020-07-14
 
 ### Added
@@ -287,6 +296,7 @@ All notable changes to this project will be documented in this file.
 -   fix auto refresh bug
 -   update [README.md](README.md)
 
+[1.0.0-beta.88]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.88
 [1.0.0-beta.86]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.86
 [1.0.0-beta.85]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.85
 [1.0.0-beta.84]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.84
