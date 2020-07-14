@@ -73,11 +73,11 @@ describe('Ppomppu', () => {
 
             if (postWithComments) {
                 const post = await ppomppu.getPostDetail(postWithComments);
-                expect(post.author).toBeTruthy();
-                expect(post.title).toBeTruthy();
-                expect(post.body).toBeTruthy();
-                expect(post.hit).toBeTruthy();
-                expect(post.time).toBeTruthy();
+                expect(post.author).toBeDefined();
+                expect(post.title).toBeDefined();
+                expect(post.body).toBeDefined();
+                expect(post.hit).toBeDefined();
+                expect(post.time).toBeDefined();
 
                 const comment = post.comments.find(c => !c.isRemoved);
                 if (comment) {

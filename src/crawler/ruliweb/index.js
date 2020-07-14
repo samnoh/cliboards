@@ -93,12 +93,12 @@ class Ruliweb extends CommunityCrawler {
             const hit = document
                 .querySelector('.user_info p:nth-child(5)')
                 .innerText.split(' ');
-            const body = document.querySelector('.view_content');
             const upVotes = document.querySelector('.like');
             const time = document.querySelector('.regdate');
             const commentPages = document.querySelectorAll(
                 '.comment_count_wrapper .paging_wrapper a.btn_num',
             ).length;
+            const body = document.querySelector('.view_content');
             const images = Array.from(
                 body.querySelectorAll(
                     'img, .gifct, iframe[src^="https://www.youtube.com/embed"]',
@@ -114,13 +114,13 @@ class Ruliweb extends CommunityCrawler {
                         type = 'mp4';
                         value = video.getAttribute('src');
                     }
-                    item.innerHTML = `GIF_${index + 1}`;
+                    item.parentNode.innerText = `GIF_${index + 1}`;
                 } else if (item.tagName === 'IFRAME') {
                     type = 'youtube';
                     value = item.src;
-                    item.textContent = `YOUTUBE_${index + 1}`;
+                    item.parentNode.innerText = `YOUTUBE_${index + 1}`;
                 } else {
-                    item.textContent = `IMAGE_${index + 1}`;
+                    item.parentNode.innerText = `IMAGE_${index + 1}`;
                 }
 
                 return (
@@ -135,6 +135,19 @@ class Ruliweb extends CommunityCrawler {
                 );
             });
 
+            // clean up body
+            const screenOut = body.querySelector('.screen_out');
+            if (screenOut) {
+                body.querySelector('.screen_out').remove();
+            }
+
+            const source = document.querySelector('.source_url a');
+            if (source) {
+                body.innerText = `원본출처 | ${source.getAttribute(
+                    'href',
+                )}\n\n\n${body.innerText}`;
+            }
+
             return {
                 link: window.location.href,
                 category: title.innerText.trim().match(/\[([^)]+)\]\s/)[1],
@@ -145,11 +158,11 @@ class Ruliweb extends CommunityCrawler {
                     .trim()
                     .split(' ')[1]
                     .replace(/[^0-9:]/g, ''),
-                body: body.textContent
+                body: body.innerText
+                    .trim()
                     .split('\n')
-                    .map(b => b.trim())
-                    .join('\n')
-                    .trim(),
+                    .map(a => a || '\n')
+                    .join(''),
                 upVotes: parseInt(upVotes.innerText),
                 images,
                 hasImages: images.length,
