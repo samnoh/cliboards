@@ -285,11 +285,6 @@ class CLICommunity extends CLI {
                     this.posts = getFavorites(this.crawler.title);
                     setTimeout(() => this.listList.focus(), 250);
                 }
-                // else if (full === 'r') {
-                // clearFavorites(this.crawler.title);
-                // this.posts = [];
-                // this.listList.focus();
-                // }
                 return;
             }
 
@@ -939,7 +934,6 @@ class CLICommunity extends CLI {
 
         if (!comments || !comments.length) return;
 
-        const screenWidth = this.screen.width;
         const commentBoxStyle = {
             width: '100%-1',
             parent: this.detailBox,
@@ -993,10 +987,24 @@ class CLICommunity extends CLI {
                     ...commentBoxStyle,
                 });
 
-                commentBox.padding.left = isReply * 4;
-                commentBox.height = commentBox.getScreenLines().length + 2;
-                prevTop += commentBox.height - 1;
+                if (isReply) {
+                    commentBox.width = `100%-${1 + isReply * 4}`;
+                    commentBox.right = 1;
+                }
 
+                const commentBoxWidth = commentBox.width;
+                const baseHeight =
+                    Math.ceil(commentBox.strWidth(info) / commentBoxWidth) + 2;
+
+                let finalHeight = baseHeight;
+                body.split('\n').map(line => {
+                    finalHeight += Math.ceil(
+                        commentBox.strWidth(line) / commentBoxWidth,
+                    );
+                });
+
+                commentBox.height = finalHeight;
+                prevTop += commentBox.height - 1;
                 return commentBox;
             },
         );
