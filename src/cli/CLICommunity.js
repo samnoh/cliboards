@@ -1000,9 +1000,11 @@ class CLICommunity extends CLI {
                 let finalHeight = baseHeight + infoHeight;
 
                 body.split('\n').map(line => {
-                    finalHeight += Math.ceil(
-                        commentBox.strWidth(line) / commentBoxWidth,
-                    );
+                    const bodyHegiht =
+                        Math.ceil(
+                            commentBox.strWidth(line) / commentBoxWidth,
+                        ) || 1;
+                    finalHeight += bodyHegiht;
                 });
 
                 commentBox.height = finalHeight;
