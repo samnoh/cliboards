@@ -993,10 +993,12 @@ class CLICommunity extends CLI {
                 }
 
                 const commentBoxWidth = commentBox.width;
-                const baseHeight =
-                    Math.ceil(commentBox.strWidth(info) / commentBoxWidth) + 2;
+                const baseHeight = 2; // border lines
+                const infoHeight = Math.ceil(
+                    commentBox.strWidth(info) / commentBoxWidth,
+                );
+                let finalHeight = baseHeight + infoHeight;
 
-                let finalHeight = baseHeight;
                 body.split('\n').map(line => {
                     finalHeight += Math.ceil(
                         commentBox.strWidth(line) / commentBoxWidth,
