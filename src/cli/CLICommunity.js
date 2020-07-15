@@ -1008,7 +1008,7 @@ class CLICommunity extends CLI {
                 });
 
                 commentBox.height = finalHeight;
-                prevTop += commentBox.height - 1;
+                prevTop += finalHeight - 1;
                 return commentBox;
             },
         );
