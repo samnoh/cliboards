@@ -96,7 +96,7 @@ class Dcinside extends CommunityCrawler {
                             category: category && category.innerText,
                             title: title.innerText.trim(),
                             author: author.innerText.trim(),
-                            hit: hit.innerText.trim().replace(/[^0-9]/),
+                            hit: hit.innerText.trim().replace(/[^0-9]/g, ''),
                             time: time.innerText.trim(),
                             link,
                             upVotes:
@@ -105,7 +105,7 @@ class Dcinside extends CommunityCrawler {
                                         upVotes.innerText.replace(/[^0-9]/),
                                 ) || 0,
                             numberOfComments: numberOfComments.innerText,
-                            hasImages,
+                            hasImages: !!hasImages,
                         }
                     );
                 })
@@ -125,10 +125,7 @@ class Dcinside extends CommunityCrawler {
                 '.gall-thum-btm .ginfo2 li:nth-child(1)',
             );
             const body = document.querySelector('.thum-txt');
-            const upVotes = document.querySelector(
-                // '.gall-thum-btm .ginfo2 li:nth-child(2)',
-                '#recomm_btn',
-            );
+            const upVotes = document.querySelector('#recomm_btn');
             const downVotes = document.querySelector('#nonrecomm_btn');
             const comments = document.querySelectorAll('.all-comment-lst li');
             const time = document.querySelector('.btm .ginfo2 li:nth-child(2)')

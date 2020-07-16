@@ -81,7 +81,9 @@ describe('Dcinside', () => {
                 expect(post.body).toBeDefined();
                 expect(post.hit).toBeDefined();
                 expect(post.time).toBeDefined();
-                expect(Array.isArray(post.comments)).toBeDefined();
+                expect(post.upVotes).toBeDefined();
+                expect(post.downVotes).toBeDefined();
+                expect(post.comments).toBeDefined();
 
                 const comment = post.comments[0];
                 if (comment) {

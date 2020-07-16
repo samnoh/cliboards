@@ -1,5 +1,5 @@
 const checkResponseStatus = (status = 200) => res => {
-    expect(res.status()).toEqual(status);
+    expect(res.status()).toBe(status);
 };
 
 module.exports = {
