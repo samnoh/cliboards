@@ -1,6 +1,8 @@
+const path = require('path');
+
 module.exports = {
-    verbose: true,
+    setupFiles: [path.join(__dirname, 'test', 'helpers', 'setup.js')],
+    verbose: false,
     testEnvironment: 'node',
     preset: 'jest-puppeteer',
-    testTimeout: 30000,
 };

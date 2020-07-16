@@ -1,13 +1,10 @@
 const blessed = require('blessed');
 
-const { updateNotifier } = require('../helpers');
+const { updateNotifier, env } = require('../helpers');
 const cliOptions = require('./CLIOptions');
 
 class CLI {
     constructor() {
-        // dev
-        this.isDevMode = process.env.NODE_ENV === 'development';
-
         // theme
         const { colors, isError } = cliOptions.colors;
         this.colors = colors;
@@ -41,7 +38,7 @@ class CLI {
         this.screen.on('keypress', async (_, { full }) => {
             switch (full) {
                 case 'C-c':
-                    return await this.terminate(this.isDevMode ? 1 : 0);
+                    return await this.terminate(env.isDevEnv ? 1 : 0);
                 case 'escape':
                 case 'q':
                     return (
@@ -123,7 +120,7 @@ class CLI {
 
                 nextWidget.focus();
             } else {
-                this.terminate(this.isDevMode ? 1 : 0);
+                this.terminate(env.isDevEnv ? 1 : 0);
             }
         } catch (e) {
             this.terminate(1, e);

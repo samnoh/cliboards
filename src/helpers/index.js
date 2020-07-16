@@ -1,5 +1,6 @@
 const updateNotifier = require('./updateNotifier');
 const { configstore, resetConfigstore } = require('./configstore');
+const env = require('./env');
 const { getYoutubeVideoId, hasSpoilerWord } = require('./string');
 const { getTheme, resetCustomTheme, customThemeFilePath } = require('./theme');
 const {
@@ -24,6 +25,7 @@ const {
 } = require('./postHistories');
 
 module.exports = {
+    env,
     updateNotifier,
     configstore,
     resetConfigstore,
