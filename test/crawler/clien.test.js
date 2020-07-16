@@ -95,9 +95,7 @@ describe('Clien', () => {
         });
 
         test('getAllComments()', async () => {
-            const post = await clien.getPostDetail(posts[0]);
             const allComments = await clien.getAllComments();
-
             expect(allComments.length).toBeDefined();
         });
     });
