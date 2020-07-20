@@ -4,14 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## [1.0.0-beta.95] - 2020-07-20
 
-### Fixed
-
--   gif indicator in `clien`
-
 ### Added
 
 -   loading spinner in the right of footer box
 -   image indicator in `ruliweb` comments
+
+### Fixed
+
+-   gif indicator in `clien`
 
 ## [1.0.0-beta.90] - 2020-07-14
 
