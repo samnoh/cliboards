@@ -37,24 +37,20 @@ class CLI {
         this.loadingBox._.icon.left = 0;
         this.loadingBox._.icon.right = 0;
 
-        this.loadingBox.defaultStyles = {
-            fg: this.colors.bottom_left_color,
-            bg: this.colors.bottom_bg,
-        };
         this.loadingBox.loadingStyles = {
-            fg: this.colors.bottom_left_color,
+            fg: this.colors.bottom_right_color,
             bg: this.colors.bottom_bg_loading,
         };
-        this.loadingBox._.icon.style = this.loadingBox.defaultStyles;
 
         this.loadingBox.load = function (text) {
             this._.icon.style = this.loadingStyles;
             blessed.loading.prototype.load.call(this, text);
             this.screen.lockKeys = false;
+            this.parent.padding.right -= 1;
         };
         this.loadingBox.stop = function () {
-            this._.icon.style = this.defaultStyles;
             blessed.loading.prototype.stop.call(this);
+            this.parent.padding.right += 1;
         };
 
         // update
@@ -88,9 +84,7 @@ class CLI {
         });
     }
 
-    setSelectEvent() {
-        //
-    }
+    setSelectEvent() {}
 
     setFocusEvent() {
         this.footerBox.on('focus', () => {
