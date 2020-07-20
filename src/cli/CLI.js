@@ -29,6 +29,33 @@ class CLI {
             ...cliOptions.footer,
             parent: box,
         });
+        this.loadingBox = blessed.loading({
+            ...cliOptions.loading,
+            parent: this.footerBox,
+        });
+        this.loadingBox._.icon.top = 0;
+        this.loadingBox._.icon.left = 0;
+        this.loadingBox._.icon.right = 0;
+
+        this.loadingBox.defaultStyles = {
+            fg: this.colors.bottom_left_color,
+            bg: this.colors.bottom_bg,
+        };
+        this.loadingBox.loadingStyles = {
+            fg: this.colors.bottom_left_color,
+            bg: this.colors.bottom_bg_loading,
+        };
+        this.loadingBox._.icon.style = this.loadingBox.defaultStyles;
+
+        this.loadingBox.load = function (text) {
+            this._.icon.style = this.loadingStyles;
+            blessed.loading.prototype.load.call(this, text);
+            this.screen.lockKeys = false;
+        };
+        this.loadingBox.stop = function () {
+            this._.icon.style = this.defaultStyles;
+            blessed.loading.prototype.stop.call(this);
+        };
 
         // update
         process.on('exit', updateNotifier.notifyUpdate);
@@ -67,15 +94,12 @@ class CLI {
 
     setFocusEvent() {
         this.footerBox.on('focus', () => {
-            this.footerBox.setContent(
-                `${this.footerBox.getContent()} {|}{${
-                    this.colors.bottom_right_color
-                }-fg}Loading...{/}`,
-            );
+            this.footerBox.setContent(`${this.footerBox.getContent()} {|}`);
             this.footerBox.style = {
                 ...this.footerBox.style,
                 bg: this.colors.bottom_bg_loading,
             };
+            this.loadingBox.load();
             this.screen.render();
         });
     }
@@ -86,6 +110,7 @@ class CLI {
                 ...this.footerBox.style,
                 bg: this.colors.bottom_bg,
             };
+            this.loadingBox.stop();
         });
     }
 

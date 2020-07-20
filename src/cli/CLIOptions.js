@@ -23,7 +23,10 @@ const defaultOptions = {
             fg: colors.list_left_color,
         },
     },
-    padding: { left: 1, right: 1 },
+    padding: (offset1, offset2) => ({
+        left: offset1,
+        right: offset2 || offset1,
+    }),
 };
 
 defaultOptions.list.scrollbar = defaultOptions.listScrollbar;
@@ -42,7 +45,7 @@ module.exports = {
         ...defaultOptions.box,
         top: 0,
         height: 1,
-        padding: defaultOptions.padding,
+        padding: defaultOptions.padding(1),
         style: {
             bg: colors.top_bg,
             fg: colors.top_left_color,
@@ -59,11 +62,18 @@ module.exports = {
         ...defaultOptions.box,
         top: '100%-1',
         height: 1,
-        padding: defaultOptions.padding,
+        padding: defaultOptions.padding(1, 2),
         style: {
             fg: colors.bottom_left_color,
             bg: colors.bottom_bg,
         },
+    },
+    loading: {
+        top: 0,
+        right: -1,
+        height: 1,
+        width: 1,
+        hidden: true,
     },
     postDetail: {
         ...defaultOptions.box,

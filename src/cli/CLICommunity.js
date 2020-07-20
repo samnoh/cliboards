@@ -562,7 +562,7 @@ class CLICommunity extends CLI {
                 this.isColorsError
                     ? '{gray-fg}Invalid JSON format for color theme - default theme now{/}'
                     : '',
-                `c: changelog{|}${name} ${version}`,
+                `c: changelog{|}{${this.colors.bottom_right_color}-fg}${name} ${version}{/}`,
             );
         });
 
