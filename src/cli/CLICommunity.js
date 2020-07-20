@@ -8,7 +8,7 @@ const {
     openImages,
     resetConfigstore,
     resetCustomTheme,
-    customThemeFilePath,
+    openCustomThemeFile,
     tempFolderPath,
     clearFolder,
     hasSpoilerWord,
@@ -22,6 +22,7 @@ const {
     setHistory,
     isInPostHistory,
     getCurrentHistories,
+    openFilterKeywordsFile,
 } = require('../helpers');
 const { name, version, changelog } = require('../../package.json');
 
@@ -50,7 +51,7 @@ class CLICommunity extends CLI {
         this.setAllEvents();
     }
 
-    static async start({ theme, reset, startCrawler, disableSP }) {
+    static async start({ theme, reset, startCrawler, disableSP, keyword }) {
         clearFolder(tempFolderPath);
 
         if (reset && !startCrawler) {
@@ -65,11 +66,16 @@ class CLICommunity extends CLI {
         community.communityList.setItems(crawlers);
 
         if (theme) {
-            openUrls(customThemeFilePath);
+            openCustomThemeFile();
             return community.terminate(
                 0,
                 'Please edit the file in JSON format and restart',
             );
+        }
+
+        if (keyword) {
+            openFilterKeywordsFile();
+            return community.terminate();
         }
 
         if (disableSP) {

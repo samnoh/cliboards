@@ -7,8 +7,8 @@
 ## Features
 
 -   Browse online communities: `Clien`, `dcinside`, `DVDPrime`, `Ruliweb`, `PPOMPPU` and `SLRClub`
--   Supports Post Favorites
--   Supports Post History
+-   Supports post favorites
+-   Supports post history
 -   Search posts
 -   Shurtcut for viewing images on default web browser
 -   Spoiler protection
@@ -48,6 +48,9 @@ cliboards <index|name> --reset
 
 # Update theme (color customizations)
 cliboards --theme
+
+# Update filter keywords (not available for now)
+cliboards --keyword
 
 # Disable spoiler protection
 cliboards --disableSP

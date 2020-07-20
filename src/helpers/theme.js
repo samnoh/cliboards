@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const { configstore } = require('./configstore');
+const { openUrls } = require('./openFiles');
 const defaultColors = require('../cli/theme');
 
 const customThemeFilePath = path.resolve(
@@ -11,6 +12,11 @@ const customThemeFilePath = path.resolve(
     'theme',
     'customTheme.txt',
 );
+
+const openCustomThemeFile = async () => {
+    getTheme();
+    await openUrls(customThemeFilePath);
+};
 
 const resetCustomTheme = () => {
     try {
@@ -60,5 +66,5 @@ const getTheme = () => {
 module.exports = {
     getTheme,
     resetCustomTheme,
-    customThemeFilePath,
+    openCustomThemeFile,
 };

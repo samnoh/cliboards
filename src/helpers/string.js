@@ -9,7 +9,7 @@ const getYoutubeVideoId = url => {
 const hasSpoilerWord = str => {
     if (typeof str !== 'string') return false;
 
-    const spoilerWords = ['스포', '슾호', 'spoiler'];
+    const spoilerWords = ['스포', '슾호', '누설', 'spoiler'];
     const nonSpoilerWords = ['노스포', '스포츠', '노슾호', '스포무', '스포티'];
     const lowerStr = str.toLowerCase();
 

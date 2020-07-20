@@ -2,7 +2,7 @@ const updateNotifier = require('./updateNotifier');
 const { configstore, resetConfigstore } = require('./configstore');
 const env = require('./env');
 const { getYoutubeVideoId, hasSpoilerWord } = require('./string');
-const { getTheme, resetCustomTheme, customThemeFilePath } = require('./theme');
+const { getTheme, resetCustomTheme, openCustomThemeFile } = require('./theme');
 const {
     openUrls,
     openImages,
@@ -16,13 +16,17 @@ const {
     getFavoriteById,
     deleteFavoritesById,
     deleteFavoritesByIndex,
-} = require('./favoritePosts');
+} = require('./postFavorites');
 const {
     clearHistory,
     setHistory,
     isInPostHistory,
     getCurrentHistories,
 } = require('./postHistories');
+const {
+    openFilterKeywordsFile,
+    filterByKeywords,
+} = require('./filterByKeywords');
 
 module.exports = {
     env,
@@ -33,7 +37,7 @@ module.exports = {
     hasSpoilerWord,
     getTheme,
     resetCustomTheme,
-    customThemeFilePath,
+    openCustomThemeFile,
     openUrls,
     openImages,
     clearFolder,
@@ -48,4 +52,6 @@ module.exports = {
     setHistory,
     isInPostHistory,
     getCurrentHistories,
+    openFilterKeywordsFile,
+    filterByKeywords,
 };
