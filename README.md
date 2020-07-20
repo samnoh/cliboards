@@ -2,7 +2,7 @@
 
 > ⌨️ Surf your online communities on CLI
 
-![screenshot](img/screenshot-01.jpg)
+![screenshot](.github/img/screenshot-01.jpg)
 
 ## Features
 
