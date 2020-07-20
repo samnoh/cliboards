@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.95] - 2020-07-20
+
+### Fixed
+
+-   gif indicator in `clien`
+
+### Added
+
+-   loading spinner in the right of footer box
+-   image indicator in `ruliweb` comments
+
 ## [1.0.0-beta.90] - 2020-07-14
 
 ### Fixed
@@ -302,6 +313,7 @@ All notable changes to this project will be documented in this file.
 -   fix auto refresh bug
 -   update [README.md](README.md)
 
+[1.0.0-beta.95]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.95
 [1.0.0-beta.90]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.90
 [1.0.0-beta.88]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.88
 [1.0.0-beta.86]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.86
