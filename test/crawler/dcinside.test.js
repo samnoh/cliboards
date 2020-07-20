@@ -97,15 +97,9 @@ describe('Dcinside', () => {
         });
 
         test('addBoard() - handle board id', async () => {
-            await dcinside.addBoard('cat', dcinside.boardTypes[0]);
-            await dcinside.getBoards();
             await dcinside.addBoard('dog', dcinside.boardTypes[1]);
             await dcinside.getBoards();
 
-            expect(
-                dcinside.boards.filter(b => b.type === dcinside.boardTypes[0])
-                    .length,
-            ).toEqual(5);
             expect(
                 dcinside.boards.filter(b => b.type === dcinside.boardTypes[1])
                     .length,
