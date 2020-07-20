@@ -146,6 +146,7 @@ class Clien extends CommunityCrawler {
                 let value, type, name;
 
                 if (item.classList.contains('fr-video')) {
+                    item.querySelector('.search_link').remove(); // remove "GIF" text
                     type = 'mp4';
                     value = item.querySelector('source').getAttribute('src');
                     name = `GIF_${index + 1}`;

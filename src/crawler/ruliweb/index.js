@@ -196,6 +196,10 @@ class Ruliweb extends CommunityCrawler {
             const control_box = comment.querySelector('.control_box');
             const isRemoved = !comment.getAttribute('id');
 
+            // handle image
+            const image = comment.querySelector('.comment_img_text');
+            if (image) image.innerText = 'IMAGE_1';
+
             isReply && control_box && body.removeChild(control_box);
 
             return isRemoved
