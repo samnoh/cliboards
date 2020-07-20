@@ -121,7 +121,7 @@ describe('Dcinside', () => {
 
         test('addBoard() - handle mobile url', async () => {
             await dcinside.addBoard(
-                'https://m.dcinside.com/board/aoegame',
+                `${baseUrl}/board/aoegame`,
                 dcinside.boardTypes[2],
             );
             await dcinside.getBoards();
