@@ -668,7 +668,7 @@ class CLICommunity extends CLI {
                 `${this.crawler.currentBoard.name} ${
                     this.crawler.searchParams.keyword
                         ? `{${this.colors.top_left_search_keyword_color}-fg}${this.crawler.searchParams.keyword}{/} {${this.colors.top_left_search_info_color}-fg}${this.crawler.searchParams.type} 검색 결과`
-                        : `{${this.colors.top_left_info_color}-fg} ${
+                        : `{${this.colors.top_left_info_color}-fg}${
                               this.crawler.boardTypes[
                                   this.currentBoardTypeIndex
                               ]
