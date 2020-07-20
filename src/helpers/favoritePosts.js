@@ -54,8 +54,6 @@ const deleteFavoritesByIndex = (crawler, index) => {
     configstore.set(key, newData);
 };
 
-// clearFavorites();
-
 module.exports = {
     clearFavorites,
     setFavorite,
