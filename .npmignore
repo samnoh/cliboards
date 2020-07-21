@@ -3,7 +3,7 @@ img/
 .github/
 CODE_OF_CONDUCT.md
 .editorconfig
-*.txt
+customTheme.txt
 *.json
 test/
 jest.config.js
