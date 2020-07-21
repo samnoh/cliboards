@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.96] - 2020-07-21
+
+### Added
+
+-   post filters by keyword
+    -   to add/remove filters
+        ```bash
+        cliboards --filter
+        ```
+
 ## [1.0.0-beta.95] - 2020-07-20
 
 ### Added
@@ -313,6 +323,7 @@ All notable changes to this project will be documented in this file.
 -   fix auto refresh bug
 -   update [README.md](README.md)
 
+[1.0.0-beta.96]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.96
 [1.0.0-beta.95]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.95
 [1.0.0-beta.90]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.90
 [1.0.0-beta.88]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.88

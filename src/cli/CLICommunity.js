@@ -22,7 +22,9 @@ const {
     setHistory,
     isInPostHistory,
     getCurrentHistories,
-    openFilterKeywordsFile,
+    openFilterByKeywordsFile,
+    resetFilterByKeywordsFile,
+    filterByKeywords,
 } = require('../helpers');
 const { name, version, changelog } = require('../../package.json');
 
@@ -51,13 +53,14 @@ class CLICommunity extends CLI {
         this.setAllEvents();
     }
 
-    static async start({ theme, reset, startCrawler, disableSP, keyword }) {
+    static async start({ theme, reset, startCrawler, disableSP, filter }) {
         clearFolder(tempFolderPath);
 
         if (reset && !startCrawler) {
             clearFavorites();
             resetConfigstore();
             resetCustomTheme();
+            resetFilterByKeywordsFile();
         }
 
         const community = new CLICommunity();
@@ -73,8 +76,8 @@ class CLICommunity extends CLI {
             );
         }
 
-        if (keyword) {
-            openFilterKeywordsFile();
+        if (filter) {
+            openFilterByKeywordsFile();
             return community.terminate();
         }
 
@@ -824,10 +827,12 @@ class CLICommunity extends CLI {
             const posts = await this.crawler.changeBoard(
                 filtreredBoard[index] || this.getFilteredBoards()[index],
             );
-            this.posts = posts.map(p => ({
-                ...p,
-                hasRead: isInPostHistory(title, p.id),
-            }));
+            this.posts = posts
+                .map(p => ({
+                    ...p,
+                    hasRead: isInPostHistory(title, p.id),
+                }))
+                .filter(p => filterByKeywords(p.title));
         } catch (e) {
             this.posts = [];
         }

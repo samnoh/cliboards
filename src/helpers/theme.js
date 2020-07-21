@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const { configstore } = require('./configstore');
-const { openUrls } = require('./openFiles');
+const { openUrls, clearFile } = require('./openFiles');
 const defaultColors = require('../cli/theme');
 
 const customThemeFilePath = path.resolve(
@@ -20,7 +20,7 @@ const openCustomThemeFile = async () => {
 
 const resetCustomTheme = () => {
     try {
-        fs.unlinkSync(customThemeFilePath);
+        clearFile(customThemeFilePath);
         return true;
     } catch (e) {
         return false;

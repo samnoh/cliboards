@@ -39,4 +39,17 @@ const clearFolder = folderPath => {
     } catch (e) {}
 };
 
-module.exports = { openUrls, openImages, clearFolder, tempFolderPath };
+const clearFile = (filePath, content) => {
+    try {
+        fs.unlinkSync(filePath);
+        content && fs.writeFileSync(filePath, content);
+    } catch (e) {}
+};
+
+module.exports = {
+    openUrls,
+    openImages,
+    clearFolder,
+    clearFile,
+    tempFolderPath,
+};

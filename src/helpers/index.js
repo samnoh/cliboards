@@ -1,6 +1,6 @@
+const env = require('./env');
 const updateNotifier = require('./updateNotifier');
 const { configstore, resetConfigstore } = require('./configstore');
-const env = require('./env');
 const { getYoutubeVideoId, hasSpoilerWord } = require('./string');
 const { getTheme, resetCustomTheme, openCustomThemeFile } = require('./theme');
 const {
@@ -24,7 +24,8 @@ const {
     getCurrentHistories,
 } = require('./postHistories');
 const {
-    openFilterKeywordsFile,
+    openFilterByKeywordsFile,
+    resetFilterByKeywordsFile,
     filterByKeywords,
 } = require('./filterByKeywords');
 
@@ -52,6 +53,7 @@ module.exports = {
     setHistory,
     isInPostHistory,
     getCurrentHistories,
-    openFilterKeywordsFile,
+    openFilterByKeywordsFile,
+    resetFilterByKeywordsFile,
     filterByKeywords,
 };

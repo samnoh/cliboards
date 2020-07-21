@@ -11,10 +11,11 @@
 -   Supports post history
 -   Search posts
 -   Shurtcut for viewing images on default web browser
--   Spoiler protection
--   Hide screen instantly (`space` key)
+-   Hides screen instantly (`space` key)
 -   May Load faster with a slow Internect connection
+-   Supports Spoiler protection
 -   Supports color customizations
+-   Filters posts by keywords
 
 ## Installation
 
@@ -37,7 +38,7 @@ cliboards
 # Display the nth community (1 is the first)
 cliboards <index>
 
-# Display community for given name (non case sensitive)
+# Display community for given name (non-case sensitive)
 cliboards <name>
 
 # Reset all data including favorites
@@ -49,8 +50,8 @@ cliboards <index|name> --reset
 # Update theme (color customizations)
 cliboards --theme
 
-# Update filter keywords (not available for now)
-cliboards --keyword
+# Update post filters by keywords
+cliboards --filter
 
 # Disable spoiler protection
 cliboards --disableSP
