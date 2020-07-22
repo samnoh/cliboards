@@ -19,6 +19,8 @@ All notable changes to this project will be documented in this file.
     ```bash
     cliboards --hideComments
     ```
+-   puppeteer version (v5.1.0)
+-   required node verson (>=10.18.1)
 
 ## [1.0.0-beta.98] - 2020-07-22
 
@@ -311,29 +313,29 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
--   add `PPOMPPU` search
+-   `PPOMPPU` search
 
-### Fix
+### Updated
 
--   update puppeteer version (v3.3.0)
+-   puppeteer version (v3.3.0)
 
 ## [1.0.0-beta.44] - 2020-06-11
 
 ### Added
 
--   add `DVDPrime` search
+-   `DVDPrime` search
 
 ## [1.0.0-beta.42] - 2020-06-11
 
 ### Added
 
--   add `dcinside` search
+-   `dcinside` search
 
 ## [1.0.0-beta.41] - 2020-06-10
 
 ### Added
 
--   add command-line arguments: `--theme`, `--reset`, `coumminty index | name`
+-   command-line arguments: `--theme`, `--reset`, `coumminty index | name`
     -   `--theme`: update theme
     -   `--reset`: reset data
     -   `community index | name`: open community directly
@@ -342,20 +344,23 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
--   add more distinguishable indicators for sorting boards and auto-refresh
--   add gif/image indicators for comments in `CLIEN`
+-   more distinguishable indicators for sorting boards and auto-refresh
+-   gif/image indicators for comments in `CLIEN`
 -   display 201 or more comments in `CLIEN`
 
 ## [1.0.0-beta.37] - 2020-06-09
 
 ### Added
 
--   add [CHANGELOG.md](CHANGELOG.md)
+-   [CHANGELOG.md](CHANGELOG.md)
+
+### Updated
+
+-   update [README.md](README.md)
 
 ### Fixed
 
--   fix auto refresh bug
--   update [README.md](README.md)
+-   auto refresh bug
 
 [1.0.0-beta.99]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.99
 [1.0.0-beta.98]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.98
