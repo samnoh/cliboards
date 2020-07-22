@@ -56,8 +56,13 @@ cliboards --filter
 # Disable spoiler protection
 cliboards --showSpoiler
 
-# Hide comments in order to browse posts quickly
-cliboards --noComments
+# Hide comments in order to browse posts faster
+cliboards --hideComments
+
+# Hide top and/or bottom bars
+cliboards --fullScreen
+cliboards --hideTopBar
+cliboards --hideBottomBar
 ```
 
 ## Changelog

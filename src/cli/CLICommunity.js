@@ -47,7 +47,9 @@ class CLICommunity extends CLI {
         // options
         this.autoRefreshInterval = 10; // refresh every 10 seconds; do not make it too low
         this.showSpoiler = false;
-        this.noComments = false;
+        this.hideComments = false;
+        this.hideTopBar = false;
+        this.hideBottomBar = false;
         this.hasSpoiler = false;
         this.autoRefreshTimer = null;
 
@@ -60,7 +62,10 @@ class CLICommunity extends CLI {
         startCrawler,
         filter,
         showSpoiler,
-        noComments,
+        hideComments,
+        fullScreen,
+        hideTopBar,
+        hideBottomBar,
     }) {
         clearFolder(tempFolderPath);
 
@@ -93,8 +98,27 @@ class CLICommunity extends CLI {
             community.showSpoiler = true;
         }
 
-        if (noComments) {
-            community.noComments = true;
+        if (hideComments) {
+            community.hideComments = true;
+        }
+
+        if (fullScreen || hideTopBar) {
+            community.hideTopBar = true;
+            community.titleBox.hide();
+            community.bodyBox.top = 0;
+        }
+
+        if (fullScreen || hideBottomBar) {
+            community.hideBottomBar = true;
+            community.footerBox.hide();
+        }
+
+        if (fullScreen || hideTopBar || hideBottomBar) {
+            if (fullScreen || (hideTopBar && hideBottomBar)) {
+                community.bodyBox.height = '100%';
+            } else {
+                community.bodyBox.height = '100%-1';
+            }
         }
 
         if (startCrawler) {
@@ -582,10 +606,10 @@ class CLICommunity extends CLI {
                 '커뮤니티 목록',
                 this.isColorsError
                     ? 'Invalid JSON format for color theme - default theme now'
-                    : this.noComments || this.showSpoiler
-                    ? `you turned off ${this.noComments ? 'comments' : ''}${
-                          this.noComments && this.showSpoiler ? ' and ' : ''
-                      }${this.showSpoiler ? 'spoiler protection' : ''}`
+                    : this.hideComments || this.showSpoiler
+                    ? `${this.hideComments ? 'hideComments' : ''}${
+                          this.hideComments && this.showSpoiler ? ', ' : ''
+                      }${this.showSpoiler ? 'showSpoiler' : ''}`
                     : '',
                 `c: changelog{|}{${this.colors.bottom_right_color}-fg}${name} ${version}{/}`,
             );
@@ -879,7 +903,7 @@ class CLICommunity extends CLI {
             if (currPost) {
                 this.post = await this.crawler.getPostDetail(
                     currPost,
-                    this.noComments,
+                    this.hideComments,
                 );
 
                 const { title, comments } = this.post;
@@ -894,7 +918,7 @@ class CLICommunity extends CLI {
                     // update changed title and number of comments
                     currPost.title = title;
 
-                    if (!this.noComments) {
+                    if (!this.hideComments) {
                         currPost.numberOfComments = comments.length;
                     }
                 }
@@ -1088,8 +1112,10 @@ class CLICommunity extends CLI {
 
         this.textBox.on('destroy', () => {
             this.widgets[this.currentWidgetIndex].focus();
+            this.hideBottomBar && this.footerBox.hide();
         });
 
+        this.footerBox.show();
         this.textBox.focus();
         this.screen.render();
     }
@@ -1158,6 +1184,7 @@ class CLICommunity extends CLI {
         this.formBox.on('destroy', () => {
             this.formBox = null;
             this.widgets[this.currentWidgetIndex].focus();
+            this.hideBottomBar && this.footerBox.hide();
         });
 
         this.formBox.on('focus', () => {
@@ -1165,6 +1192,7 @@ class CLICommunity extends CLI {
             this.screen.render();
         });
 
+        this.footerBox.show();
         this.formBox.focus();
     }
 

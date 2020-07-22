@@ -2,13 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.99] - 2020-07-23
+
+### Added
+
+-   hide top and/or bottom bars
+    ```bash
+    cliboards --fullScreen
+    cliboards --hideTopBar
+    cliboards --hideBottomBar
+    ```
+
+### Updated
+
+-   cli option `--noComments` is changed to `--hideComments`
+    ```bash
+    cliboards --hideComments
+    ```
+
 ## [1.0.0-beta.98] - 2020-07-22
 
 ### Added
 
 -   hide comments to browse posts quickly
     ```bash
-        cliboards --noComments
+    cliboards --noComments
     ```
 -   new color option
     -   list_new_post_bg (green)
@@ -339,6 +357,7 @@ All notable changes to this project will be documented in this file.
 -   fix auto refresh bug
 -   update [README.md](README.md)
 
+[1.0.0-beta.99]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.99
 [1.0.0-beta.98]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.98
 [1.0.0-beta.96]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.96
 [1.0.0-beta.95]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.95
