@@ -40,6 +40,15 @@ const getKeywords = () => {
     return keywords;
 };
 
+const addKeywords = newKeywords => {
+    if (!Array.isArray(newKeywords)) return;
+
+    const _keywords = new Set(keywords);
+    newKeywords.map(k => _keywords.add(k));
+
+    keywords = [..._keywords];
+};
+
 const filterByKeywords = target => {
     if (!target || !keywords.length) return target;
 
@@ -53,5 +62,6 @@ module.exports = {
     openFilterByKeywordsFile,
     resetFilterByKeywordsFile,
     getKeywords,
+    addKeywords,
     filterByKeywords,
 };

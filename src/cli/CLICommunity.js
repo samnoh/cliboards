@@ -46,14 +46,22 @@ class CLICommunity extends CLI {
 
         // options
         this.autoRefreshInterval = 10; // refresh every 10 seconds; do not make it too low
-        this.disableSP = false;
+        this.showSpoiler = false;
+        this.noComments = false;
         this.hasSpoiler = false;
         this.autoRefreshTimer = null;
 
         this.setAllEvents();
     }
 
-    static async start({ theme, reset, startCrawler, disableSP, filter }) {
+    static async start({
+        theme,
+        reset,
+        startCrawler,
+        filter,
+        showSpoiler,
+        noComments,
+    }) {
         clearFolder(tempFolderPath);
 
         if (reset && !startCrawler) {
@@ -81,8 +89,12 @@ class CLICommunity extends CLI {
             return community.terminate();
         }
 
-        if (disableSP) {
-            community.disableSP = true;
+        if (showSpoiler) {
+            community.showSpoiler = true;
+        }
+
+        if (noComments) {
+            community.noComments = true;
         }
 
         if (startCrawler) {
@@ -569,7 +581,11 @@ class CLICommunity extends CLI {
             this.setTitleFooterContent(
                 '커뮤니티 목록',
                 this.isColorsError
-                    ? '{gray-fg}Invalid JSON format for color theme - default theme now{/}'
+                    ? 'Invalid JSON format for color theme - default theme now'
+                    : this.noComments || this.showSpoiler
+                    ? `you turned off ${this.noComments ? 'comments' : ''}${
+                          this.noComments && this.showSpoiler ? ' and ' : ''
+                      }${this.showSpoiler ? 'spoiler protection' : ''}`
                     : '',
                 `c: changelog{|}{${this.colors.bottom_right_color}-fg}${name} ${version}{/}`,
             );
@@ -625,12 +641,11 @@ class CLICommunity extends CLI {
                         numberOfComments,
                         author,
                         hasRead,
-                        hasImages,
                         isNewPost,
                     }) =>
                         `${
                             isNewPost
-                                ? `{${this.colors.list_new_post_color}-fg}‧{/}`
+                                ? `{${this.colors.list_new_post_color}-bg} {/}`
                                 : ' '
                         }${
                             category
@@ -645,12 +660,8 @@ class CLICommunity extends CLI {
                                   '{/}'
                                 : title
                         } {${this.colors.list_info_color}-fg}${
-                            hasImages
-                                ? '{underline}' +
-                                  numberOfComments +
-                                  '{/underline}'
-                                : numberOfComments || ''
-                        }{/}  {|}{${
+                            numberOfComments || ''
+                        }{/}{|} {${
                             this.colors.list_right_color
                         }-fg}${author}{/}`,
                 ),
@@ -749,7 +760,7 @@ class CLICommunity extends CLI {
                           '{/} '
                         : ''
                 }${title} {${this.colors.top_info_color}-fg}${
-                    comments.length
+                    (comments && comments.length) || ''
                 }{/}`,
                 `${author}|${hit}|${time}`,
             );
@@ -866,7 +877,10 @@ class CLICommunity extends CLI {
             const currPost = this.posts[index];
 
             if (currPost) {
-                this.post = await this.crawler.getPostDetail(currPost);
+                this.post = await this.crawler.getPostDetail(
+                    currPost,
+                    this.noComments,
+                );
 
                 const { title, comments } = this.post;
 
@@ -879,7 +893,10 @@ class CLICommunity extends CLI {
                     );
                     // update changed title and number of comments
                     currPost.title = title;
-                    currPost.numberOfComments = comments.length;
+
+                    if (!this.noComments) {
+                        currPost.numberOfComments = comments.length;
+                    }
                 }
             }
         } catch (e) {
@@ -918,7 +935,7 @@ class CLICommunity extends CLI {
 
     rednerDetailBody(_disableSP = false) {
         this.hasSpoiler =
-            !_disableSP && !this.disableSP && hasSpoilerWord(this.post.title);
+            !_disableSP && !this.showSpoiler && hasSpoilerWord(this.post.title);
 
         if (this.hasSpoiler) {
             this.detailBox.setContent(

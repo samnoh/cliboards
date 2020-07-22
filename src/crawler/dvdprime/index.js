@@ -80,7 +80,7 @@ class DVDPrime extends CommunityCrawler {
         }, baseUrl);
     }
 
-    async getPostDetail({ link, id, category }) {
+    async getPostDetail({ link, id, category }, disableComments) {
         await this.page.goto(link);
 
         const postDetail = await this.page.evaluate(() => {
@@ -89,7 +89,7 @@ class DVDPrime extends CommunityCrawler {
             const hit = document.querySelector('#view_hit');
             const body = document.querySelector('.resContents');
             const upVotes = document.querySelector('#view_recommend_num');
-            const comments = document.querySelectorAll('.comment_container');
+
             const time = document.querySelector('#view_datetime').innerText;
             const images = Array.from(
                 body.querySelectorAll(
@@ -134,56 +134,67 @@ class DVDPrime extends CommunityCrawler {
                 upVotes: parseInt(upVotes.innerText),
                 images,
                 hasImages: images.length,
-                comments: Array.from(comments).map(comment => {
-                    const body = comment.querySelector('.comment_content');
-                    const author = comment.querySelector('.sideview_a');
-                    const time = comment.querySelector('.comment_time')
-                        .innerText;
-                    const upVotes = comment.querySelector(
-                        '.comment_title_right .c_r_num',
-                    );
-                    const replyEl = comment.querySelector(
-                        '.comment_content_container_reply',
-                    );
-                    const isReply = replyEl
-                        ? parseInt(replyEl.className.replace(/[^0-9]/g, ''))
-                        : 0;
-
-                    const spoilerWarning = body.querySelectorAll(
-                        '.view_warning_div, .view_warning_stoptalking',
-                    );
-
-                    if (spoilerWarning.length) {
-                        body.removeChild(spoilerWarning[0]);
-                    }
-
-                    body.querySelectorAll(
-                        'img:not([src$=".gif"]), video',
-                    ).forEach((item, index) => {
-                        if (item.tagName === 'VIDEO') {
-                            item.parentNode.innerText = `GIF_${index + 1}`;
-                        } else {
-                            item.parentNode.innerText = `IMAGE_${index + 1}`;
-                        }
-                    });
-
-                    const output = {
-                        isReply,
-                        isRemoved: false,
-                        author: author.innerText,
-                        time,
-                        body: body.innerText.trim(),
-                        upVotes: parseInt(upVotes.innerText),
-                    };
-
-                    output.id = output.author + output.time;
-
-                    return output;
-                }),
+                comments: [],
             };
         });
 
+        if (!disableComments) {
+            postDetail.comments = await this.page.evaluate(
+                this.processComments,
+            );
+        }
+
         return { ...postDetail, id, category };
+    }
+
+    processComments() {
+        const comments = document.querySelectorAll('.comment_container');
+
+        return Array.from(comments).map(comment => {
+            const body = comment.querySelector('.comment_content');
+            const author = comment.querySelector('.sideview_a');
+            const time = comment.querySelector('.comment_time').innerText;
+            const upVotes = comment.querySelector(
+                '.comment_title_right .c_r_num',
+            );
+            const replyEl = comment.querySelector(
+                '.comment_content_container_reply',
+            );
+            const isReply = replyEl
+                ? parseInt(replyEl.className.replace(/[^0-9]/g, ''))
+                : 0;
+
+            const spoilerWarning = body.querySelectorAll(
+                '.view_warning_div, .view_warning_stoptalking',
+            );
+
+            if (spoilerWarning.length) {
+                body.removeChild(spoilerWarning[0]);
+            }
+
+            body.querySelectorAll('img:not([src$=".gif"]), video').forEach(
+                (item, index) => {
+                    if (item.tagName === 'VIDEO') {
+                        item.parentNode.innerText = `GIF_${index + 1}`;
+                    } else {
+                        item.parentNode.innerText = `IMAGE_${index + 1}`;
+                    }
+                },
+            );
+
+            const output = {
+                isReply,
+                isRemoved: false,
+                author: author.innerText,
+                time,
+                body: body.innerText.trim(),
+                upVotes: parseInt(upVotes.innerText),
+            };
+
+            output.id = output.author + output.time;
+
+            return output;
+        });
     }
 
     static toString() {

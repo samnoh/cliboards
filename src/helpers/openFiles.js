@@ -19,10 +19,9 @@ const openUrls = async urls => {
 };
 
 const tempFolderPath = path.resolve(__dirname, '..', '..', '.temp');
+const tempHtmlPath = path.join(tempFolderPath, 'index.html');
 
 const openImages = async props => {
-    const tempHtmlPath = path.join(tempFolderPath, 'index.html');
-
     const html = renderHtml(props);
 
     fs.writeFileSync(tempHtmlPath, html);

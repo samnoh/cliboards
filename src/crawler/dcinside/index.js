@@ -104,7 +104,9 @@ class Dcinside extends CommunityCrawler {
                                     upVotes &&
                                         upVotes.innerText.replace(/[^0-9]/),
                                 ) || 0,
-                            numberOfComments: numberOfComments.innerText,
+                            numberOfComments: parseInt(
+                                numberOfComments.innerText,
+                            ),
                             hasImages: !!hasImages,
                         }
                     );
@@ -113,7 +115,7 @@ class Dcinside extends CommunityCrawler {
         });
     }
 
-    async getPostDetail({ link, id, category }) {
+    async getPostDetail({ link, id, category }, disableComments) {
         await this.page.goto(link);
 
         const postDetail = await this.page.evaluate(() => {
@@ -127,7 +129,6 @@ class Dcinside extends CommunityCrawler {
             const body = document.querySelector('.thum-txt');
             const upVotes = document.querySelector('#recomm_btn');
             const downVotes = document.querySelector('#nonrecomm_btn');
-            const comments = document.querySelectorAll('.all-comment-lst li');
             const time = document.querySelector('.btm .ginfo2 li:nth-child(2)')
                 .innerText;
             const imagesEl = Array.from(
@@ -177,43 +178,54 @@ class Dcinside extends CommunityCrawler {
                 hasImages: images.length,
                 upVotes: parseInt(upVotes.innerText),
                 downVotes: parseInt(downVotes.innerText),
-                comments: Array.from(comments)
-                    .map(comment => {
-                        const body = comment.querySelector('.txt');
-                        const author = comment.querySelector('.nick');
-                        const time = comment.querySelector('.date');
-                        const isReply = comment.classList.contains(
-                            'comment-add',
-                        );
-
-                        if (!body) {
-                            return null;
-                        }
-
-                        body.querySelectorAll('img').forEach((image, index) => {
-                            image.insertAdjacentText(
-                                'afterend',
-                                `IMAGE_${index + 1} `,
-                            );
-                        });
-
-                        const output = {
-                            isReply: !!isReply,
-                            isRemoved: false,
-                            author: author.innerText,
-                            time: time.innerText,
-                            body: body.innerText.trim(),
-                        };
-
-                        output.id = output.author + output.time;
-
-                        return output;
-                    })
-                    .filter(comment => comment),
+                comments: [],
             };
         });
 
-        return { ...postDetail, id, category };
+        if (!disableComments) {
+            postDetail.comments = await this.page.evaluate(
+                this.processComments,
+            );
+        }
+
+        return {
+            ...postDetail,
+            id,
+            category,
+        };
+    }
+
+    processComments() {
+        const comments = document.querySelectorAll('.all-comment-lst li');
+
+        return Array.from(comments)
+            .map(comment => {
+                const body = comment.querySelector('.txt');
+                const author = comment.querySelector('.nick');
+                const time = comment.querySelector('.date');
+                const isReply = comment.classList.contains('comment-add');
+
+                if (!body) {
+                    return null;
+                }
+
+                body.querySelectorAll('img').forEach((image, index) => {
+                    image.insertAdjacentText('afterend', `IMAGE_${index + 1} `);
+                });
+
+                const output = {
+                    isReply: !!isReply,
+                    isRemoved: false,
+                    author: author.innerText,
+                    time: time.innerText,
+                    body: body.innerText.trim(),
+                };
+
+                output.id = output.author + output.time;
+
+                return output;
+            })
+            .filter(comment => comment);
     }
 
     async addBoard(link, type) {

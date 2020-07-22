@@ -65,7 +65,7 @@ class SLRClub extends CommunityCrawler {
                         time: time,
                         link,
                         upVotes: parseInt(upVotes),
-                        numberOfComments: numberOfComments.innerText,
+                        numberOfComments: parseInt(numberOfComments.innerText),
                         hasImages: !!hasImages,
                     };
                 }),
@@ -78,7 +78,7 @@ class SLRClub extends CommunityCrawler {
         return posts;
     }
 
-    async getPostDetail({ link, id, category }) {
+    async getPostDetail({ link, id, category }, disableComments) {
         await this.page.goto(link);
 
         const postDetail = await this.page.evaluate(() => {
@@ -137,7 +137,11 @@ class SLRClub extends CommunityCrawler {
             };
         });
 
-        if (postDetail.numberOfComments && postDetail.commentsFormData) {
+        if (
+            postDetail.numberOfComments &&
+            postDetail.commentsFormData &&
+            !disableComments
+        ) {
             postDetail.comments = await this.getComments(
                 postDetail.commentsFormData,
             );

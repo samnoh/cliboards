@@ -118,7 +118,7 @@ class Clien extends CommunityCrawler {
         }, baseUrl);
     }
 
-    async getPostDetail({ title, author, link, id, category }) {
+    async getPostDetail({ link, id, category }, disableComments) {
         await this.page.goto(link);
 
         const postDetail = await this.page.evaluate(() => {
@@ -184,6 +184,7 @@ class Clien extends CommunityCrawler {
                     .join('\n\n')
                     .trim(),
                 upVotes: parseInt(upVotes.innerText),
+                comments: [],
                 images,
                 hasImages: images.length,
                 extraData: {
@@ -192,9 +193,11 @@ class Clien extends CommunityCrawler {
             };
         });
 
-        postDetail.comments = postDetail.extraData.isXHRRequired
-            ? await this.getAllComments()
-            : await this.page.evaluate(this.processComments);
+        if (!disableComments) {
+            postDetail.comments = postDetail.extraData.isXHRRequired
+                ? await this.getAllComments()
+                : await this.page.evaluate(this.processComments);
+        }
 
         return { ...postDetail, id, category };
     }

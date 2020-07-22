@@ -54,7 +54,10 @@ cliboards --theme
 cliboards --filter
 
 # Disable spoiler protection
-cliboards --disableSP
+cliboards --showSpoiler
+
+# Hide comments in order to browse posts quickly
+cliboards --noComments
 ```
 
 ## Changelog

@@ -170,7 +170,7 @@ class Ppomppu extends CommunityCrawler {
         );
     }
 
-    async getPostDetail({ link, id, category }) {
+    async getPostDetail({ link, id, category }, disableComments) {
         await this.page.goto(link);
 
         const postDetail = await this.page.evaluate(() => {
@@ -204,7 +204,6 @@ class Ppomppu extends CommunityCrawler {
             let upVotes = otherInfoEl[otherInfoEl.indexOf('추천') + 2];
 
             const body = document.querySelector('#KH_Content');
-            const comments = document.querySelectorAll('.cmAr .sect-cmt');
             const imagesEl = Array.from(
                 body.querySelectorAll(
                     'img, video, iframe[src^="https://www.youtube.com/embed"], a[href^="https://www.youtube.com/watch?v="]',
@@ -278,81 +277,81 @@ class Ppomppu extends CommunityCrawler {
                 upVotes: parseInt(upVotes),
                 images,
                 hasImages: images.length,
-                comments: Array.from(comments)
-                    .map(comment => {
-                        const body = comment.querySelector('.comment_memo td');
-                        const author = comment.querySelector('.com_name span');
-                        const time = comment.querySelector('.cin_02 span');
-                        const isReply = parseInt(
-                            comment.classList[0].replace('sect', ''),
-                        );
-                        const isHot = comment.parentNode.classList.contains(
-                            'hot-comment-preview',
-                        );
-
-                        const votesEl = comment.querySelectorAll(
-                            '.com_name > span',
-                        );
-                        let upVotes, downVotes;
-
-                        if (votesEl.length === 3) {
-                            upVotes = votesEl[2].innerText;
-                            downVotes = votesEl[1].innerText;
-                        }
-
-                        body.querySelectorAll('img, video').forEach(
-                            (item, index) => {
-                                const text = document.createElement('span');
-                                if (item.tagName === 'VIDEO') {
-                                    const videoDiv = item.parentNode.parentNode;
-
-                                    text.innerText = `GIF_${index + 1} `;
-                                    videoDiv.insertAdjacentElement(
-                                        'afterend',
-                                        text,
-                                    );
-                                    videoDiv.removeChild(item.parentNode);
-                                } else {
-                                    text.innerText = `IMAGE_${index + 1} `;
-                                    item.insertAdjacentElement(
-                                        'afterend',
-                                        text,
-                                    );
-                                }
-                            },
-                        );
-
-                        body.querySelectorAll('a.noeffect').forEach(link => {
-                            const href = link.getAttribute('href');
-                            link.innerText = link.innerText.replace(
-                                link.innerText,
-                                href,
-                            );
-                        });
-
-                        return (
-                            !isHot && {
-                                isReply,
-                                isRemoved: false,
-                                id: author.innerText + time.innerText,
-                                author: author.innerText.trim(),
-                                time: time.innerText.match(
-                                    /\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}/,
-                                )[0],
-
-                                body: body.textContent.trim(),
-                                upVotes: upVotes ? parseInt(upVotes.trim()) : 0,
-                                downVotes: downVotes
-                                    ? parseInt(downVotes.trim())
-                                    : 0,
-                            }
-                        );
-                    })
-                    .filter(comment => comment),
+                comments: [],
             };
         });
 
+        if (!disableComments) {
+            postDetail.comments = await this.page.evaluate(
+                this.processComments,
+            );
+        }
+
         return { ...postDetail, id, category };
+    }
+
+    processComments() {
+        const comments = document.querySelectorAll('.cmAr .sect-cmt');
+
+        return Array.from(comments)
+            .map(comment => {
+                const body = comment.querySelector('.comment_memo td');
+                const author = comment.querySelector('.com_name span');
+                const time = comment.querySelector('.cin_02 span');
+                const isReply = parseInt(
+                    comment.classList[0].replace('sect', ''),
+                );
+                const isHot = comment.parentNode.classList.contains(
+                    'hot-comment-preview',
+                );
+
+                const votesEl = comment.querySelectorAll('.com_name > span');
+                let upVotes, downVotes;
+
+                if (votesEl.length === 3) {
+                    upVotes = votesEl[2].innerText;
+                    downVotes = votesEl[1].innerText;
+                }
+
+                body.querySelectorAll('img, video').forEach((item, index) => {
+                    const text = document.createElement('span');
+                    if (item.tagName === 'VIDEO') {
+                        const videoDiv = item.parentNode.parentNode;
+
+                        text.innerText = `GIF_${index + 1} `;
+                        videoDiv.insertAdjacentElement('afterend', text);
+                        videoDiv.removeChild(item.parentNode);
+                    } else {
+                        text.innerText = `IMAGE_${index + 1} `;
+                        item.insertAdjacentElement('afterend', text);
+                    }
+                });
+
+                body.querySelectorAll('a.noeffect').forEach(link => {
+                    const href = link.getAttribute('href');
+                    link.innerText = link.innerText.replace(
+                        link.innerText,
+                        href,
+                    );
+                });
+
+                return (
+                    !isHot && {
+                        isReply,
+                        isRemoved: false,
+                        id: author.innerText + time.innerText,
+                        author: author.innerText.trim(),
+                        time: time.innerText.match(
+                            /\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}/,
+                        )[0],
+
+                        body: body.textContent.trim(),
+                        upVotes: upVotes ? parseInt(upVotes.trim()) : 0,
+                        downVotes: downVotes ? parseInt(downVotes.trim()) : 0,
+                    }
+                );
+            })
+            .filter(comment => comment);
     }
 
     static toString() {

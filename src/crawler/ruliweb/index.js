@@ -84,7 +84,7 @@ class Ruliweb extends CommunityCrawler {
         }));
     }
 
-    async getPostDetail({ link, id, category }) {
+    async getPostDetail({ link, id, category }, disableComments) {
         await this.page.goto(link);
 
         const postDetail = await this.page.evaluate(() => {
@@ -171,13 +171,19 @@ class Ruliweb extends CommunityCrawler {
             };
         });
 
-        postDetail.comments = await this.page.evaluate(this.processComments);
+        if (!disableComments) {
+            postDetail.comments = await this.page.evaluate(
+                this.processComments,
+            );
 
-        const { isXHRRequired, nCommentPages } = postDetail.extraData;
+            const { isXHRRequired, nCommentPages } = postDetail.extraData;
 
-        if (isXHRRequired) {
-            const newComments = await this.getNextAllComments(nCommentPages);
-            postDetail.comments = [...postDetail.comments, ...newComments];
+            if (isXHRRequired) {
+                const newComments = await this.getNextAllComments(
+                    nCommentPages,
+                );
+                postDetail.comments = [...postDetail.comments, ...newComments];
+            }
         }
 
         return { ...postDetail, id, category };
