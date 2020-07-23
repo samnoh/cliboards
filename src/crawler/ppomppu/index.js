@@ -191,7 +191,7 @@ class Ppomppu extends CommunityCrawler {
                 category = hi.split('|')[0].trim();
             }
 
-            const time = hi.match(/\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}/)[0];
+            const time = hi.match(/\d{2}-\d{2}-\d{2}\s\d{2}:\d{2}/)[0];
 
             let otherInfoEl = infoEl[1].trim().split(' ');
             let hit = otherInfoEl[otherInfoEl.indexOf('조회') + 2];
@@ -342,7 +342,7 @@ class Ppomppu extends CommunityCrawler {
                         id: author.innerText + time.innerText,
                         author: author.innerText.trim(),
                         time: time.innerText.match(
-                            /\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}/,
+                            /\d{2}-\d{2}-\d{2}\s\d{2}:\d{2}/,
                         )[0],
 
                         body: body.textContent.trim(),

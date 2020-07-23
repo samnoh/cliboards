@@ -177,7 +177,7 @@ class Clien extends CommunityCrawler {
                     author.innerText.trim() ||
                     author.querySelector('img').getAttribute('alt'),
                 hit: hit.innerText.replace(/,/g, '').trim(),
-                time: time[0] + ' ' + time[1],
+                time: time[0].slice(2) + ' ' + time[1].slice(0, -3),
                 body: body.innerText
                     .split('\n\n')
                     .filter(a => a.trim())
@@ -244,9 +244,9 @@ class Clien extends CommunityCrawler {
                     author.innerText ||
                     author.querySelector('img').getAttribute('alt'),
                 time:
-                    time.innerText.split(' ')[0] +
+                    time.innerText.split(' ')[0].slice(2) +
                     ' ' +
-                    time.innerText.split(' ')[1],
+                    time.innerText.split(' ')[1].slice(0, -3),
                 body:
                     image || gif
                         ? `${image ? 'IMAGE' : 'GIF'}_1\n\n` + body.innerText

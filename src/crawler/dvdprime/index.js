@@ -129,7 +129,7 @@ class DVDPrime extends CommunityCrawler {
                 title: title.innerText,
                 author: author.innerText.trim(),
                 hit: hit.innerText.trim(),
-                time,
+                time: time.match(/\d{2}-\d{2}-\d{2}\s\d{2}:\d{2}/)[0] || time,
                 body: body.innerText.split('\n\n').join('\n').trim(),
                 upVotes: parseInt(upVotes.innerText),
                 images,
@@ -186,7 +186,7 @@ class DVDPrime extends CommunityCrawler {
                 isReply,
                 isRemoved: false,
                 author: author.innerText,
-                time,
+                time: time.match(/\d{2}-\d{2}-\d{2}\s\d{2}:\d{2}/)[0] || time,
                 body: body.innerText.trim(),
                 upVotes: parseInt(upVotes.innerText),
             };

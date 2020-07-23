@@ -154,7 +154,10 @@ class Ruliweb extends CommunityCrawler {
                 title: title.innerText.trim().replace(/\[([^)]+)\]\s/, ''),
                 author: author.innerText.trim(),
                 hit: hit[hit.length - 1],
-                time: time.innerText.replace(/[^\.\d\s:]/g, ''),
+                time: time.innerText
+                    .replace(/[^\.\d\s:]/g, '')
+                    .slice(2)
+                    .slice(0, -3),
                 body: body.innerText
                     .trim()
                     .split('\n')
