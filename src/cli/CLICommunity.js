@@ -1114,7 +1114,9 @@ class CLICommunity extends CLI {
     }
 
     showTextBox(onSubmit) {
-        this.currentPostIndex = this.listList.getScroll();
+        if (this.listList.focused) {
+            this.currentPostIndex = this.listList.getScroll();
+        }
 
         const textBox = blessed.textbox({
             parent: this.footerBox,
@@ -1170,13 +1172,12 @@ class CLICommunity extends CLI {
     showFormBox(buttons, onSubmit) {
         if (!buttons.length) return;
 
-        const formBox = blessed.form({
+        this.formBox = blessed.form({
             parent: this.footerBox,
             height: 1,
             width: '100%+1',
             top: '100%-1',
             left: -1,
-            name: 'formBox',
         });
 
         let left = 0;
@@ -1190,7 +1191,7 @@ class CLICommunity extends CLI {
                 nonDoubleWidthCharsLegnth;
 
             const _button = blessed.button({
-                parent: formBox,
+                parent: this.formBox,
                 content: name,
                 width,
                 left,
@@ -1208,39 +1209,40 @@ class CLICommunity extends CLI {
                     case 'tab':
                     case 'l':
                     case 'right':
-                        return formBox.focusNext();
+                        return this.formBox.focusNext();
                     case 'S-tab':
                     case 'h':
                     case 'left':
-                        return formBox.focusPrevious();
+                        return this.formBox.focusPrevious();
                     case 'c':
                     case 'q':
                     case 'escape':
-                        return formBox.destroy();
+                        return this.formBox.destroy();
                     case 'enter':
-                        return formBox.emit('submit', { name, value });
+                        return this.formBox.emit('submit', { name, value });
                 }
             });
         });
 
-        formBox.on('submit', async input => {
-            formBox.children.forEach(child => child.destroy());
-            formBox.destroy();
-            onSubmit && (await onSubmit(input, formBox));
+        this.formBox.on('submit', async input => {
+            this.formBox.children.forEach(child => child.destroy());
+            this.formBox.destroy();
+            onSubmit && (await onSubmit(input, this.formBox));
         });
 
-        formBox.on('destroy', () => {
+        this.formBox.on('destroy', () => {
+            this.formBox = null;
             this.widgets[this.currentWidgetIndex].focus();
             this.hideBottomBar && this.footerBox.hide();
         });
 
-        formBox.on('focus', () => {
-            formBox.focusNext();
+        this.formBox.on('focus', () => {
+            this.formBox.focusNext();
             this.screen.render();
         });
 
         this.footerBox.show();
-        formBox.focus();
+        this.formBox.focus();
     }
 
     setHasRead(hasRead) {

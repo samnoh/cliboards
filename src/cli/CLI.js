@@ -64,12 +64,12 @@ class CLI {
                     return await this.terminate(env.isDevEnv ? 1 : 0);
                 case 'escape':
                 case 'q':
-                    if (this.searchKeywordInMode && this.listList.focused) {
-                        return this.cancelSearchInMode();
-                    } else if (!this.footerBox.focused && !this.formBox);
-                    {
-                        return this.moveToWidget('prev');
+                    if (this.listList.focused && this.searchKeywordInMode) {
+                        this.cancelSearchInMode();
+                    } else if (!this.footerBox.focused && !this.formBox) {
+                        this.moveToWidget('prev');
                     }
+                    return;
                 case 'space':
                     return this.screen.children.forEach(c => {
                         if (c.visible) {
