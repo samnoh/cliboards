@@ -347,7 +347,6 @@ class CLICommunity extends CLI {
             if (this.isFavMode || this.isHistoryMode) {
                 if (full === 'w') {
                     this.showTextBox((keyword, textBox) => {
-                        textBox.destroy();
                         this.searchKeywordInMode = keyword;
                         const originalPosts = this.isFavMode
                             ? getFavorites(this.crawler.title)
@@ -357,7 +356,7 @@ class CLICommunity extends CLI {
                             title.toLowerCase().includes(keyword),
                         );
                         this.currentPostIndex = 0;
-                        this.listList.focus();
+                        textBox.destroy();
                     });
                 }
                 return;
@@ -447,7 +446,6 @@ class CLICommunity extends CLI {
                                 }
 
                                 textBox.destroy();
-                                this.listList.focus();
                             } catch (e) {
                                 this.crawler.searchParams = {};
                                 this.setTitleFooterContent(
@@ -1116,6 +1114,8 @@ class CLICommunity extends CLI {
     }
 
     showTextBox(onSubmit) {
+        this.currentPostIndex = this.listList.getScroll();
+
         const textBox = blessed.textbox({
             parent: this.footerBox,
             height: 1,
@@ -1133,13 +1133,10 @@ class CLICommunity extends CLI {
 
         textBox.on('cancel', () => {
             textBox.destroy();
-            this.widgets[this.currentWidgetIndex].focus();
         });
 
         textBox.on('submit', async input => {
-            if (!input) {
-                return textBox.destroy();
-            }
+            if (!input) return textBox.destroy();
 
             try {
                 await onSubmit(input, textBox);
