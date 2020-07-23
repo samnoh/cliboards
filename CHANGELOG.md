@@ -13,6 +13,10 @@ All notable changes to this project will be documented in this file.
 -   time format
 -   some help messages
 
+### Fixed
+
+-   url displays in posts in `clien`
+
 ## [1.0.0-beta.99] - 2020-07-23
 
 ### Added
