@@ -4,9 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## [1.0.0-beta.100] - 2020-07-23
 
+### Added
+
+-   search for posts in favorites and post history pages
+
 ### Updated
 
 -   time format
+-   some help messages
 
 ## [1.0.0-beta.99] - 2020-07-23
 
