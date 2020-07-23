@@ -137,7 +137,6 @@ class Clien extends CommunityCrawler {
                 .querySelector('.post_author span')
                 .innerText.trim()
                 .split(' ');
-            const source = document.querySelector('.attached_source a');
             const images = Array.from(
                 body.querySelectorAll(
                     'img, .fr-video, iframe[src^="https://www.youtube.com/embed"]',
@@ -165,8 +164,14 @@ class Clien extends CommunityCrawler {
                 return { type, value, name };
             });
 
+            const source = document.querySelector('.attached_source a');
             if (source) {
                 body.innerText += `\n\n출처 : ${source.getAttribute('href')}`;
+            }
+
+            const refs = body.querySelectorAll('a.url + .name');
+            if (refs.length) {
+                Array.from(refs).map(link => link.remove());
             }
 
             return {

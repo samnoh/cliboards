@@ -50,6 +50,7 @@ class CLICommunity extends CLI {
         this.hideComments = false;
         this.hideTopBar = false;
         this.hideBottomBar = false;
+        this.searchKeywordInMode = '';
         this.hasSpoiler = false;
         this.autoRefreshTimer = null;
 
@@ -187,14 +188,9 @@ class CLICommunity extends CLI {
 
                     this.setTitleContent('링크나 갤러리 ID를 입력하세요');
 
-                    return this.showTextBox(async input => {
-                        if (!input) {
-                            return this.textBox.destroy();
-                        }
-
+                    return this.showTextBox(async (input, textBox) => {
                         this.footerBox.focus();
-
-                        this.textBox.emit('success');
+                        textBox.emit('success');
 
                         try {
                             await this.crawler.addBoard(
@@ -203,15 +199,15 @@ class CLICommunity extends CLI {
                                     this.currentBoardTypeIndex
                                 ],
                             );
-                            this.textBox.destroy();
+                            textBox.destroy();
                             await this.crawler.getBoards();
                             await this.getBoards(
                                 this.currentBoardTypeIndex,
                                 this.crawler.boards.length,
                             );
                         } catch (e) {
-                            this.textBox.emit('failure');
                             this.setTitleFooterContent(e.message);
+                            throw new Error(e);
                         }
                     });
                 case 's':
@@ -308,30 +304,66 @@ class CLICommunity extends CLI {
                 this[full === 'enter' ? 'footerBox' : 'listList'].focus();
             }
 
-            if (!this.posts.length) return;
-
             if (this.isHistoryMode) {
-                if (full === 'r') {
+                if (full === 'r' && !this.searchKeywordInMode) {
                     this.footerBox.focus();
                     clearHistory(this.crawler.title);
                     this.posts = [];
                     setTimeout(() => this.listList.focus(), 250);
                 }
-                return;
             }
 
             if (this.isFavMode) {
-                if (full === 'd') {
+                if (full === 'd' && this.posts.length) {
                     this.footerBox.focus();
-                    deleteFavoritesByIndex(
+                    const keyword = this.searchKeywordInMode;
+
+                    let id, currentIndex;
+                    try {
+                        currentIndex = this.listList.getScroll();
+                        id = this.posts[currentIndex].id;
+                    } catch (e) {
+                        // if the last item and the next item is deleted w/o moving cursor
+                        currentIndex = this.posts.length - 1;
+                        id = this.posts[currentIndex].id;
+                    }
+
+                    const newPosts = deleteFavoritesById(
                         this.crawler.title,
-                        this.listList.getScroll(),
+                        id,
                     );
-                    this.posts = getFavorites(this.crawler.title);
+
+                    this.currentPostIndex = currentIndex;
+                    this.posts = keyword
+                        ? newPosts.filter(({ title }) =>
+                              title.toLowerCase().includes(keyword),
+                          )
+                        : newPosts;
+
                     setTimeout(() => this.listList.focus(), 250);
+                }
+            }
+
+            if (this.isFavMode || this.isHistoryMode) {
+                if (full === 'w') {
+                    this.showTextBox((keyword, textBox) => {
+                        textBox.destroy();
+                        this.searchKeywordInMode = keyword;
+                        const originalPosts = this.isFavMode
+                            ? getFavorites(this.crawler.title)
+                            : getCurrentHistories(this.crawler.title);
+
+                        this.posts = originalPosts.filter(({ title }) =>
+                            title.toLowerCase().includes(keyword),
+                        );
+                        this.currentPostIndex = 0;
+                        this.listList.focus();
+                    });
                 }
                 return;
             }
+
+            if (!this.posts.length) return;
 
             const prevPageNumber = this.crawler.currentPageNumber;
             const prevPosts = this.posts;
@@ -394,13 +426,9 @@ class CLICommunity extends CLI {
                             '키워드를 입력하세요',
                             name + ' 검색',
                         );
-                        this.showTextBox(async keyword => {
-                            if (!keyword) {
-                                return this.textBox.destroy();
-                            }
-
+                        this.showTextBox(async (keyword, textBox) => {
                             this.footerBox.focus();
-                            this.textBox.emit('success');
+                            textBox.emit('success');
 
                             try {
                                 this.crawler.currentPageNumber = 0;
@@ -418,15 +446,16 @@ class CLICommunity extends CLI {
                                     throw new Error('결과가 없습니다');
                                 }
 
-                                this.textBox.destroy();
+                                textBox.destroy();
                                 this.listList.focus();
                             } catch (e) {
-                                this.textBox.emit('failure');
                                 this.crawler.searchParams = {};
                                 this.setTitleFooterContent(
                                     'Error: ' + e.message,
                                     name + ' 검색',
                                 );
+
+                                throw new Error(e);
                             }
                         });
                     },
@@ -635,6 +664,7 @@ class CLICommunity extends CLI {
                 this.currentPostIndex = 0;
                 this.isFavMode = false;
                 this.isHistoryMode = false;
+                this.searchKeywordInMode = null;
                 this.setTitleFooterContent(
                     this.crawler.title,
                     this.crawler.boardTypes[this.currentBoardTypeIndex],
@@ -692,19 +722,21 @@ class CLICommunity extends CLI {
             );
             this.resetScroll(this.listList, this.currentPostIndex);
 
-            if (this.isHistoryMode) {
+            if (this.isHistoryMode || this.isFavMode) {
                 return this.setTitleFooterContent(
-                    `Post History {${this.colors.top_right_color}-fg}${this.posts.length}{/}`,
+                    `${this.isHistoryMode ? 'Post History' : 'Favorites'} ${
+                        this.searchKeywordInMode
+                            ? `{${this.colors.top_left_search_info_color}-fg}${this.searchKeywordInMode} 검색 결과 `
+                            : ''
+                    }{/}{${this.colors.top_right_color}-fg}${
+                        this.posts.length
+                    }{/}`,
                     this.crawler.title,
-                    'r: reset',
-                );
-            }
-
-            if (this.isFavMode) {
-                return this.setTitleFooterContent(
-                    `Favorites {${this.colors.top_right_color}-fg}${this.posts.length}{/}`,
-                    this.crawler.title,
-                    'd: delete',
+                    this.isHistoryMode
+                        ? `${
+                              this.searchKeywordInMode ? '' : 'r: reset, '
+                          }w: search`
+                        : 'd: delete, w: search',
                 );
             }
 
@@ -795,9 +827,9 @@ class CLICommunity extends CLI {
                 this.setFooterContent(
                     `r: refresh, ${
                         getFavoriteById(this.crawler.title, this.post.id)
-                            ? 'd: delete'
+                            ? 'd: del from'
                             : 'a: add to'
-                    } favorite, o: open, ${
+                    } favorites, o: open, ${
                         hasImages
                             ? `i: view ${images.length} image${
                                   images.length !== 1 ? 's' : ''
@@ -819,7 +851,15 @@ class CLICommunity extends CLI {
 
             // update if post is deleted
             if (this.isFavMode) {
-                this.posts = getFavorites(this.crawler.title);
+                const favs = getFavorites(this.crawler.title);
+
+                this.posts = this.searchKeywordInMode
+                    ? favs.filter(({ title }) =>
+                          title
+                              .toLowerCase()
+                              .includes(this.searchKeywordInMode),
+                      )
+                    : favs;
             }
         });
     }
@@ -1076,7 +1116,7 @@ class CLICommunity extends CLI {
     }
 
     showTextBox(onSubmit) {
-        this.textBox = blessed.textbox({
+        const textBox = blessed.textbox({
             parent: this.footerBox,
             height: 1,
             width: '100%+1',
@@ -1091,44 +1131,55 @@ class CLICommunity extends CLI {
             input: true,
         });
 
-        this.textBox.on('cancel', () => {
-            this.textBox.destroy();
+        textBox.on('cancel', () => {
+            textBox.destroy();
             this.widgets[this.currentWidgetIndex].focus();
         });
 
-        this.textBox.on('submit', onSubmit);
+        textBox.on('submit', async input => {
+            if (!input) {
+                return textBox.destroy();
+            }
 
-        this.textBox.on('success', () => {
-            this.textBox.style.bg = this.colors.text_input_success_bg;
-            this.textBox.style.fg = this.colors.text_input_success_color;
+            try {
+                await onSubmit(input, textBox);
+            } catch (e) {
+                textBox.emit('failure');
+            }
+        });
+
+        textBox.on('success', () => {
+            textBox.style.bg = this.colors.text_input_success_bg;
+            textBox.style.fg = this.colors.text_input_success_color;
             this.screen.render();
         });
 
-        this.textBox.on('failure', () => {
-            this.textBox.style.bg = this.colors.text_input_failure_bg;
-            this.textBox.style.fg = this.colors.text_input_failure_color;
-            this.textBox.focus();
+        textBox.on('failure', () => {
+            textBox.style.bg = this.colors.text_input_failure_bg;
+            textBox.style.fg = this.colors.text_input_failure_color;
+            textBox.focus();
         });
 
-        this.textBox.on('destroy', () => {
+        textBox.on('destroy', () => {
             this.widgets[this.currentWidgetIndex].focus();
             this.hideBottomBar && this.footerBox.hide();
         });
 
         this.footerBox.show();
-        this.textBox.focus();
+        textBox.focus();
         this.screen.render();
     }
 
-    showFormBox(buttons, callback) {
+    showFormBox(buttons, onSubmit) {
         if (!buttons.length) return;
 
-        this.formBox = blessed.form({
+        const formBox = blessed.form({
             parent: this.footerBox,
             height: 1,
             width: '100%+1',
             top: '100%-1',
             left: -1,
+            name: 'formBox',
         });
 
         let left = 0;
@@ -1142,7 +1193,7 @@ class CLICommunity extends CLI {
                 nonDoubleWidthCharsLegnth;
 
             const _button = blessed.button({
-                parent: this.formBox,
+                parent: formBox,
                 content: name,
                 width,
                 left,
@@ -1160,40 +1211,39 @@ class CLICommunity extends CLI {
                     case 'tab':
                     case 'l':
                     case 'right':
-                        return this.formBox.focusNext();
+                        return formBox.focusNext();
                     case 'S-tab':
                     case 'h':
                     case 'left':
-                        return this.formBox.focusPrevious();
+                        return formBox.focusPrevious();
                     case 'c':
                     case 'q':
                     case 'escape':
-                        return this.formBox.destroy();
+                        return formBox.destroy();
                     case 'enter':
-                        return this.formBox.emit('submit', { name, value });
+                        return formBox.emit('submit', { name, value });
                 }
             });
         });
 
-        this.formBox.on('submit', data => {
-            this.formBox.children.forEach(child => child.destroy());
-            this.formBox.destroy();
-            callback && callback(data);
+        formBox.on('submit', async input => {
+            formBox.children.forEach(child => child.destroy());
+            formBox.destroy();
+            onSubmit && (await onSubmit(input, formBox));
         });
 
-        this.formBox.on('destroy', () => {
-            this.formBox = null;
+        formBox.on('destroy', () => {
             this.widgets[this.currentWidgetIndex].focus();
             this.hideBottomBar && this.footerBox.hide();
         });
 
-        this.formBox.on('focus', () => {
-            this.formBox.focusNext();
+        formBox.on('focus', () => {
+            formBox.focusNext();
             this.screen.render();
         });
 
         this.footerBox.show();
-        this.formBox.focus();
+        formBox.focus();
     }
 
     setHasRead(hasRead) {
@@ -1201,6 +1251,17 @@ class CLICommunity extends CLI {
         else if (!this.isFavMode && !this.isHistoryMode) {
             this.posts[this.currentPostIndex].hasRead = hasRead;
         }
+    }
+
+    // hide search results in history & favorites mode
+    cancelSearchInMode() {
+        this.searchKeywordInMode = '';
+        this.posts = this.isFavMode
+            ? getFavorites(this.crawler.title)
+            : getCurrentHistories(this.crawler.title);
+        this.listList.focus();
+        this.resetScroll(this.listList);
+        this.screen.render();
     }
 }
 

@@ -58,17 +58,18 @@ class CLI {
     }
 
     setKeyPressEvent() {
-        this.screen.on('keypress', async (_, { full }) => {
+        this.screen.on('keypress', async (ch, { full }) => {
             switch (full) {
                 case 'C-c':
                     return await this.terminate(env.isDevEnv ? 1 : 0);
                 case 'escape':
                 case 'q':
-                    return (
-                        !this.footerBox.focused &&
-                        !this.formBox &&
-                        this.moveToWidget('prev')
-                    );
+                    if (this.searchKeywordInMode && this.listList.focused) {
+                        return this.cancelSearchInMode();
+                    } else if (!this.footerBox.focused && !this.formBox);
+                    {
+                        return this.moveToWidget('prev');
+                    }
                 case 'space':
                     return this.screen.children.forEach(c => {
                         if (c.visible) {
@@ -177,6 +178,7 @@ class CLI {
         if (!widget) return;
         widget.scrollTo(offset);
         widget.select(offset);
+        this.screen.render();
     }
 
     async terminate(exitCode = 0, message = '') {

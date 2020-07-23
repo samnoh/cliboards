@@ -45,6 +45,7 @@ const deleteFavoritesById = (crawler, id) => {
     const key = getConfigKey(crawler);
     const newData = configstore.get(key).filter(p => p.id !== id);
     configstore.set(key, newData);
+    return newData;
 };
 
 const deleteFavoritesByIndex = (crawler, index) => {
@@ -52,6 +53,7 @@ const deleteFavoritesByIndex = (crawler, index) => {
     const newData = configstore.get(key);
     newData.splice(index, 1);
     configstore.set(key, newData);
+    return newData;
 };
 
 module.exports = {
