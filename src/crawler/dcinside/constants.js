@@ -11,16 +11,6 @@ module.exports = {
     boardTypes,
     boards: [
         {
-            name: '인터넷방송',
-            value: 'ib_new1',
-            type: boardTypes[0],
-        },
-        {
-            name: '국내야구',
-            value: 'baseball_new8',
-            type: boardTypes[0],
-        },
-        {
             name: '궨트',
             value: 'gwent',
             type: boardTypes[0],
@@ -28,6 +18,11 @@ module.exports = {
         {
             name: '배우 박주현',
             value: 'juhyunpark',
+            type: boardTypes[0],
+        },
+        {
+            name: '프로그래밍',
+            value: 'programming',
             type: boardTypes[0],
         },
     ],

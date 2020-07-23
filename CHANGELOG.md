@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 
 -   time format
 -   some help messages
+-   default `dcinside` galleries
 
 ### Fixed
 
