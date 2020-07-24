@@ -680,7 +680,10 @@ class CLICommunity extends CLI {
         });
 
         this.listList.on('focus', () => {
-            if (!this.posts.length && !this.isFavMode && !this.isHistoryMode) {
+            if (
+                !Array.isArray(this.posts) ||
+                (!this.posts.length && !this.isFavMode && !this.isHistoryMode)
+            ) {
                 this.listList.setItems([]);
                 return this.setTitleFooterContent('Error');
             }
@@ -873,7 +876,10 @@ class CLICommunity extends CLI {
             }
 
             this.boardsList.setItems(
-                this.getFilteredBoards().map(({ name }) => name),
+                this.getFilteredBoards().map(
+                    ({ name, subName = '' }) =>
+                        `${name}{|}{${this.colors.list_right_color}-fg}${subName}{/}`,
+                ),
             );
             this.resetScroll(this.boardsList, scrollOffset);
         } catch (e) {

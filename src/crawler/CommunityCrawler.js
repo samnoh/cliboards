@@ -28,7 +28,10 @@ class CommunityCrawler extends Crawler {
         if (configstore.has(this.title)) {
             _boards = configstore.get(this.title);
         } else {
-            configstore.set(this.title, boards);
+            configstore.set(
+                this.title,
+                boards.filter(b => !b.noSave),
+            );
         }
 
         if (ignoreBoards && ignoreBoards.length) {

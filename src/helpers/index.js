@@ -28,6 +28,7 @@ const {
     resetFilterByKeywordsFile,
     filterByKeywords,
 } = require('./filterByKeywords');
+const { getCacheData, setCacheData, hasCacheData } = require('./cache');
 
 module.exports = {
     env,
@@ -56,4 +57,7 @@ module.exports = {
     openFilterByKeywordsFile,
     resetFilterByKeywordsFile,
     filterByKeywords,
+    getCacheData,
+    setCacheData,
+    hasCacheData,
 };

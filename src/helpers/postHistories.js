@@ -31,6 +31,7 @@ const setHistory = (crawlerName, boardType, post) => {
             title: post.title,
             link: post.link,
             author: post.author,
+            id: postId,
         };
     }
     currHistories.set(postId, data);

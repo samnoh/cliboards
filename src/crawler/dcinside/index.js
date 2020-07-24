@@ -1,4 +1,5 @@
 const querystring = require('querystring');
+const axios = require('axios');
 
 const CommunityCrawler = require('../CommunityCrawler');
 const {
@@ -12,6 +13,7 @@ const {
     search,
     filterOptions,
 } = require('./constants');
+const { getCacheData, setCacheData, hasCacheData } = require('../../helpers');
 
 class Dcinside extends CommunityCrawler {
     constructor() {
@@ -30,6 +32,8 @@ class Dcinside extends CommunityCrawler {
         return new Promise(async resolve => {
             await this.changeUserAgent('mobile');
             super.getBoards(boards, ignoreBoards);
+            const ranks = await this.getHotGalleryRank();
+            this.boards = [...this.boards, ...ranks];
             resolve();
         });
     }
@@ -247,6 +251,42 @@ class Dcinside extends CommunityCrawler {
         } catch (e) {
             throw new Error(e);
         }
+    }
+
+    async getHotGalleryRank() {
+        const cacheKey = 'dcinsideRanks';
+        if (hasCacheData(cacheKey)) return getCacheData(cacheKey).data;
+
+        const getRankUrl = isMinor =>
+            `https://json2.dcinside.com/json0/${isMinor ? 'm' : ''}gallmain/${
+                isMinor ? 'm' : ''
+            }gallery_hot.php`;
+        const mgalleryRankReq = axios.get(getRankUrl(true));
+        const galleryRankReq = axios.get(getRankUrl(false));
+
+        const ranks = await Promise.all([mgalleryRankReq, galleryRankReq]).then(
+            responses => {
+                const [mgRes, gRes] = responses;
+                const gData = gRes.data.map(g => ({
+                    name: g.ko_name,
+                    value: g.id,
+                    type: boardTypes[3],
+                    subName: g.rank,
+                    noSave: true,
+                }));
+                const mgData = mgRes.data.map(g => ({
+                    name: g.ko_name,
+                    value: g.id,
+                    type: boardTypes[4],
+                    subName: g.rank,
+                    noSave: true,
+                }));
+                return [...mgData, ...gData];
+            },
+        );
+
+        setCacheData(cacheKey, { data: ranks });
+        return ranks;
     }
 
     static toString() {
