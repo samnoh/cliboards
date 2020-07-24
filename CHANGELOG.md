@@ -6,7 +6,8 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
--   hot galleries/mgalleries (흥갤) in `dcinside`
+-   hot galleries & minor galleries lists (흥갤) in `dcinside` to browse them easily
+    -   see board list page number 4 and 5
 
 ## [1.0.0-beta.100] - 2020-07-23
 
