@@ -108,27 +108,31 @@ describe('Dcinside', () => {
 
         test('addBoard() - handle url', async () => {
             await dcinside.addBoard(
-                'https://gall.dcinside.com/mgallery/board/lists/?id=game_nintendo',
+                'https://gall.dcinside.com/mgallery/board/lists/?id=bulsichak',
                 dcinside.boardTypes[2],
             );
             await dcinside.getBoards();
 
-            const newBoard = dcinside.boards[dcinside.boards.length - 1];
-            expect(newBoard.name).toEqual('닌텐도');
-            expect(newBoard.value).toEqual('game_nintendo');
+            const newBoard = dcinside.boards.filter(
+                a => a.type === dcinside.boardTypes[2],
+            )[0];
+            expect(newBoard.name).toEqual('사랑의 불시착');
+            expect(newBoard.value).toEqual('bulsichak');
             expect(newBoard.type).toEqual(dcinside.boardTypes[2]);
         });
 
         test('addBoard() - handle mobile url', async () => {
             await dcinside.addBoard(
-                `${baseUrl}/board/aoegame`,
+                `${baseUrl}/board/minergalls`,
                 dcinside.boardTypes[2],
             );
             await dcinside.getBoards();
 
-            const newBoard = dcinside.boards[dcinside.boards.length - 1];
-            expect(newBoard.name).toEqual('중세게임');
-            expect(newBoard.value).toEqual('aoegame');
+            const newBoard = dcinside.boards.filter(
+                a => a.type === dcinside.boardTypes[2],
+            )[1];
+            expect(newBoard.name).toEqual('마이너 갤러리');
+            expect(newBoard.value).toEqual('minergalls');
             expect(newBoard.type).toEqual(dcinside.boardTypes[2]);
         });
 

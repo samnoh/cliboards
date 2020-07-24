@@ -52,7 +52,7 @@ const setCacheData = (key, value, options = {}) => {
         isNewData = deleteCacheData(key);
     }
 
-    //can delete but not able to update data
+    // can delete but not able to update data
     Object.defineProperty(cache, key, {
         value: deepFreeze(_value),
         enumerable: true,
