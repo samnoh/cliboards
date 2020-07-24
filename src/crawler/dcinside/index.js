@@ -260,12 +260,14 @@ class Dcinside extends CommunityCrawler {
 
     async getHotGalleryRank() {
         const cacheKey = 'dcinsideRanks';
+
         if (hasCacheData(cacheKey)) return getCacheData(cacheKey).data;
 
         const getRankUrl = isMinor =>
             `https://json2.dcinside.com/json0/${isMinor ? 'm' : ''}gallmain/${
                 isMinor ? 'm' : ''
             }gallery_hot.php`;
+
         const mgalleryRankReq = axios.get(getRankUrl(true));
         const galleryRankReq = axios.get(getRankUrl(false));
 
@@ -291,6 +293,7 @@ class Dcinside extends CommunityCrawler {
         );
 
         setCacheData(cacheKey, { data: ranks });
+
         return ranks;
     }
 
