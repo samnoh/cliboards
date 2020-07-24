@@ -235,8 +235,7 @@ class Dcinside extends CommunityCrawler {
 
     async addBoard(link, type) {
         try {
-            if (!link || type === boardTypes[3] || type === boardTypes[4])
-                return;
+            if (!link) return;
 
             let value = '';
 

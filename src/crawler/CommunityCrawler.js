@@ -108,7 +108,9 @@ class CommunityCrawler extends Crawler {
         }
 
         const name = await this.page.evaluate(callback);
-        const exBoard = this.boards.find(b => b.value === value);
+        const exBoard = this.boards
+            .filter(b => !b.noSave)
+            .find(b => b.value === value);
 
         if (!exBoard || !name) {
             configstore.set(this.title, [
