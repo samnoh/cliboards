@@ -26,6 +26,7 @@ class Dcinside extends CommunityCrawler {
         this.searchTypes = search.types;
         this.imageXhrRequired = true;
         this.filterOptions = filterOptions;
+        this.noSaveBoardsIndex = [3, 4];
     }
 
     getBoards() {
@@ -234,7 +235,8 @@ class Dcinside extends CommunityCrawler {
 
     async addBoard(link, type) {
         try {
-            if (!link) return;
+            if (!link || type === boardTypes[3] || type === boardTypes[4])
+                return;
 
             let value = '';
 
@@ -253,6 +255,10 @@ class Dcinside extends CommunityCrawler {
         }
     }
 
+    canUpdateBoard(index) {
+        return !this.noSaveBoardsIndex.find(i => i === index);
+    }
+
     async getHotGalleryRank() {
         const cacheKey = 'dcinsideRanks';
         if (hasCacheData(cacheKey)) return getCacheData(cacheKey).data;
@@ -267,15 +273,15 @@ class Dcinside extends CommunityCrawler {
         const ranks = await Promise.all([mgalleryRankReq, galleryRankReq]).then(
             responses => {
                 const [mgRes, gRes] = responses;
-                const gData = gRes.data.map(g => ({
-                    name: g.ko_name,
+                const gData = gRes.data.map((g, index) => ({
+                    name: `${('00' + (index + 1)).slice(-3)} ${g.ko_name}`,
                     value: g.id,
                     type: boardTypes[3],
                     subName: g.rank,
                     noSave: true,
                 }));
-                const mgData = mgRes.data.map(g => ({
-                    name: g.ko_name,
+                const mgData = mgRes.data.map((g, index) => ({
+                    name: `${('00' + (index + 1)).slice(-3)} ${g.ko_name}`,
                     value: g.id,
                     type: boardTypes[4],
                     subName: g.rank,

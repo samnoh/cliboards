@@ -112,7 +112,7 @@ class CommunityCrawler extends Crawler {
 
         if (!exBoard || !name) {
             configstore.set(this.title, [
-                ...this.boards,
+                ...this.boards.filter(b => !b.noSave),
                 { name, value, type },
             ]);
         } else {
@@ -160,7 +160,10 @@ class CommunityCrawler extends Crawler {
     }
 
     saveBoards() {
-        configstore.set(this.title, this.boards);
+        configstore.set(
+            this.title,
+            this.boards.filter(b => !b.noSave),
+        );
     }
 
     resetBoards() {

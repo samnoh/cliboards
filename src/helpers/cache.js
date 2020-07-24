@@ -101,7 +101,7 @@ const clearOldData = key => {
     if (value && typeof value.ttl === 'number') {
         const now = new Date().getTime();
 
-        if (now - (value.ttl + value.createdAt) >= 0) {
+        if (now - (value.ttl + value.createdAt) > 0) {
             delete cache[key];
             return null;
         }

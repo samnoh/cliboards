@@ -168,7 +168,7 @@ class CLICommunity extends CLI {
 
         this.boardsList.on('keypress', async (_, { full }) => {
             const boardTypesLength = this.crawler.boardTypes.length;
-            const index = this.boardsList.getScroll();
+            const index = this.boardsList.selected;
 
             switch (full) {
                 case 'h': // go to history page
@@ -182,7 +182,11 @@ class CLICommunity extends CLI {
                     this.posts = getFavorites(this.crawler.title);
                     return this.moveToWidget('next');
                 case 'a':
-                    if (!this.crawler.canAddBoards || this.sortBoardsMode) {
+                    if (
+                        this.sortBoardsMode ||
+                        !this.crawler.canAddBoards ||
+                        !this.crawler.canUpdateBoard(this.currentBoardTypeIndex)
+                    ) {
                         return;
                     }
 
@@ -211,6 +215,12 @@ class CLICommunity extends CLI {
                         }
                     });
                 case 's':
+                    if (
+                        this.crawler.canUpdateBoard &&
+                        !this.crawler.canUpdateBoard(this.currentBoardTypeIndex)
+                    )
+                        return;
+
                     this.sortBoardsMode = !this.sortBoardsMode;
                     if (!this.sortBoardsMode) {
                         this.currItemContent = null;
@@ -235,15 +245,17 @@ class CLICommunity extends CLI {
                     return this.boardsList.focus();
                 case 'd':
                     if (
-                        !this.crawler.canAddBoards ||
+                        this.sortBoardsMode ||
                         !this.getFilteredBoards().length ||
-                        this.sortBoardsMode
+                        !this.crawler.canAddBoards ||
+                        !this.crawler.canUpdateBoard(this.currentBoardTypeIndex)
                     )
                         return;
 
                     this.crawler.deleteBoard(
                         this.getFilteredBoards()[index].value,
                     );
+
                     return await this.getBoards(
                         this.currentBoardTypeIndex,
                         index,
@@ -318,15 +330,8 @@ class CLICommunity extends CLI {
                     this.footerBox.focus();
                     const keyword = this.searchKeywordInMode;
 
-                    let id, currentIndex;
-                    try {
-                        currentIndex = this.listList.getScroll();
-                        id = this.posts[currentIndex].id;
-                    } catch (e) {
-                        // if the last item and the next item is deleted w/o moving cursor
-                        currentIndex = this.posts.length - 1;
-                        id = this.posts[currentIndex].id;
-                    }
+                    const currentIndex = this.listList.selected;
+                    const id = this.posts[currentIndex].id;
 
                     const newPosts = deleteFavoritesById(
                         this.crawler.title,
@@ -667,12 +672,18 @@ class CLICommunity extends CLI {
                     this.crawler.title,
                     this.crawler.boardTypes[this.currentBoardTypeIndex],
                     `f: favorite, h: history${
-                        this.crawler.canAddBoards
+                        this.crawler.canAddBoards &&
+                        this.crawler.canUpdateBoard(this.currentBoardTypeIndex)
                             ? ', a: add board, d: delete board'
                             : ''
                     }${
+                        this.crawler.canUpdateBoard &&
+                        !this.crawler.canUpdateBoard(this.currentBoardTypeIndex)
+                            ? ''
+                            : ', s: sort board'
+                    }${
                         this.crawler.boardTypes.length > 1
-                            ? ', s: sort board, left/right arrow: prev/next page'
+                            ? ', left/right arrow: prev/next page'
                             : ''
                     }`,
                 );
@@ -876,10 +887,7 @@ class CLICommunity extends CLI {
             }
 
             this.boardsList.setItems(
-                this.getFilteredBoards().map(
-                    ({ name, subName = '' }) =>
-                        `${name}{|}{${this.colors.list_right_color}-fg}${subName}{/}`,
-                ),
+                this.getFilteredBoards().map(({ name }) => name),
             );
             this.resetScroll(this.boardsList, scrollOffset);
         } catch (e) {
@@ -1121,7 +1129,7 @@ class CLICommunity extends CLI {
 
     showTextBox(onSubmit) {
         if (this.listList.focused) {
-            this.currentPostIndex = this.listList.getScroll();
+            this.currentPostIndex = this.listList.selected;
         }
 
         const textBox = blessed.textbox({
