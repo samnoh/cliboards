@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.103] - 2020-07-24
+
+### Added
+
+-   hot galleries/mgalleries (흥갤) in `dcinside`
+
 ## [1.0.0-beta.100] - 2020-07-23
 
 ### Added
@@ -378,6 +384,7 @@ All notable changes to this project will be documented in this file.
 
 -   auto refresh bug
 
+[1.0.0-beta.103]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.103
 [1.0.0-beta.100]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.100
 [1.0.0-beta.99]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.99
 [1.0.0-beta.98]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.98
