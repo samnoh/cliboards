@@ -12,6 +12,7 @@ const {
     boards,
     search,
     filterOptions,
+    getRankUrl,
 } = require('./constants');
 const { getCacheData, setCacheData, hasCacheData } = require('../../helpers');
 
@@ -263,32 +264,27 @@ class Dcinside extends CommunityCrawler {
 
         if (hasCacheData(cacheKey)) return getCacheData(cacheKey).data;
 
-        const getRankUrl = isMinor =>
-            `https://json2.dcinside.com/json0/${isMinor ? 'm' : ''}gallmain/${
-                isMinor ? 'm' : ''
-            }gallery_hot.php`;
-
-        const mgalleryRankReq = axios.get(getRankUrl(true));
         const galleryRankReq = axios.get(getRankUrl(false));
+        const mgalleryRankReq = axios.get(getRankUrl(true));
 
-        const ranks = await Promise.all([mgalleryRankReq, galleryRankReq]).then(
+        const ranks = await Promise.all([galleryRankReq, mgalleryRankReq]).then(
             responses => {
-                const [mgRes, gRes] = responses;
-                const gData = gRes.data.map((g, index) => ({
-                    name: `${('00' + (index + 1)).slice(-3)} ${g.ko_name}`,
-                    value: g.id,
-                    type: boardTypes[3],
-                    subName: g.rank,
-                    noSave: true,
-                }));
-                const mgData = mgRes.data.map((g, index) => ({
-                    name: `${('00' + (index + 1)).slice(-3)} ${g.ko_name}`,
-                    value: g.id,
-                    type: boardTypes[4],
-                    subName: g.rank,
-                    noSave: true,
-                }));
-                return [...mgData, ...gData];
+                const [gRes, mgRes] = responses;
+                const rankData = [...gRes.data, ...mgRes.data];
+
+                const galleryRankLength = gRes.data.length;
+                const output = rankData.map(({ ko_name, id, rank }, index) => {
+                    const isMinorGallery = index >= galleryRankLength;
+
+                    return {
+                        name: ko_name,
+                        value: id,
+                        type: boardTypes[isMinorGallery ? 4 : 3],
+                        subName: rank,
+                        noSave: true,
+                    };
+                });
+                return output;
             },
         );
 

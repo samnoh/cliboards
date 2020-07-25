@@ -304,7 +304,7 @@ class CLICommunity extends CLI {
 
                     this.boardsList.move(offset);
                     this.boardsList.setItems(
-                        this.getFilteredBoards().map(({ name }) => name),
+                        this.getFilteredBoards().map(({ name }) => `${name}`),
                     );
                     return this.screen.render();
             }
@@ -887,7 +887,17 @@ class CLICommunity extends CLI {
             }
 
             this.boardsList.setItems(
-                this.getFilteredBoards().map(({ name }) => name),
+                this.getFilteredBoards().map(
+                    ({ name, subName }) =>
+                        `${name}${
+                            subName
+                                ? '{|}{' +
+                                  this.colors.list_right_color +
+                                  '-fg}' +
+                                  subName
+                                : ''
+                        }`,
+                ),
             );
             this.resetScroll(this.boardsList, scrollOffset);
         } catch (e) {
