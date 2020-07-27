@@ -268,7 +268,10 @@ class CLICommunity extends CLI {
                         this.sortBoardsMode ||
                         !this.getFilteredBoards().length ||
                         !this.crawler.canAddBoards ||
-                        !this.crawler.canUpdateBoard(this.currentBoardTypeIndex)
+                        !this.crawler.canUpdateBoard(
+                            this.currentBoardTypeIndex,
+                        ) ||
+                        this.searchKeywordInMode
                     )
                         return;
 
@@ -710,26 +713,20 @@ class CLICommunity extends CLI {
                     `${
                         this.searchKeywordInMode
                             ? ''
-                            : 'f: favorite, h: history'
+                            : 'f: favorite, h: history, '
                     }${
-                        (this.crawler.canAddBoards &&
-                            this.crawler.canUpdateBoard(
-                                this.currentBoardTypeIndex,
-                            )) ||
-                        !this.searchKeywordInMode
-                            ? ', a: add board, d: delete board'
+                        this.crawler.canAddBoards &&
+                        this.crawler.canUpdateBoard(this.currentBoardTypeIndex)
+                            ? 'a: add board, d: delete board, '
                             : ''
                     }${
-                        (this.crawler.canUpdateBoard &&
-                            !this.crawler.canUpdateBoard(
-                                this.currentBoardTypeIndex,
-                            )) ||
-                        this.searchKeywordInMode
+                        this.crawler.canUpdateBoard &&
+                        !this.crawler.canUpdateBoard(this.currentBoardTypeIndex)
                             ? ''
-                            : ', s: sort board'
+                            : 's: sort board, '
                     }${
                         this.crawler.boardTypes.length > 1
-                            ? ', left/right arrow: prev/next page'
+                            ? 'left/right arrow: prev/next page'
                             : ''
                     }`,
                 );
