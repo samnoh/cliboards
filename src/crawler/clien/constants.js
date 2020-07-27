@@ -38,10 +38,15 @@ module.exports = {
         },
         {
             value: '/service/recommend',
-            name: '추천글',
+            name: '오늘의 추천글',
             type: boardTypes[0],
             singlePage: true,
             noSortUrl: true,
+        },
+        {
+            value: '/service/board/annonce',
+            name: '운영알림판',
+            type: boardTypes[0],
         },
     ],
 };

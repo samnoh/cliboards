@@ -17,7 +17,7 @@ afterAll(async () => {
     await ruliweb.close();
 });
 
-describe.skip('Ruliweb', () => {
+describe('Ruliweb', () => {
     describe('properties', () => {
         test('baseUrl', () => {
             expect(ruliweb.baseUrl).toEqual(baseUrl);

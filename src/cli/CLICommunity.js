@@ -17,7 +17,6 @@ const {
     getFavorites,
     getFavoriteById,
     deleteFavoritesById,
-    deleteFavoritesByIndex,
     clearHistory,
     setHistory,
     isInPostHistory,
@@ -1184,7 +1183,7 @@ class CLICommunity extends CLI {
         });
 
         textBox.on('destroy', () => {
-            this.widgets[this.currentWidgetIndex].focus();
+            this.getWidget().focus();
             this.hideBottomBar && this.footerBox.hide();
         });
 
@@ -1256,7 +1255,7 @@ class CLICommunity extends CLI {
 
         this.formBox.on('destroy', () => {
             this.formBox = null;
-            this.widgets[this.currentWidgetIndex].focus();
+            this.getWidget().focus();
             this.hideBottomBar && this.footerBox.hide();
         });
 
@@ -1278,12 +1277,23 @@ class CLICommunity extends CLI {
 
     // hide search results in history & favorites mode
     cancelSearchInMode() {
-        this.searchKeywordInMode = '';
-        this.posts = this.isFavMode
-            ? getFavorites(this.crawler.title)
-            : getCurrentHistories(this.crawler.title);
-        this.listList.focus();
-        this.resetScroll(this.listList);
+        const currentWidget = this.getWidget();
+
+        if (this.listList.focused) {
+            const crawlerTitle = this.crawler.title;
+            this.searchKeywordInMode = '';
+
+            if (this.isFavMode) {
+                this.posts = getFavorites(crawlerTitle);
+            } else if (this.isHistoryMode) {
+                this.posts = getCurrentHistories(crawlerTitle);
+            }
+        } else {
+            return this.moveToWidget('prev');
+        }
+
+        currentWidget.focus();
+        this.resetScroll(currentWidget);
         this.screen.render();
     }
 }

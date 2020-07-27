@@ -106,7 +106,7 @@ class Clien extends CommunityCrawler {
                             hit: hit.innerText.trim(),
                             time: time.innerText.trim(),
                             link: baseUrl + link.getAttribute('href'),
-                            upVotes: parseInt(upVotes.innerText),
+                            upVotes: parseInt(upVotes ? upVotes.innerText : 0),
                             numberOfComments: numberOfComments
                                 ? parseInt(numberOfComments.innerText)
                                 : 0,

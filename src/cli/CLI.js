@@ -64,10 +64,12 @@ class CLI {
                     return await this.terminate(env.isDevEnv ? 1 : 0);
                 case 'escape':
                 case 'q':
-                    if (this.listList.focused && this.searchKeywordInMode) {
-                        this.cancelSearchInMode();
-                    } else if (!this.footerBox.focused && !this.formBox) {
-                        this.moveToWidget('prev');
+                    if (!this.footerBox.focused && !this.formBox) {
+                        if (this.searchKeywordInMode) {
+                            this.cancelSearchInMode();
+                        } else {
+                            this.moveToWidget('prev');
+                        }
                     }
                     return;
                 case 'space':
@@ -76,7 +78,7 @@ class CLI {
                             this.footerBox.focus();
                             c.hide();
                         } else {
-                            this.widgets[this.currentWidgetIndex].focus();
+                            this.getWidget().focus();
                             c.show();
                         }
                         this.screen.render();
@@ -119,15 +121,13 @@ class CLI {
     // direction: 'prev' || 'next'
     moveToWidget(direction, callback) {
         try {
-            const nextWidgetIndex =
-                direction === 'next'
-                    ? this.currentWidgetIndex + 1
-                    : this.currentWidgetIndex - 1;
+            const isNextWidget = direction === 'next';
+            const nextWidgetIndexOffset = isNextWidget ? 1 : -1;
 
-            const nextWidget = this.widgets[nextWidgetIndex];
-            const currWidget = this.widgets[this.currentWidgetIndex];
+            const nextWidget = this.getWidget(nextWidgetIndexOffset);
+            const currWidget = this.getWidget(0);
 
-            this.currentWidgetIndex = nextWidgetIndex;
+            this.currentWidgetIndex += nextWidgetIndexOffset;
 
             if (nextWidget) {
                 direction === 'prev' &&
@@ -135,9 +135,7 @@ class CLI {
                     currWidget.select(0);
                 currWidget.destroy();
                 this.bodyBox.append(nextWidget);
-
                 callback && callback(nextWidget);
-
                 nextWidget.focus();
             } else {
                 this.terminate(env.isDevEnv ? 1 : 0);
@@ -177,8 +175,12 @@ class CLI {
     resetScroll(widget, offset = 0) {
         if (!widget) return;
         widget.scrollTo(offset);
-        widget.select(offset);
+        widget.select && widget.select(offset);
         this.screen.render();
+    }
+
+    getWidget(offset = 0) {
+        return this.widgets[this.currentWidgetIndex + offset];
     }
 
     async terminate(exitCode = 0, message = '') {
