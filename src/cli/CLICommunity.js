@@ -706,8 +706,13 @@ class CLICommunity extends CLI {
                 this.currentPostIndex = 0;
                 this.isFavMode = false;
                 this.isHistoryMode = false;
+                this.screen.debug(this.boardsList.items.length);
                 this.setTitleFooterContent(
-                    this.crawler.title,
+                    `${this.crawler.title} ${
+                        this.searchKeywordInMode
+                            ? `{${this.colors.top_left_search_info_color}-fg}${this.searchKeywordInMode} 검색 결과{/} {${this.colors.top_right_color}-fg}${this.boardsList.items.length}{/}`
+                            : ''
+                    }`,
                     this.crawler.boardTypes[this.currentBoardTypeIndex],
                     `w: search, ${
                         this.searchKeywordInMode
