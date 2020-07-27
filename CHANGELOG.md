@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.106] - 2020-07-27
+
+### Added
+
+-   search for boards (press `w` key)
+
 ## [1.0.0-beta.103] - 2020-07-24
 
 ### Added
@@ -385,6 +391,7 @@ All notable changes to this project will be documented in this file.
 
 -   auto refresh bug
 
+[1.0.0-beta.106]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.106
 [1.0.0-beta.103]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.103
 [1.0.0-beta.100]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.100
 [1.0.0-beta.99]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.99
