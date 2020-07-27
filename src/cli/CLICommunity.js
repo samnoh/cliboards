@@ -1107,9 +1107,9 @@ class CLICommunity extends CLI {
 
                 const commentBoxWidth = commentBox.width;
                 const baseHeight = 2; // border lines
-                const infoHeight = Math.ceil(
-                    commentBox.strWidth(info) / commentBoxWidth,
-                );
+                const infoHeight = isRemoved
+                    ? 0
+                    : Math.ceil(commentBox.strWidth(info) / commentBoxWidth);
                 let finalHeight = baseHeight + infoHeight;
 
                 body.split('\n').map(line => {
