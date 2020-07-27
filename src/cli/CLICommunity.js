@@ -634,25 +634,24 @@ class CLICommunity extends CLI {
 
         this.boardsList.on('select', async (_, index) => {
             if (!this.getFilteredBoards().length) return;
-            this.screen.debug(
-                this.getFilteredBoards().indexOf(
-                    b => b.name === this.searchKeywordInMode,
-                ),
-            );
-            await this.getPosts(
-                this.searchKeywordInMode
-                    ? this.getFilteredBoards().indexOf(
-                          this.getFilteredBoards().filter(b =>
-                              b.name
-                                  .toLowerCase()
-                                  .includes(
-                                      this.searchKeywordInMode.toLowerCase(),
-                                  ),
-                          )[index],
-                      )
-                    : index,
-            );
-            this.moveToWidget('next');
+
+            if (this.searchKeywordInMode) {
+                const results = this.getFilteredBoards().indexOf(
+                    this.getFilteredBoards().filter(b =>
+                        b.name
+                            .toLowerCase()
+                            .includes(this.searchKeywordInMode.toLowerCase()),
+                    )[index],
+                );
+
+                if (results !== -1) {
+                    await this.getPosts(results);
+                    this.moveToWidget('next');
+                }
+            } else {
+                await this.getPosts(index);
+                this.moveToWidget('next');
+            }
         });
 
         this.listList.on('select', async (_, index) => {
@@ -710,18 +709,24 @@ class CLICommunity extends CLI {
                 this.setTitleFooterContent(
                     this.crawler.title,
                     this.crawler.boardTypes[this.currentBoardTypeIndex],
-                    `${
+                    `w: search, ${
                         this.searchKeywordInMode
                             ? ''
                             : 'f: favorite, h: history, '
                     }${
                         this.crawler.canAddBoards &&
-                        this.crawler.canUpdateBoard(this.currentBoardTypeIndex)
+                        this.crawler.canUpdateBoard(
+                            this.currentBoardTypeIndex,
+                        ) &&
+                        !this.searchKeywordInMode
                             ? 'a: add board, d: delete board, '
                             : ''
                     }${
-                        this.crawler.canUpdateBoard &&
-                        !this.crawler.canUpdateBoard(this.currentBoardTypeIndex)
+                        (this.crawler.canUpdateBoard &&
+                            !this.crawler.canUpdateBoard(
+                                this.currentBoardTypeIndex,
+                            )) ||
+                        this.searchKeywordInMode
                             ? ''
                             : 's: sort board, '
                     }${
