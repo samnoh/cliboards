@@ -170,13 +170,28 @@ class CLICommunity extends CLI {
             const index = this.boardsList.selected;
 
             switch (full) {
-                case 'h': // go to history page
+                case 'w':
                     if (this.sortBoardsMode) return;
+                    this.searchKeywordInMode && this.cancelSearchInMode();
+
+                    return this.showTextBox((keyword, textBox) => {
+                        textBox.destroy();
+                        this.searchKeywordInMode = keyword;
+                        this.setBoards(b =>
+                            b.name
+                                .toLowerCase()
+                                .includes(keyword.toLowerCase()),
+                        );
+                        this.resetScroll(this.boardsList);
+                        this.boardsList.focus();
+                    });
+                case 'h': // go to history page
+                    if (this.sortBoardsMode || this.searchKeywordInMode) return;
                     this.isHistoryMode = true;
                     this.posts = getCurrentHistories(this.crawler.title);
                     return this.moveToWidget('next');
                 case 'f': // go to favorite page
-                    if (this.sortBoardsMode) return;
+                    if (this.sortBoardsMode || this.searchKeywordInMode) return;
                     this.isFavMode = true;
                     this.posts = getFavorites(this.crawler.title);
                     return this.moveToWidget('next');
@@ -184,7 +199,10 @@ class CLICommunity extends CLI {
                     if (
                         this.sortBoardsMode ||
                         !this.crawler.canAddBoards ||
-                        !this.crawler.canUpdateBoard(this.currentBoardTypeIndex)
+                        !this.crawler.canUpdateBoard(
+                            this.currentBoardTypeIndex,
+                        ) ||
+                        this.searchKeywordInMode
                     ) {
                         return;
                     }
@@ -215,8 +233,11 @@ class CLICommunity extends CLI {
                     });
                 case 's':
                     if (
-                        this.crawler.canUpdateBoard &&
-                        !this.crawler.canUpdateBoard(this.currentBoardTypeIndex)
+                        (this.crawler.canUpdateBoard &&
+                            !this.crawler.canUpdateBoard(
+                                this.currentBoardTypeIndex,
+                            )) ||
+                        this.searchKeywordInMode
                     )
                         return;
 
@@ -265,7 +286,7 @@ class CLICommunity extends CLI {
                         this.sortBoardsMode
                     )
                         return;
-
+                    this.searchKeywordInMode = '';
                     this.currentBoardTypeIndex =
                         (this.currentBoardTypeIndex + 1) % boardTypesLength;
                     return await this.getBoards(this.currentBoardTypeIndex);
@@ -275,7 +296,7 @@ class CLICommunity extends CLI {
                         this.sortBoardsMode
                     )
                         return;
-
+                    this.searchKeywordInMode = '';
                     this.currentBoardTypeIndex = this.currentBoardTypeIndex
                         ? this.currentBoardTypeIndex - 1
                         : boardTypesLength - 1;
@@ -302,9 +323,7 @@ class CLICommunity extends CLI {
                     if (!isSwaped) return;
 
                     this.boardsList.move(offset);
-                    this.boardsList.setItems(
-                        this.getFilteredBoards().map(({ name }) => `${name}`),
-                    );
+                    this.setBoards();
                     return this.screen.render();
             }
         });
@@ -340,7 +359,9 @@ class CLICommunity extends CLI {
                     this.currentPostIndex = currentIndex;
                     this.posts = keyword
                         ? newPosts.filter(({ title }) =>
-                              title.toLowerCase().includes(keyword),
+                              title
+                                  .toLowerCase()
+                                  .includes(keyword.toLowerCase()),
                           )
                         : newPosts;
 
@@ -357,7 +378,7 @@ class CLICommunity extends CLI {
                             : getCurrentHistories(this.crawler.title);
 
                         this.posts = originalPosts.filter(({ title }) =>
-                            title.toLowerCase().includes(keyword),
+                            title.toLowerCase().includes(keyword.toLowerCase()),
                         );
                         this.currentPostIndex = 0;
                         textBox.destroy();
@@ -610,7 +631,24 @@ class CLICommunity extends CLI {
 
         this.boardsList.on('select', async (_, index) => {
             if (!this.getFilteredBoards().length) return;
-            await this.getPosts(index);
+            this.screen.debug(
+                this.getFilteredBoards().indexOf(
+                    b => b.name === this.searchKeywordInMode,
+                ),
+            );
+            await this.getPosts(
+                this.searchKeywordInMode
+                    ? this.getFilteredBoards().indexOf(
+                          this.getFilteredBoards().filter(b =>
+                              b.name
+                                  .toLowerCase()
+                                  .includes(
+                                      this.searchKeywordInMode.toLowerCase(),
+                                  ),
+                          )[index],
+                      )
+                    : index,
+            );
             this.moveToWidget('next');
         });
 
@@ -666,18 +704,27 @@ class CLICommunity extends CLI {
                 this.currentPostIndex = 0;
                 this.isFavMode = false;
                 this.isHistoryMode = false;
-                this.searchKeywordInMode = null;
                 this.setTitleFooterContent(
                     this.crawler.title,
                     this.crawler.boardTypes[this.currentBoardTypeIndex],
-                    `f: favorite, h: history${
-                        this.crawler.canAddBoards &&
-                        this.crawler.canUpdateBoard(this.currentBoardTypeIndex)
+                    `${
+                        this.searchKeywordInMode
+                            ? ''
+                            : 'f: favorite, h: history'
+                    }${
+                        (this.crawler.canAddBoards &&
+                            this.crawler.canUpdateBoard(
+                                this.currentBoardTypeIndex,
+                            )) ||
+                        !this.searchKeywordInMode
                             ? ', a: add board, d: delete board'
                             : ''
                     }${
-                        this.crawler.canUpdateBoard &&
-                        !this.crawler.canUpdateBoard(this.currentBoardTypeIndex)
+                        (this.crawler.canUpdateBoard &&
+                            !this.crawler.canUpdateBoard(
+                                this.currentBoardTypeIndex,
+                            )) ||
+                        this.searchKeywordInMode
                             ? ''
                             : ', s: sort board'
                     }${
@@ -868,7 +915,7 @@ class CLICommunity extends CLI {
                     ? favs.filter(({ title }) =>
                           title
                               .toLowerCase()
-                              .includes(this.searchKeywordInMode),
+                              .includes(this.searchKeywordInMode.toLowerCase()),
                       )
                     : favs;
             }
@@ -885,19 +932,8 @@ class CLICommunity extends CLI {
                 await this.crawler.getBoards();
             }
 
-            this.boardsList.setItems(
-                this.getFilteredBoards().map(
-                    ({ name, subName }) =>
-                        `${name}${
-                            subName
-                                ? '{|}{' +
-                                  this.colors.list_right_color +
-                                  '-fg}' +
-                                  subName
-                                : ''
-                        }`,
-                ),
-            );
+            this.setBoards();
+
             this.resetScroll(this.boardsList, scrollOffset);
         } catch (e) {
             this.boardsList.setItems([]);
@@ -914,6 +950,28 @@ class CLICommunity extends CLI {
         return this.crawler.boards.filter(
             ({ type }) => type === currentBoardType,
         );
+    }
+
+    setBoards(filterCallback) {
+        const filteredBoards = this.getFilteredBoards();
+        const renderBoards = (boards = filteredBoards) =>
+            boards.map(
+                ({ name, subName }) =>
+                    `${name}${
+                        subName
+                            ? '{|}{' +
+                              this.colors.list_right_color +
+                              '-fg}' +
+                              subName
+                            : ''
+                    }`,
+            );
+        this.boardsList.setItems(
+            filterCallback
+                ? renderBoards(filteredBoards.filter(b => filterCallback(b)))
+                : renderBoards(),
+        );
+        this.screen.render();
     }
 
     async getPosts(index, filtreredBoard = []) {
@@ -1279,14 +1337,20 @@ class CLICommunity extends CLI {
     cancelSearchInMode() {
         const currentWidget = this.getWidget();
 
-        if (this.listList.focused) {
-            const crawlerTitle = this.crawler.title;
+        if (this.boardsList.focused) {
             this.searchKeywordInMode = '';
+            this.setBoards();
+        } else if (this.listList.focused) {
+            const crawlerTitle = this.crawler.title;
 
             if (this.isFavMode) {
+                this.searchKeywordInMode = '';
                 this.posts = getFavorites(crawlerTitle);
             } else if (this.isHistoryMode) {
+                this.searchKeywordInMode = '';
                 this.posts = getCurrentHistories(crawlerTitle);
+            } else {
+                return this.moveToWidget('prev');
             }
         } else {
             return this.moveToWidget('prev');
