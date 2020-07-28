@@ -172,7 +172,10 @@ class CLICommunity extends CLI {
             switch (full) {
                 case 'w':
                     if (this.sortBoardsMode) return;
+
                     this.searchKeywordInMode && this.cancelSearchInMode();
+
+                    this.setTitleContent('검색어를 입력하세요');
 
                     return this.showTextBox((keyword, textBox) => {
                         textBox.destroy();
@@ -184,6 +187,7 @@ class CLICommunity extends CLI {
                         );
                         this.resetScroll(this.boardsList);
                         this.boardsList.focus();
+
                         this.boardsList.shouldSkip = true;
                     });
                 case 'h': // go to history page
@@ -375,6 +379,10 @@ class CLICommunity extends CLI {
 
             if (this.isFavMode || this.isHistoryMode) {
                 if (full === 'w') {
+                    this.searchKeywordInMode && this.cancelSearchInMode();
+
+                    this.setTitleContent('검색어를 입력하세요');
+
                     this.showTextBox((keyword, textBox) => {
                         this.searchKeywordInMode = keyword;
                         const originalPosts = this.isFavMode
@@ -447,7 +455,7 @@ class CLICommunity extends CLI {
                     this.crawler.searchTypes,
                     ({ name, value }) => {
                         this.setTitleContent(
-                            '키워드를 입력하세요',
+                            '검색어를 입력하세요',
                             name + ' 검색',
                         );
                         this.showTextBox(async (keyword, textBox) => {

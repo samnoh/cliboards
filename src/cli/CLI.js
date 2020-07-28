@@ -120,6 +120,8 @@ class CLI {
         this.setBlurEvent();
     }
 
+    cancelSearchInMode() {}
+
     // direction: 'prev' || 'next'
     moveToWidget(direction, callback) {
         try {
