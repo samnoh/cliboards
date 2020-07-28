@@ -184,6 +184,7 @@ class CLICommunity extends CLI {
                         );
                         this.resetScroll(this.boardsList);
                         this.boardsList.focus();
+                        this.boardsList.shouldSkip = true;
                     });
                 case 'h': // go to history page
                     if (this.sortBoardsMode || this.searchKeywordInMode) return;
@@ -400,10 +401,6 @@ class CLICommunity extends CLI {
             if (full === 'r') {
                 // refresh
                 passPrevPosts = true;
-            } else if (full === 'c') {
-                if (!this.crawler.searchParams.value) return;
-                this.crawler.currentPageNumber = 0;
-                this.crawler.searchParams = {};
             } else if (full === 'a') {
                 passPrevPosts = true;
 
@@ -472,7 +469,6 @@ class CLICommunity extends CLI {
                                     this.crawler.pageNumber = prevPageNumber;
                                     throw new Error('결과가 없습니다');
                                 }
-
                                 textBox.destroy();
                             } catch (e) {
                                 this.crawler.searchParams = {};
@@ -744,6 +740,9 @@ class CLICommunity extends CLI {
         });
 
         this.listList.on('focus', () => {
+            this.listList.shouldSkip =
+                this.searchKeywordInMode || this.crawler.searchParams.value;
+
             if (
                 !Array.isArray(this.posts) ||
                 (!this.posts.length && !this.isFavMode && !this.isHistoryMode)
@@ -830,11 +829,7 @@ class CLICommunity extends CLI {
                 }`,
                 this.autoRefreshTimer
                     ? `any key: cancel auto refresh{|} {${this.colors.bottom_right_color}-fg}Refresh every ${this.autoRefreshInterval} sec..{/}`
-                    : `${
-                          this.crawler.searchParams.value
-                              ? 'c: cancel search, '
-                              : ''
-                      }${this.crawler.searchTypes ? 'w: search, ' : ''}${
+                    : `${this.crawler.searchTypes ? 'w: search, ' : ''}${
                           this.crawler.currentBoard.isFav
                               ? ''
                               : 'r: refresh, a: auto refresh, '
@@ -1341,8 +1336,9 @@ class CLICommunity extends CLI {
     }
 
     // hide search results in history & favorites mode
-    cancelSearchInMode() {
+    async cancelSearchInMode() {
         const currentWidget = this.getWidget();
+        currentWidget.shouldSkip = false;
 
         if (this.boardsList.focused) {
             this.searchKeywordInMode = '';
@@ -1356,6 +1352,10 @@ class CLICommunity extends CLI {
             } else if (this.isHistoryMode) {
                 this.searchKeywordInMode = '';
                 this.posts = getCurrentHistories(crawlerTitle);
+            } else if (this.crawler.searchParams.value) {
+                this.crawler.currentPageNumber = 0;
+                this.crawler.searchParams = {};
+                await this.refreshPosts();
             } else {
                 return this.moveToWidget('prev');
             }
