@@ -59,6 +59,7 @@ class CLICommunity extends CLI {
     static async start({
         theme,
         reset,
+        resetFav,
         startCrawler,
         filter,
         showSpoiler,
@@ -68,6 +69,10 @@ class CLICommunity extends CLI {
         hideBottomBar,
     }) {
         clearFolder(tempFolderPath);
+
+        if (resetFav && !reset) {
+            clearFavorites();
+        }
 
         if (reset && !startCrawler) {
             clearFavorites();

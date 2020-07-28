@@ -44,6 +44,9 @@ cliboards <name>
 # Reset all data including favorites
 cliboards --reset
 
+# Reset favorites
+cliboards --resetFav
+
 # Reset data for given community only
 cliboards <index|name> --reset
 

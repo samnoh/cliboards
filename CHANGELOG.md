@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.108] - 2020-07-28
+
+### Added
+
+-   add posts to favorites from history page
+-   reset post favorites
+    ```bash
+    cliboards --resetFav
+    ```
+
+### Updated
+
+-   press `q` to cancel search posts
+    -   removed `c` to cancel search results
+
 ## [1.0.0-beta.106] - 2020-07-27
 
 ### Added
@@ -391,6 +406,7 @@ All notable changes to this project will be documented in this file.
 
 -   auto refresh bug
 
+[1.0.0-beta.108]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.108
 [1.0.0-beta.106]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.106
 [1.0.0-beta.103]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.103
 [1.0.0-beta.100]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.100
