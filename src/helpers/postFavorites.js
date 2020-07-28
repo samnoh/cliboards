@@ -19,16 +19,20 @@ const setFavorite = (crawler, boardType, post) => {
     const key = getConfigKey(crawler);
     const favs = configstore.get(key);
 
-    const newData = {
-        category: `${boardType.name}`,
-        title: post.title,
-        link: post.link,
-        author: post.author,
-        id: post.id,
-        timestamp: new Date().getTime(),
-    };
+    const hasPost = favs.find(f => f.id === post.id);
 
-    configstore.set(key, [newData, ...favs]);
+    if (!hasPost) {
+        const newData = {
+            category: `${boardType.name}`,
+            title: post.title,
+            link: post.link,
+            author: post.author,
+            id: post.id,
+            timestamp: new Date().getTime(),
+        };
+
+        configstore.set(key, [newData, ...favs]);
+    }
 };
 
 const getFavorites = crawler => {

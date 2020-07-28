@@ -337,33 +337,57 @@ class CLICommunity extends CLI {
         });
 
         this.listList.on('keypress', async (_, { name, full, shift, ctrl }) => {
+            const currentIndex = this.listList.selected;
+
             if (this.autoRefreshTimer) {
                 this.autoRefreshTimer = clearTimeout(this.autoRefreshTimer);
                 this[full === 'enter' ? 'footerBox' : 'listList'].focus();
             }
 
             if (this.isHistoryMode) {
+                const currentPost = this.posts[currentIndex];
                 if (full === 'r' && !this.searchKeywordInMode) {
                     this.footerBox.focus();
                     clearHistory(this.crawler.title);
                     this.posts = [];
                     setTimeout(() => this.listList.focus(), 250);
+                } else if (full === 'a') {
+                    if (
+                        !currentPost ||
+                        getFavoriteById(this.crawler.title, currentPost.id)
+                    )
+                        return;
+
+                    this.footerBox.focus();
+                    this.currentPostIndex = currentIndex;
+                    setFavorite(
+                        this.crawler.title,
+                        this.crawler.currentBoard,
+                        currentPost,
+                    );
+                    setTimeout(() => this.listList.focus(), 250);
+                } else if (full === 'd') {
+                    if (!currentPost) return;
+                    this.footerBox.focus();
+                    this.currentPostIndex = currentIndex;
+                    deleteFavoritesById(this.crawler.title, currentPost.id);
+                    setTimeout(() => this.listList.focus(), 250);
+                } else if (full === 'up' || full === 'down') {
+                    this.currentPostIndex = -1;
+                    return this.listList.focus();
                 }
             }
 
             if (this.isFavMode) {
                 if (full === 'd' && this.posts.length) {
-                    this.footerBox.focus();
                     const keyword = this.searchKeywordInMode;
-
-                    const currentIndex = this.listList.selected;
                     const id = this.posts[currentIndex].id;
-
                     const newPosts = deleteFavoritesById(
                         this.crawler.title,
                         id,
                     );
 
+                    this.footerBox.focus();
                     this.currentPostIndex = currentIndex;
                     this.posts = keyword
                         ? newPosts.filter(({ title }) =>
@@ -710,7 +734,6 @@ class CLICommunity extends CLI {
                 this.currentPostIndex = 0;
                 this.isFavMode = false;
                 this.isHistoryMode = false;
-                this.screen.debug(this.boardsList.items.length);
                 this.setTitleFooterContent(
                     `${this.crawler.title} ${
                         this.searchKeywordInMode
@@ -792,7 +815,8 @@ class CLICommunity extends CLI {
                         }-fg}${author}{/}`,
                 ),
             );
-            this.resetScroll(this.listList, this.currentPostIndex);
+            this.currentPostIndex !== -1 &&
+                this.resetScroll(this.listList, this.currentPostIndex);
 
             if (this.isHistoryMode || this.isFavMode) {
                 return this.setTitleFooterContent(
@@ -804,11 +828,20 @@ class CLICommunity extends CLI {
                         this.posts.length
                     }{/}`,
                     this.crawler.title,
-                    this.isHistoryMode
-                        ? `${
-                              this.searchKeywordInMode ? '' : 'r: reset, '
-                          }w: search`
-                        : 'd: delete, w: search',
+                    this.posts.length
+                        ? (this.isHistoryMode
+                              ? `${
+                                    getFavoriteById(
+                                        this.crawler.title,
+                                        this.posts[this.listList.selected].id,
+                                    )
+                                        ? 'd: del from favorites, '
+                                        : 'a: add to favorites, '
+                                }${
+                                    this.searchKeywordInMode ? '' : 'r: reset, '
+                                }`
+                              : 'd: del from favorites, ') + 'w: search'
+                        : '',
                 );
             }
 
