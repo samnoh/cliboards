@@ -70,11 +70,9 @@ class CLICommunity extends CLI {
     }) {
         clearFolder(tempFolderPath);
 
-        if (resetFav && !reset) {
+        if (resetFav && !startCrawler) {
             clearFavorites();
-        }
-
-        if (reset && !startCrawler) {
+        } else if (reset && !startCrawler) {
             clearFavorites();
             resetConfigstore();
             resetCustomTheme();
@@ -147,8 +145,8 @@ class CLICommunity extends CLI {
                 community.communityList.emit('select', null, index);
 
                 process.nextTick(() => {
-                    if (reset) {
-                        community.crawler.resetBoards();
+                    if (reset || resetFav) {
+                        reset && community.crawler.resetBoards();
                         clearFavorites(community.crawler.title);
                     }
                 });

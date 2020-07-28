@@ -50,6 +50,9 @@ cliboards --resetFav
 # Reset data for given community only
 cliboards <index|name> --reset
 
+# Reset favorites for given community only
+cliboards <index|name> --resetFav
+
 # Update theme (color customizations)
 cliboards --theme
 
