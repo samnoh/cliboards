@@ -1,7 +1,7 @@
 const env = require('./env');
 const updateNotifier = require('./updateNotifier');
 const { configstore, resetConfigstore } = require('./configstore');
-const { getYoutubeVideoId, hasSpoilerWord } = require('./string');
+const { getYoutubeVideoId, hasSpoilerWord, pluralize } = require('./string');
 const { getTheme, resetCustomTheme, openCustomThemeFile } = require('./theme');
 const {
     openUrls,
@@ -37,6 +37,7 @@ module.exports = {
     resetConfigstore,
     getYoutubeVideoId,
     hasSpoilerWord,
+    pluralize,
     getTheme,
     resetCustomTheme,
     openCustomThemeFile,

@@ -65,9 +65,7 @@ class CLI {
                 case 'escape':
                 case 'q':
                     if (!this.footerBox.focused && !this.formBox) {
-                        if (
-                            this.getWidget().shouldSkip // this.searchKeywordInMode || this.crawler.searchParams.value
-                        ) {
+                        if (this.getWidget().shouldSkip) {
                             await this.cancelSearchInMode();
                         } else {
                             this.moveToWidget('prev');

@@ -24,6 +24,7 @@ const {
     openFilterByKeywordsFile,
     resetFilterByKeywordsFile,
     filterByKeywords,
+    pluralize,
 } = require('../helpers');
 const { name, version, changelog } = require('../../package.json');
 
@@ -939,9 +940,7 @@ class CLICommunity extends CLI {
                             : 'a: add to'
                     } favorites, o: open, ${
                         hasImages
-                            ? `i: view ${images.length} image${
-                                  images.length !== 1 ? 's' : ''
-                              }, `
+                            ? `i: view ${pluralize(images.length, 'image')}, `
                             : ''
                     }left/right arrow: prev/next post`,
                 );

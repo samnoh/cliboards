@@ -22,7 +22,15 @@ const hasSpoilerWord = str => {
     return !!spoilerWords.filter(w => lowerStr.includes(w)).length;
 };
 
+// usage: pluralize(2, 'cherr', 'y,ies') -> cherries
+const pluralize = (number, text, option) => {
+    const [single, plural] = option ? option.split(',') : [];
+    if (number <= 1) return `${number} ${text}${single ? single : ''}`;
+    return `${number} ${text}${plural ? plural : 's'}`;
+};
+
 module.exports = {
     hasSpoilerWord,
     getYoutubeVideoId,
+    pluralize,
 };
