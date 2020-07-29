@@ -797,7 +797,7 @@ class CLICommunity extends CLI {
                     }) =>
                         `${
                             isNewPost
-                                ? `{${this.colors.list_new_post_color}-bg} {/}`
+                                ? `{${this.colors.list_new_post_bg}-bg} {/}`
                                 : ' '
                         }${
                             category
