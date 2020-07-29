@@ -473,6 +473,8 @@ class CLICommunity extends CLI {
                 )
                     return;
 
+                this.currentPostIndex = this.listList.selected;
+
                 this.setTitleContent(
                     '옵션을 선택하세요',
                     this.crawler.title + ' 검색',
@@ -485,6 +487,7 @@ class CLICommunity extends CLI {
                             '검색어를 입력하세요',
                             name + ' 검색',
                         );
+
                         this.showTextBox(async (keyword, textBox) => {
                             this.footerBox.focus();
                             textBox.emit('success');
@@ -497,13 +500,14 @@ class CLICommunity extends CLI {
                                     keyword,
                                 };
 
-                                await this.refreshPosts();
+                                await this.refreshPosts(null);
 
                                 if (this.posts.length === 0) {
                                     this.posts = prevPosts;
                                     this.crawler.pageNumber = prevPageNumber;
                                     throw new Error('결과가 없습니다');
                                 }
+
                                 textBox.destroy();
                             } catch (e) {
                                 this.crawler.searchParams = {};
@@ -1038,7 +1042,7 @@ class CLICommunity extends CLI {
         }
     }
 
-    async refreshPosts(prevPosts) {
+    async refreshPosts(prevPosts, scrollOffset = 0) {
         const filtreredBoard = this.getFilteredBoards();
         const index = filtreredBoard.indexOf(
             this.crawler.boards[this.crawler.currentBoardIndex],
@@ -1054,7 +1058,7 @@ class CLICommunity extends CLI {
             });
         }
 
-        this.currentPostIndex = 0;
+        this.currentPostIndex = scrollOffset;
         this.listList.focus();
     }
 
