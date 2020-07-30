@@ -745,7 +745,7 @@ class CLICommunity extends CLI {
                 this.setTitleFooterContent(
                     `${this.crawler.title} ${
                         this.searchKeywordInMode
-                            ? `{${this.colors.top_left_search_info_color}-fg}${this.searchKeywordInMode} 검색 결과{/} {${this.colors.top_right_color}-fg}${this.boardsList.items.length}{/}`
+                            ? `{${this.colors.top_left_search_keyword_color}-fg}${this.searchKeywordInMode}{/} {${this.colors.top_left_search_info_color}-fg}검색 결과{/} {${this.colors.top_right_color}-fg}${this.boardsList.items.length}{/}`
                             : ''
                     }`,
                     this.crawler.boardTypes[this.currentBoardTypeIndex],
@@ -830,7 +830,7 @@ class CLICommunity extends CLI {
                 return this.setTitleFooterContent(
                     `${this.isHistoryMode ? 'Post History' : 'Favorites'} ${
                         this.searchKeywordInMode
-                            ? `{${this.colors.top_left_search_info_color}-fg}${this.searchKeywordInMode} 검색 결과 `
+                            ? `{${this.colors.top_left_search_keyword_color}-fg}${this.searchKeywordInMode}{/} {${this.colors.top_left_search_info_color}-fg}검색 결과 `
                             : ''
                     }{/}{${this.colors.top_right_color}-fg}${
                         this.posts.length
