@@ -7,14 +7,14 @@
 ## Features
 
 -   Browse online communities: `Clien`, `dcinside`, `DVDPrime`, `Ruliweb`, `PPOMPPU` and `SLRClub`
--   Supports post favorites
--   Supports post history
+-   Post favorites
+-   Post history
 -   Search posts
 -   Shurtcut for viewing images on default web browser
 -   Hides screen instantly (`space` key)
 -   May load faster with a slow Internect connection
--   Supports Spoiler protection
--   Supports color customizations
+-   Spoiler protection
+-   Color customizations
 -   Filters posts by keywords
 
 ## Installation
