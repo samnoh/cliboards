@@ -10,7 +10,14 @@ const hasSpoilerWord = str => {
     if (typeof str !== 'string') return false;
 
     const spoilerWords = ['스포', '슾호', '누설', 'spoiler'];
-    const nonSpoilerWords = ['노스포', '스포츠', '노슾호', '스포무', '스포티'];
+    const nonSpoilerWords = [
+        '노스포',
+        '스포츠',
+        '노슾호',
+        '스포무',
+        '스포티',
+        '스포트',
+    ];
     const lowerStr = str.toLowerCase();
 
     const hasNonSpoilerContent = nonSpoilerWords.filter(w =>
