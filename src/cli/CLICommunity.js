@@ -192,7 +192,7 @@ class CLICommunity extends CLI {
                         this.resetScroll(this.boardsList);
                         this.boardsList.focus();
 
-                        this.boardsList.shouldSkip = true;
+                        this.boardsList.shouldStayAtCurrPage = true;
                     });
                 case 'h': // go to history page
                     if (this.sortBoardsMode || this.searchKeywordInMode) return;
@@ -779,7 +779,7 @@ class CLICommunity extends CLI {
         });
 
         this.listList.on('focus', () => {
-            this.listList.shouldSkip =
+            this.listList.shouldStayAtCurrPage =
                 this.searchKeywordInMode || this.crawler.searchParams.value;
 
             if (
@@ -1256,11 +1256,11 @@ class CLICommunity extends CLI {
             left: -1,
             keys: true,
             inputOnFocus: true,
+            input: true,
             style: {
                 bg: this.colors.text_input_bg,
                 fg: this.colors.text_input_color,
             },
-            input: true,
         });
 
         textBox.on('cancel', () => {
@@ -1272,6 +1272,7 @@ class CLICommunity extends CLI {
 
             try {
                 await onSubmit(input, textBox);
+                textBox.destroy();
             } catch (e) {
                 textBox.emit('failure');
             }
@@ -1362,7 +1363,6 @@ class CLICommunity extends CLI {
         });
 
         this.formBox.on('destroy', () => {
-            this.formBox = null;
             this.getWidget().focus();
             this.hideBottomBar && this.footerBox.hide();
         });
@@ -1373,7 +1373,7 @@ class CLICommunity extends CLI {
         });
 
         this.footerBox.show();
-        this.formBox.shouldSkip = true;
+        this.formBox.shouldStayAtCurrPage = true;
         this.formBox.focus();
     }
 
@@ -1386,6 +1386,9 @@ class CLICommunity extends CLI {
 
     // hide search results in history & favorites mode
     async cancelSearchInMode() {
+        const currentWidget = this.getWidget();
+        currentWidget.shouldStayAtCurrPage = false;
+
         if (this.boardsList.focused) {
             this.searchKeywordInMode = '';
             this.setBoards();
@@ -1411,9 +1414,6 @@ class CLICommunity extends CLI {
             return this.moveToWidget('prev');
         }
 
-        const currentWidget = this.getWidget();
-
-        currentWidget.shouldSkip = false;
         currentWidget.focus();
         this.resetScroll(currentWidget);
         this.screen.render();

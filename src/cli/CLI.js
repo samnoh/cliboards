@@ -66,10 +66,13 @@ class CLI {
                 case 'q':
                     if (!this.footerBox.focused) {
                         const footerChildren = this.footerBox.children.find(
-                            c => c.shouldSkip && c.name !== 'loading',
+                            c => c.shouldStayAtCurrPage && c.name !== 'loading',
                         );
 
-                        if (this.getWidget().shouldSkip || footerChildren) {
+                        if (
+                            this.getWidget().shouldStayAtCurrPage ||
+                            footerChildren
+                        ) {
                             await this.cancelSearchInMode();
                         } else {
                             this.moveToWidget('prev');
