@@ -64,8 +64,12 @@ class CLI {
                     return await this.terminate(env.isDevEnv ? 1 : 0);
                 case 'escape':
                 case 'q':
-                    if (!this.footerBox.focused && !this.formBox) {
-                        if (this.getWidget().shouldSkip) {
+                    if (!this.footerBox.focused) {
+                        const footerChildren = this.footerBox.children.find(
+                            c => c.shouldSkip && c.name !== 'loading',
+                        );
+
+                        if (this.getWidget().shouldSkip || footerChildren) {
                             await this.cancelSearchInMode();
                         } else {
                             this.moveToWidget('prev');
@@ -182,7 +186,10 @@ class CLI {
     }
 
     getWidget(offset = 0) {
-        return this.widgets[this.currentWidgetIndex + offset];
+        const index = this.currentWidgetIndex + offset;
+
+        if (index < this.widgets.length) return this.widgets[index];
+        return this.widgets[this.widgets.length - 1];
     }
 
     async terminate(exitCode = 0, message = '') {

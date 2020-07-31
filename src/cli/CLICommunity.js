@@ -1308,6 +1308,7 @@ class CLICommunity extends CLI {
             width: '100%+1',
             top: '100%-1',
             left: -1,
+            name: 'formBox',
         });
 
         let left = 0;
@@ -1372,6 +1373,7 @@ class CLICommunity extends CLI {
         });
 
         this.footerBox.show();
+        this.formBox.shouldSkip = true;
         this.formBox.focus();
     }
 
@@ -1384,9 +1386,6 @@ class CLICommunity extends CLI {
 
     // hide search results in history & favorites mode
     async cancelSearchInMode() {
-        const currentWidget = this.getWidget();
-        currentWidget.shouldSkip = false;
-
         if (this.boardsList.focused) {
             this.searchKeywordInMode = '';
             this.setBoards();
@@ -1406,10 +1405,15 @@ class CLICommunity extends CLI {
             } else {
                 return this.moveToWidget('prev');
             }
+        } else if (this.formBox) {
+            return;
         } else {
             return this.moveToWidget('prev');
         }
 
+        const currentWidget = this.getWidget();
+
+        currentWidget.shouldSkip = false;
         currentWidget.focus();
         this.resetScroll(currentWidget);
         this.screen.render();

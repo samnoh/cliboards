@@ -74,6 +74,7 @@ module.exports = {
         height: 1,
         width: 1,
         hidden: true,
+        name: 'loading',
     },
     postDetail: {
         ...defaultOptions.box,
