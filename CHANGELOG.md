@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.0.0-beta.108] - 2020-08-03
+## [1.0.0-beta.115] - 2020-08-03
 
 ### Updated
 
@@ -412,6 +412,7 @@ All notable changes to this project will be documented in this file.
 
 -   auto refresh bug
 
+[1.0.0-beta.115]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.115
 [1.0.0-beta.108]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.108
 [1.0.0-beta.106]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.106
 [1.0.0-beta.103]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.103
