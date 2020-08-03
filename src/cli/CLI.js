@@ -193,9 +193,10 @@ class CLI {
     getWidget(offset = 0) {
         const index = this.currentWidgetIndex + offset;
         const widgets = this.widgets;
+        const nWidgets = widgets.length;
 
-        if (index > widgets.length) {
-            return widgets[widgets.length - 1];
+        if (index > nWidgets) {
+            return widgets[nWidgets - 1];
         } else if (index < 0) {
             return null; // exit
         } else {
