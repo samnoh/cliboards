@@ -147,9 +147,9 @@ class CLI {
             this.currentWidgetIndex += nextWidgetIndexOffset;
 
             if (nextWidget) {
-                direction === 'prev' &&
-                    currWidget.select &&
+                if (direction === 'prev' && currWidget.select) {
                     currWidget.select(0);
+                }
                 currWidget.destroy();
                 this.bodyBox.append(nextWidget);
                 callback && callback(nextWidget);
