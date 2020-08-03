@@ -163,11 +163,14 @@ class CLI {
         this.screen.render();
     }
 
-    setFooterContent(footerText) {
+    setFooterContent(footerText, hasBackButtonText = true) {
+        const backText = `q: ${this.currentWidgetIndex ? 'back' : 'quit'}`;
+        const midText = `${
+            !hasBackButtonText ? '' : footerText ? ', ' + footerText : ''
+        }`;
+
         this.footerBox.setContent(
-            `q: ${this.currentWidgetIndex ? 'back' : 'quit'}${
-                footerText ? ', ' + footerText : ''
-            }`,
+            `${hasBackButtonText ? backText : ''}${midText}${footerText}`,
         );
         this.screen.render();
     }
@@ -176,9 +179,10 @@ class CLI {
         leftTitleText = '',
         rightTitleText = '',
         footerText = '',
+        hasBackButtonText = true,
     ) {
         this.setTitleContent(leftTitleText, rightTitleText);
-        this.setFooterContent(footerText);
+        this.setFooterContent(footerText, hasBackButtonText);
     }
 
     resetScroll(widget, offset = 0) {

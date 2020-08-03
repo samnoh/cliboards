@@ -780,7 +780,9 @@ class CLICommunity extends CLI {
 
         this.listList.on('focus', () => {
             this.listList.shouldStayAtCurrPage =
-                this.searchKeywordInMode || this.crawler.searchParams.value;
+                !!this.searchKeywordInMode ||
+                !!this.crawler.searchParams.value ||
+                !!this.autoRefreshTimer;
 
             if (
                 !Array.isArray(this.posts) ||
@@ -853,7 +855,7 @@ class CLICommunity extends CLI {
                 );
             }
 
-            this.setTitleFooterContent(
+            this.setTitleContent(
                 `${this.crawler.currentBoard.name} ${
                     this.crawler.searchParams.keyword
                         ? `{${this.colors.top_left_search_keyword_color}-fg}${this.crawler.searchParams.keyword}{/} {${this.colors.top_left_search_info_color}-fg}${this.crawler.searchParams.type} 검색 결과`
@@ -876,6 +878,8 @@ class CLICommunity extends CLI {
                         ? '‧' + this.crawler.sortUrl.name
                         : ''
                 }`,
+            );
+            this.setFooterContent(
                 this.autoRefreshTimer
                     ? `any key: cancel auto refresh{|} {${this.colors.bottom_right_color}-fg}Refresh every ${this.autoRefreshInterval} sec..{/}`
                     : `${this.crawler.searchTypes ? 'w: search, ' : ''}${
@@ -890,6 +894,7 @@ class CLICommunity extends CLI {
                       }${
                           this.crawler.filterOptions ? 'C-s: filter, ' : ''
                       }left/right arrow: prev/next page`,
+                !this.autoRefreshTimer,
             );
         });
 
@@ -1401,6 +1406,11 @@ class CLICommunity extends CLI {
             } else if (this.isHistoryMode) {
                 this.searchKeywordInMode = '';
                 this.posts = getCurrentHistories(crawlerTitle);
+            } else if (this.autoRefreshTimer) {
+                if (this.crawler.searchParams.value) {
+                    currentWidget.shouldStayAtCurrPage = true;
+                }
+                return;
             } else if (this.crawler.searchParams.value) {
                 this.crawler.currentPageNumber = 0;
                 this.crawler.searchParams = {};
