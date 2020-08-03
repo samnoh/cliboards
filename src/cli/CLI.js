@@ -192,9 +192,15 @@ class CLI {
 
     getWidget(offset = 0) {
         const index = this.currentWidgetIndex + offset;
+        const widgets = this.widgets;
 
-        if (index < this.widgets.length) return this.widgets[index];
-        return this.widgets[this.widgets.length - 1];
+        if (index > widgets.length) {
+            return widgets[widgets.length - 1];
+        } else if (index < 0) {
+            return null; // exit
+        } else {
+            return widgets[index];
+        }
     }
 
     async terminate(exitCode = 0, message = '') {
