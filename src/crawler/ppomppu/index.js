@@ -9,13 +9,11 @@ const {
     boards,
     search,
 } = require('./constants');
-const { getYoutubeVideoId } = require('../../helpers');
 
 class Ppomppu extends CommunityCrawler {
     constructor() {
         super(sortUrls, ignoreRequests, baseUrl);
 
-        this.title = Ppomppu.toString();
         this.boardTypes = boardTypes;
         this.getSearchParams = search.getSearchParams;
         this.searchTypes = search.types;
@@ -353,10 +351,8 @@ class Ppomppu extends CommunityCrawler {
             })
             .filter(comment => comment);
     }
-
-    static toString() {
-        return 'PPOMPPU';
-    }
 }
+
+Ppomppu.prototype.constructor.type = 'PPOMPPU';
 
 module.exports = Ppomppu;

@@ -14,7 +14,6 @@ class Clien extends CommunityCrawler {
     constructor() {
         super(sortUrls, ignoreRequests, baseUrl);
 
-        this.title = Clien.toString();
         this.boardTypes = boardTypes;
     }
 
@@ -286,10 +285,6 @@ class Clien extends CommunityCrawler {
             console.log(e);
             return [];
         }
-    }
-
-    static toString() {
-        return 'Clien';
     }
 }
 

@@ -20,7 +20,6 @@ class Dcinside extends CommunityCrawler {
     constructor() {
         super(sortUrls, ignoreRequests, baseUrl);
 
-        this.title = Dcinside.toString();
         this.boardTypes = boardTypes;
         this.canAddBoards = true;
         this.getSearchParams = search.getSearchParams;
@@ -292,10 +291,8 @@ class Dcinside extends CommunityCrawler {
 
         return ranks;
     }
-
-    static toString() {
-        return 'dcinside';
-    }
 }
+
+Dcinside.prototype.constructor.type = 'dcinside';
 
 module.exports = Dcinside;

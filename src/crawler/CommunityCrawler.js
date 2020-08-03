@@ -244,6 +244,16 @@ class CommunityCrawler extends Crawler {
             return null;
         }
     }
+
+    get title() {
+        const type = this.constructor.type;
+        return type ? type : this.constructor.name;
+    }
+
+    static getTitle() {
+        const type = this.prototype.constructor.type;
+        return type ? type : this.prototype.constructor.name;
+    }
 }
 
 module.exports = CommunityCrawler;

@@ -19,7 +19,6 @@ class Ruliweb extends CommunityCrawler {
     constructor() {
         super(sortUrls, ignoreRequests, baseUrl);
 
-        this.title = Ruliweb.toString();
         this.boardTypes = boardTypes;
         this.getSearchParams = search.getSearchParams;
         this.searchTypes = search.types;
@@ -269,10 +268,6 @@ class Ruliweb extends CommunityCrawler {
         } catch (e) {
             return [];
         }
-    }
-
-    static toString() {
-        return 'Ruliweb';
     }
 }
 

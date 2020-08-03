@@ -14,7 +14,6 @@ class SLRClub extends CommunityCrawler {
     constructor() {
         super(sortUrls, ignoreRequests, baseUrl);
 
-        this.title = SLRClub.toString();
         this.boardTypes = boardTypes;
         this.imageXhrRequired = true;
     }
@@ -196,10 +195,6 @@ class SLRClub extends CommunityCrawler {
 
     set navigatePage(offset) {
         this.currentPageNumber -= offset;
-    }
-
-    static toString() {
-        return 'SLRClub';
     }
 }
 

@@ -14,7 +14,6 @@ class DVDPrime extends CommunityCrawler {
     constructor() {
         super(sortUrls, ignoreRequests, baseUrl);
 
-        this.title = DVDPrime.toString();
         this.boardTypes = boardTypes;
         this.getSearchParams = search.getSearchParams;
         this.searchTypes = search.types;
@@ -195,10 +194,6 @@ class DVDPrime extends CommunityCrawler {
 
             return output;
         });
-    }
-
-    static toString() {
-        return 'DVDPrime';
     }
 }
 
