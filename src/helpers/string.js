@@ -1,9 +1,11 @@
 const getYoutubeVideoId = url => {
     if (typeof url !== 'string') return null;
 
-    return url.match(
+    const id = url.match(
         /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/,
     )[5];
+
+    return id || null;
 };
 
 const hasSpoilerWord = str => {

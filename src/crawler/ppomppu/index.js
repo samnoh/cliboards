@@ -9,6 +9,7 @@ const {
     boards,
     search,
 } = require('./constants');
+const { getYoutubeVideoId } = require('../../helpers');
 
 class Ppomppu extends CommunityCrawler {
     constructor() {
@@ -204,7 +205,7 @@ class Ppomppu extends CommunityCrawler {
             const body = document.querySelector('#KH_Content');
             const imagesEl = Array.from(
                 body.querySelectorAll(
-                    'img, video, iframe[src^="https://www.youtube.com/embed"], a[href^="https://www.youtube.com/watch?v="]',
+                    'img, video, iframe[src^="https://www.youtube.com/embed"], a[href^="https://www.youtube.com/watch?v="], a[data-media^="youtube"]',
                 ),
             ).filter(item => item.getAttribute('alt') !== '다운로드 버튼');
             const images = imagesEl.map((item, index) => {
@@ -220,18 +221,22 @@ class Ppomppu extends CommunityCrawler {
                     text.innerText = name;
                     videoDiv.insertAdjacentElement('afterend', text);
                     videoDiv.removeChild(item.parentNode);
-                } else if (item.tagName === 'IFRAME' || item.tagName === 'A') {
+                } else if (
+                    item.tagName === 'IFRAME' ||
+                    item.tagName === 'A' ||
+                    item.dataset.media === 'youtube'
+                ) {
                     name = `YOUTUBE_${index + 1}`;
                     type = 'youtube';
                     item.parentNode.innerText = name;
 
                     if (item.tagName === 'IFRAME') {
                         value = item.src;
+                    } else if (item.dataset.url) {
+                        value = `https://youtube.com/embed/${item.dataset.url}`;
                     } else {
-                        const id = item.href.match(
-                            /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/,
-                        )[5];
-                        value = `https://youtube.com/embed/${id}`;
+                        const id = getYoutubeVideoId(item.href);
+                        if (id) value = `https://youtube.com/embed/${id}`;
                     }
                 } else {
                     name = `IMAGE_${index + 1}`;
