@@ -1,4 +1,4 @@
-const postHistories = {};
+const postHistories = Object.create(null);
 
 const initPostHistory = crawlerName => {
     if (!postHistories[crawlerName]) {
