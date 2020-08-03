@@ -13,6 +13,14 @@ class CLI {
         // cli
         this.currentWidgetIndex = 0;
         this.screen = blessed.screen(cliOptions.screen);
+        this.setDefaultBoxes();
+        this.setLoadingBox();
+
+        // update
+        process.on('exit', updateNotifier.notifyUpdate);
+    }
+
+    setDefaultBoxes() {
         const box = blessed.box({
             ...cliOptions.defaultBox,
             parent: this.screen,
@@ -29,6 +37,9 @@ class CLI {
             ...cliOptions.footer,
             parent: box,
         });
+    }
+
+    setLoadingBox() {
         this.loadingBox = blessed.loading({
             ...cliOptions.loading,
             parent: this.footerBox,
@@ -52,9 +63,6 @@ class CLI {
             blessed.loading.prototype.stop.call(this);
             this.parent.padding.right += 1;
         };
-
-        // update
-        process.on('exit', updateNotifier.notifyUpdate);
     }
 
     setKeyPressEvent() {
