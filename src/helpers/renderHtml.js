@@ -4,11 +4,11 @@ const staticPath = '../src/static/';
 
 let imageIndex = 0;
 
-const renderImageTag = ({ type, value }) => {
+const renderImageTag = ({ name, type, value }) => {
     switch (type) {
         case 'gif':
         case 'image':
-            return `<img src="${value}">`;
+            return `<img alt="${name}" src="${value}">`;
         case 'mp4':
             return `<video autoplay loop muted><source src="${value}" type="video/mp4"></video>`;
         case 'youtube':
