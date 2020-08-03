@@ -165,9 +165,7 @@ class CLI {
 
     setFooterContent(footerText, hasBackButtonText = true) {
         const backText = `q: ${this.currentWidgetIndex ? 'back' : 'quit'}`;
-        const midText = `${
-            !hasBackButtonText ? '' : footerText ? ', ' + footerText : ''
-        }`;
+        const midText = `${!hasBackButtonText ? '' : footerText ? ', ' : ''}`;
 
         this.footerBox.setContent(
             `${hasBackButtonText ? backText : ''}${midText}${footerText}`,
