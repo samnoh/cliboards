@@ -35,7 +35,6 @@ module.exports = {
     defaultBox: defaultOptions.box,
     defaultList: defaultOptions.list,
     screen: {
-        _type: 'screen',
         dockBorders: true,
         fastCSR: true,
         fullUnicode: true,
