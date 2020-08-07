@@ -64,7 +64,8 @@ const renderHtml = ({
             })
             .join('\n')}
     </div>
-    <script src="${staticPath}js/index.js"></script>
+    <script src="${staticPath}js/utils.js"></script>
+    <script src="${staticPath}js/imageViewer.js"></script>
     <script src="${staticPath}js/autoClose.js"></script>
 </body>
 </html>`;
