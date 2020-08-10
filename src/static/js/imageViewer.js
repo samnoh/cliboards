@@ -97,7 +97,7 @@
 
     function openImageViewer(e) {
         toggleLockBodyScroll();
-        pauseYoutubeVideos();
+        pauseYoutubeVideos('.youtube-video');
 
         createElement({ className: 'popup-image-box', parent: body });
         addImageViwerEventListener();

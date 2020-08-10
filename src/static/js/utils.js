@@ -16,9 +16,9 @@ function toggleLockBodyScroll() {
     body.style.overflowY =
         body.style.overflowY === 'hidden' ? 'auto' : 'hidden';
 }
-
-function pauseYoutubeVideos() {
-    const youtubeVideos = body.querySelectorAll('.youtube-video');
+//
+function pauseYoutubeVideos(query) {
+    const youtubeVideos = body.querySelectorAll(query);
 
     if (!youtubeVideos.length) return;
 
