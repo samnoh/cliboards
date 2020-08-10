@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.116] - 2020-08-10
+
+### Fixed
+
+-   names in image viewer for `Ruliweb`
+
 ## [1.0.0-beta.115] - 2020-08-03
 
 ### Updated
@@ -412,6 +418,7 @@ All notable changes to this project will be documented in this file.
 
 -   auto refresh bug
 
+[1.0.0-beta.116]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.116
 [1.0.0-beta.115]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.115
 [1.0.0-beta.108]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.108
 [1.0.0-beta.106]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.106
