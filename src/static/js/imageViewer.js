@@ -11,7 +11,7 @@
         return _activeImageIndex;
     }
 
-    function setActiveImage(index) {
+    function setActiveImageIndex(index) {
         if (index < 0 || index >= imageBoxes.length) return;
         _activeImageIndex = parseInt(index);
     }
@@ -51,8 +51,7 @@
             });
 
             bar.addEventListener('click', function (e) {
-                setActiveImage(e.target.dataset.barIndex);
-                moveToNextImage();
+                moveToNextImage(e.target.dataset.barIndex);
             });
         }
 
@@ -98,22 +97,20 @@
     function openImageViewer(e) {
         toggleLockBodyScroll();
         pauseYoutubeVideos('.youtube-video');
-
         createElement({ className: 'popup-image-box', parent: body });
         addImageViwerEventListener();
-        moveToNextImage();
-        setActiveImage(e.target.parentNode.dataset.imageIndex);
+        moveToNextImage(e.target.parentNode.dataset.imageIndex);
     }
 
-    function moveToNextImage() {
-        const imageViewerBox = getImageViewerContainer();
-        const activeImageIndex = getActiveImageIndex();
-
+    function moveToNextImage(activeImageIndex = 0) {
+        setActiveImageIndex(activeImageIndex);
         cleanUpPrevImageViewerEvents();
 
+        const imageViewerBox = getImageViewerContainer();
         const bottomBars = document.querySelectorAll('.bar-container .bar');
 
         if (!bottomBars.length && imageBoxes.length > 1) {
+            // when opening image viewer initally
             createBottomBars();
             fadeInBottomBars();
         } else if (bottomBars.length) {
@@ -137,17 +134,17 @@
         switch (e.keyCode) {
             case 37:
             case 38: // prev
-                setActiveImage(
+                return moveToNextImage(
                     activeImageIndex
                         ? activeImageIndex - 1
                         : imageBoxes.length - 1,
                 );
-                return moveToNextImage();
             case 32:
             case 39:
             case 40: // next
-                setActiveImage((activeImageIndex + 1) % imageBoxes.length);
-                return moveToNextImage();
+                return moveToNextImage(
+                    (activeImageIndex + 1) % imageBoxes.length,
+                );
             case 81:
             case 27: // close
                 return closeImageViewer();
