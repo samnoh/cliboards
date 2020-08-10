@@ -103,8 +103,8 @@ class Ruliweb extends CommunityCrawler {
                     'img, .gifct, iframe[src^="https://www.youtube.com/embed"]',
                 ),
             ).map((item, index) => {
-                let value = item.getAttribute('src'),
-                    type = 'image';
+                let value = item.getAttribute('src');
+                let type, name;
 
                 if (item.classList.contains('gifct')) {
                     const video = item.querySelector('video');
@@ -113,14 +113,16 @@ class Ruliweb extends CommunityCrawler {
                         type = 'mp4';
                         value = video.getAttribute('src');
                     }
-                    item.parentNode.innerText = `GIF_${index + 1}`;
+                    name = `GIF_${index + 1}`;
                 } else if (item.tagName === 'IFRAME') {
                     type = 'youtube';
-                    value = item.src;
-                    item.parentNode.innerText = `YOUTUBE_${index + 1}`;
+                    name = `YOUTUBE_${index + 1}`;
                 } else {
-                    item.parentNode.innerText = `IMAGE_${index + 1}`;
+                    type = 'image';
+                    name = `IMAGE_${index + 1}`;
                 }
+
+                item.parentNode.innerText = name;
 
                 return (
                     value && {
@@ -129,7 +131,7 @@ class Ruliweb extends CommunityCrawler {
                             value.slice(0, 6) === 'https:'
                                 ? value
                                 : 'https:' + value,
-                        name: item.textContent,
+                        name,
                     }
                 );
             });
