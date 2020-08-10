@@ -16,7 +16,7 @@ function toggleLockBodyScroll() {
     body.style.overflowY =
         body.style.overflowY === 'hidden' ? 'auto' : 'hidden';
 }
-//
+
 function pauseYoutubeVideos(query) {
     const youtubeVideos = body.querySelectorAll(query);
 
