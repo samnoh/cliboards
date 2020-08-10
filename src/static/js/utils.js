@@ -2,6 +2,16 @@
 
 const body = document.querySelector('body');
 
+function setNestedProperty(obj, key, value) {
+    key = key.split('.');
+
+    while (key.length > 1) {
+        obj = obj[key.shift()];
+    }
+
+    obj[key.shift()] = value;
+}
+
 function toggleLockBodyScroll() {
     body.style.overflowY =
         body.style.overflowY === 'hidden' ? 'auto' : 'hidden';
@@ -23,12 +33,6 @@ function pauseYoutubeVideos() {
     });
 }
 
-function setObject(obj, str, val) {
-    str = str.split('.');
-    while (str.length > 1) obj = obj[str.shift()];
-    return (obj[str.shift()] = val);
-}
-
 function createElement({ type, className, parent, attr }) {
     const elem = document.createElement(type || 'div');
 
@@ -43,7 +47,8 @@ function createElement({ type, className, parent, attr }) {
 
     if (attr) {
         Object.keys(attr).forEach(key => {
-            setObject(elem, key, attr[key]);
+            const value = attr[key];
+            setNestedProperty(elem, key, value);
         });
     }
 

@@ -3,21 +3,32 @@
 (() => {
     const autoCloseInput = document.querySelector('#auto-close');
 
+    let isReloaded = false;
+
     function autoClose() {
-        if (document.hidden || document.webkitHidden || document.msHidden) {
+        if (
+            !isReloaded &&
+            (document.hidden || document.webkitHidden || document.msHidden)
+        ) {
             window.close();
         }
     }
 
-    autoCloseInput.addEventListener('change', ({ target }) => {
-        if (target.checked) {
-            localStorage.setItem('auto-close', true);
-            document.addEventListener('visibilitychange', autoClose, false);
-        } else {
-            localStorage.setItem('auto-close', false);
-            document.removeEventListener('visibilitychange', autoClose);
-        }
+    function updateAutoCloseEventListener(isAdd) {
+        document[isAdd ? 'addEventListener' : 'removeEventListener'](
+            'visibilitychange',
+            autoClose,
+        );
+    }
+
+    window.addEventListener('beforeunload', function (e) {
+        history.scrollRestoration = 'manual';
+        isReloaded = true;
     });
 
-    document.addEventListener('visibilitychange', autoClose, false);
+    autoCloseInput.addEventListener('change', function ({ target }) {
+        updateAutoCloseEventListener(target.checked);
+    });
+
+    updateAutoCloseEventListener(true);
 })();

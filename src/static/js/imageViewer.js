@@ -100,7 +100,7 @@
         pauseYoutubeVideos();
 
         createElement({ className: 'popup-image-box', parent: body });
-        addImageViwerKeyEvent();
+        addImageViwerEventListener();
         moveToNextImage();
         setActiveImage(e.target.parentNode.dataset.imageIndex);
     }
@@ -173,7 +173,7 @@
         imageViewerBox.removeEventListener('mousemove', fadeInBottomBars);
     }
 
-    function addImageViwerKeyEvent() {
+    function addImageViwerEventListener() {
         document.addEventListener('keydown', imageViewerKeyEvent);
     }
 
