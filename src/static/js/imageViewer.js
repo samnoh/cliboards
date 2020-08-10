@@ -58,7 +58,7 @@
         imageViewerBox.addEventListener('mousemove', fadeInBottomBars);
     }
 
-    function fadeOutBottomBars(type) {
+    function fadeOutBottomBars() {
         const bottomBarContainer = getBottomBarContainer();
         bottomBarContainer.classList.add('fade-out');
         bottomBarContainer.classList.remove('fade-in');
@@ -80,6 +80,7 @@
     // image viewer
     function closeImageViewer() {
         cleanUpImageViewerEvents();
+        toggleLockBodyScroll();
 
         const bottomBarContainer = getBottomBarContainer();
         bottomBarContainer && bottomBarContainer.remove();
@@ -90,16 +91,6 @@
         setTimeout(function () {
             imageViewerBox && imageViewerBox.remove();
         }, 200);
-
-        toggleLockBodyScroll();
-    }
-
-    function openImageViewer(e) {
-        toggleLockBodyScroll();
-        pauseYoutubeVideos('.youtube-video');
-        createElement({ className: 'popup-image-box', parent: body });
-        addImageViwerEventListener();
-        moveToNextImage(e.target.parentNode.dataset.imageIndex);
     }
 
     function moveToNextImage(activeImageIndex = 0) {
@@ -125,6 +116,14 @@
         imageViewerBox.appendChild(imageBox);
 
         addImageBoxEventListner(imageBox);
+    }
+
+    function openImageViewer(e) {
+        toggleLockBodyScroll();
+        pauseYoutubeVideos('.youtube-video');
+        createElement({ className: 'popup-image-box', parent: body });
+        addImageViwerEventListener();
+        moveToNextImage(e.target.parentNode.dataset.imageIndex);
     }
 
     // events
@@ -185,5 +184,5 @@
         });
     }
 
-    addImageBoxesEventListeners();
+    window.addEventListener('load', addImageBoxesEventListeners);
 })();
