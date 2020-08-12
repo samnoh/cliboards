@@ -4,6 +4,7 @@
     --color-black: #2b292d;
     --color-gray: #555;
 
+    /* animation */
     --transition-duration: 0.3s;
     --animation-duration: 0.2s;
 }
