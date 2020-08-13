@@ -45,7 +45,7 @@ class CLICommunity extends CLI {
         ];
 
         // options
-        this.autoRefreshInterval = 10; // refresh every 10 seconds; do not make it too low
+        this.autoRefreshInterval = 10; // refresh every x seconds; do not make it too low
         this.showSpoiler = false;
         this.hideComments = false;
         this.hideTopBar = false;
@@ -440,9 +440,16 @@ class CLICommunity extends CLI {
             } else if (full === 'a') {
                 passPrevPosts = true;
 
-                this.autoRefreshTimer = setInterval(async () => {
-                    await this.refreshPosts(prevPosts);
-                }, this.autoRefreshInterval * 1000);
+                this.autoRefreshTimer = setTimeout(
+                    async function timerHandler() {
+                        await this.refreshPosts(prevPosts);
+                        this.autoRefreshTimer = setTimeout(
+                            timerHandler.bind(this),
+                            this.autoRefreshInterval * 1000,
+                        );
+                    }.bind(this),
+                    this.autoRefreshInterval * 1000,
+                );
             } else if (name === 's') {
                 if (ctrl && this.crawler.filterOptions) {
                     this.crawler.toggleFilterMode();
