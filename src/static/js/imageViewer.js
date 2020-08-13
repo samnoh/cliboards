@@ -2,7 +2,7 @@
 
 (function () {
     const imageBoxes = body.querySelectorAll('img, video');
-    const BOTTOM_BAR_TIMER_SECOND = 0.5;
+    const BOTTOM_BAR_TIMER_SECOND = 1;
 
     let _activeImageIndex = 0;
     let barsTimer = null;
@@ -24,6 +24,11 @@
     function getBottomBarContainer() {
         return document.querySelector('.bar-container');
     }
+
+    const fadeInBottomBarsHandler = debounce(
+        fadeInBottomBars,
+        BOTTOM_BAR_TIMER_SECOND * 1000 - 100,
+    );
 
     function createBottomBars() {
         const imageViewerBox = getImageViewerContainer();
@@ -55,7 +60,7 @@
             });
         }
 
-        imageViewerBox.addEventListener('mousemove', fadeInBottomBars);
+        imageViewerBox.addEventListener('mousemove', fadeInBottomBarsHandler);
     }
 
     function fadeOutBottomBars() {
@@ -78,6 +83,7 @@
     }
 
     // image viewer
+
     function closeImageViewer() {
         cleanUpImageViewerEvents();
         toggleLockBodyScroll();
@@ -149,6 +155,7 @@
                 return closeImageViewer();
         }
     }
+    const imageViewerKeyEventHandler = debounce(imageViewerKeyEvent, 150);
 
     function cleanUpPrevImageViewerEvents() {
         const imageViewerBox = getImageViewerContainer();
@@ -165,12 +172,15 @@
 
         clearTimeout(barsTimer);
 
-        document.removeEventListener('keydown', imageViewerKeyEvent);
-        imageViewerBox.removeEventListener('mousemove', fadeInBottomBars);
+        document.removeEventListener('keydown', imageViewerKeyEventHandler);
+        imageViewerBox.removeEventListener(
+            'mousemove',
+            fadeInBottomBarsHandler,
+        );
     }
 
     function addImageViwerEventListener() {
-        document.addEventListener('keydown', imageViewerKeyEvent);
+        document.addEventListener('keydown', imageViewerKeyEventHandler);
     }
 
     function addImageBoxEventListner(container) {
