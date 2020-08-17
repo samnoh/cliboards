@@ -4,9 +4,7 @@
     const isAutoClose = localStorage.getItem('isAutoClose');
     const autoCloseInput = document.querySelector('#auto-close');
 
-    if (!isAutoClose === 'true' && !isAutoClose === null) {
-        autoCloseInput.checked = false;
-    }
+    autoCloseInput.checked = isAutoClose === 'true' || isAutoClose === null;
 
     let isReloaded = false;
 
@@ -26,15 +24,19 @@
         );
     }
 
-    window.addEventListener('beforeunload', function (e) {
-        localStorage.setItem('isAutoClose', autoCloseInput.checked);
-        history.scrollRestoration = 'manual';
-        isReloaded = true;
-    });
+    function init() {
+        window.addEventListener('beforeunload', function (e) {
+            localStorage.setItem('isAutoClose', autoCloseInput.checked);
+            history.scrollRestoration = 'manual';
+            isReloaded = true;
+        });
 
-    autoCloseInput.addEventListener('change', function ({ target }) {
-        updateAutoCloseEventListener(target.checked);
-    });
+        autoCloseInput.addEventListener('change', function ({ target }) {
+            updateAutoCloseEventListener(target.checked);
+        });
 
-    updateAutoCloseEventListener(true);
+        updateAutoCloseEventListener(true);
+    }
+
+    init();
 })();

@@ -83,7 +83,6 @@
     }
 
     // image viewer
-
     function closeImageViewer() {
         cleanUpImageViewerEvents();
         toggleLockBodyScroll();

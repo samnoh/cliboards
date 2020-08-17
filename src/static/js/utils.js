@@ -2,16 +2,6 @@
 
 const body = document.querySelector('body');
 
-function setNestedProperty(obj, key, value) {
-    key = key.split('.');
-
-    while (key.length > 1) {
-        obj = obj[key.shift()];
-    }
-
-    obj[key.shift()] = value;
-}
-
 function toggleLockBodyScroll() {
     body.style.overflowY =
         body.style.overflowY === 'hidden' ? 'auto' : 'hidden';
@@ -53,6 +43,16 @@ function createElement({ type, className, parent, attr }) {
     }
 
     return elem;
+}
+
+function setNestedProperty(obj, key, value) {
+    key = key.split('.');
+
+    while (key.length > 1) {
+        obj = obj[key.shift()];
+    }
+
+    obj[key.shift()] = value;
 }
 
 function debounce(f, delay) {
