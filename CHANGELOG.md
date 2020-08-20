@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.120] - 2020-08-20
+
+### Updated
+
+-   `dcinside` hot galleries cache lasts for hours
+
 ## [1.0.0-beta.116] - 2020-08-10
 
 ### Fixed
@@ -418,6 +424,7 @@ All notable changes to this project will be documented in this file.
 
 -   auto refresh bug
 
+[1.0.0-beta.120]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.120
 [1.0.0-beta.116]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.116
 [1.0.0-beta.115]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.115
 [1.0.0-beta.108]: https://github.com/samnoh/cliboards/releases/tag/v1.0.0-beta.108

@@ -289,7 +289,7 @@ class Dcinside extends CommunityCrawler {
 
         setCacheData(cacheKey, ranks, {
             save: true,
-            ttl: 21600000 /* 6 hr. */,
+            ttl: 28800000 /* 8 hr. */,
         });
 
         return ranks;
