@@ -261,7 +261,7 @@ class Dcinside extends CommunityCrawler {
     async getHotGalleryRank() {
         const cacheKey = 'dcinsideRanks';
 
-        if (hasCacheData(cacheKey)) return getCacheData(cacheKey).data;
+        if (hasCacheData(cacheKey)) return getCacheData(cacheKey);
 
         const galleryRankReq = axios.get(getRankUrl(false));
         const mgalleryRankReq = axios.get(getRankUrl(true));
@@ -287,7 +287,10 @@ class Dcinside extends CommunityCrawler {
             },
         );
 
-        setCacheData(cacheKey, { data: ranks });
+        setCacheData(cacheKey, ranks, {
+            save: true,
+            ttl: 21600000 /* 6 hr. */,
+        });
 
         return ranks;
     }

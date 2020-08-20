@@ -1,4 +1,6 @@
-const cache = {};
+const { configstore } = require('./configstore');
+
+const cache = Object.create(null);
 
 /*
 options
@@ -39,7 +41,7 @@ const setCacheData = (key, value, options = {}) => {
             enumerable: true,
         },
         createdAt: {
-            value: new Date().getTime(),
+            value: options.createdAt || new Date().getTime(),
             enumerable: true,
         },
         ttl: {
@@ -50,6 +52,10 @@ const setCacheData = (key, value, options = {}) => {
 
     if (cache[key]) {
         isNewData = deleteCacheData(key);
+    }
+
+    if (options.save) {
+        configstore.set(`cache.${key}`, _value);
     }
 
     // can delete but not able to update data
@@ -66,10 +72,19 @@ const getCacheData = key => {
     // get all cache data
     if (key === '*') {
         const keys = Object.keys(cache);
-        return keys.map(_key => cache[_key].data);
+        return keys.map(_key => ({ [key]: cache[_key].data }));
     }
 
-    return (clearOldData(key) || {}).data || null;
+    if (!cache[key] && configstore.has(`cache.${key}`)) {
+        const value = configstore.get(`cache.${key}`);
+
+        setCacheData(key, value.data, {
+            ttl: value.ttl,
+            createdAt: value.createdAt,
+        });
+    }
+
+    return (clearOldData(key) || {}).data;
 };
 
 const hasCacheData = key => {
