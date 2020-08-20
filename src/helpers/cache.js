@@ -100,10 +100,15 @@ const deleteCacheData = key => {
         const keys = Object.keys(cache);
 
         if (keys.length) {
-            keys.forEach(_key => delete cache[_key]);
+            keys.forEach(_key => {
+                clearSavedCacheData(_key);
+                delete cache[_key];
+            });
+
             return true;
         }
     } else if (getCacheData(key)) {
+        clearSavedCacheData(key);
         delete cache[key];
         return true;
     }
@@ -123,6 +128,12 @@ const clearOldData = key => {
     }
 
     return value;
+};
+
+const clearSavedCacheData = key => {
+    if (configstore.has(`cache.${key}`)) {
+        configstore.delete(`cache.${key}`);
+    }
 };
 
 module.exports = {
