@@ -133,7 +133,9 @@ const clearOldData = key => {
 const clearSavedCacheData = key => {
     if (configstore.has(`cache.${key}`)) {
         configstore.delete(`cache.${key}`);
+        return true;
     }
+    return false;
 };
 
 module.exports = {
