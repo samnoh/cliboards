@@ -5,7 +5,8 @@ const cache = Object.create(null);
 /*
 options
 {
-    ttl: number, (ms)
+    ttl: number, (ms),
+    save: boolean,
 }
 */
 
