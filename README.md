@@ -12,7 +12,7 @@
 -   Search posts
 -   Shurtcut for viewing images on default web browser
 -   Hides screen instantly (`space` key)
--   May load faster with a slow Internect connection
+-   May load faster with a slow internet connection
 -   Spoiler protection
 -   Color customizations
 -   Filters posts by keywords
