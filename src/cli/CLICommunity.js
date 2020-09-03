@@ -1234,7 +1234,7 @@ class CLICommunity extends CLI {
                 body.split('\n').map(line => {
                     const bodyHegiht =
                         Math.ceil(
-                            commentBox.strWidth(line) / commentBoxWidth,
+                            (commentBox.strWidth(line) + 4) / commentBoxWidth,
                         ) || 1;
                     finalHeight += bodyHegiht;
                 });
