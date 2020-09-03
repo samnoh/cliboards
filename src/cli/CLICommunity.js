@@ -1226,16 +1226,20 @@ class CLICommunity extends CLI {
 
                 const commentBoxWidth = commentBox.width;
                 const baseHeight = 2; // border lines
+                const strWidthOffset = 4;
                 const infoHeight = isRemoved
                     ? 0
-                    : Math.ceil(commentBox.strWidth(info) / commentBoxWidth);
+                    : Math.ceil(
+                          (commentBox.strWidth(info) + strWidthOffset) /
+                              commentBoxWidth,
+                      );
                 let finalHeight = baseHeight + infoHeight;
 
                 body.split('\n').map(line => {
-                    const bodyHegiht =
-                        Math.ceil(
-                            (commentBox.strWidth(line) + 4) / commentBoxWidth,
-                        ) || 1;
+                    const bodyHegiht = Math.ceil(
+                        (commentBox.strWidth(line) + strWidthOffset) /
+                            commentBoxWidth,
+                    );
                     finalHeight += bodyHegiht;
                 });
 
