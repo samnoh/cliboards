@@ -44,7 +44,7 @@ describe('Clien', () => {
 
             expect(
                 clien.boards.filter(b => b.type === clien.boardTypes[0]).length,
-            ).toEqual(12);
+            ).not.toBe(0);
         });
 
         test('getPosts()', async () => {

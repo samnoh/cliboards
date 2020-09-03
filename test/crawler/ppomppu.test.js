@@ -20,7 +20,7 @@ afterAll(async () => {
     await ppomppu.close();
 });
 
-describe('Ppomppu', () => {
+describe.skip('Ppomppu', () => {
     describe('properties', () => {
         test('baseUrl', () => {
             expect(ppomppu.baseUrl).toEqual(baseUrl);
