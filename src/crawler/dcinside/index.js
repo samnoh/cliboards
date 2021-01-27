@@ -75,7 +75,7 @@ class Dcinside extends CommunityCrawler {
                     const link = list
                         .querySelector('a.lt')
                         .getAttribute('href');
-                    const title = list.querySelector('.detail-txt');
+                    const title = list.querySelector('.subjectin');
                     const infoEl = list.querySelectorAll('.ginfo li');
 
                     let infoIndex = -1;
