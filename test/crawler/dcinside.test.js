@@ -141,7 +141,7 @@ describe('Dcinside', () => {
                 await dcinside.addBoard('test', dcinside.boardTypes[0]);
                 expect(false).toBeTruthy(); // always fail
             } catch (e) {
-                expect(e.message).toEqual('Error: Response status is 403');
+                expect(e.message).toEqual('Error: Response status is 404');
             }
         });
 
