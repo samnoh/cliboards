@@ -299,7 +299,7 @@ class Ppomppu extends CommunityCrawler {
 
         return Array.from(comments)
             .map(comment => {
-                const body = comment.querySelector('.comment_memo td');
+                const body = comment.querySelector('.comment_memo .content td');
                 const author = comment.querySelector('.com_name span');
                 const time = comment.querySelector('.cin_02 span');
                 const isReply = parseInt(
