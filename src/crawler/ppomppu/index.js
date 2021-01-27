@@ -178,7 +178,8 @@ class Ppomppu extends CommunityCrawler {
 
             listComment && h4.removeChild(listComment.parentNode);
 
-            const infoEl = document.querySelector('h4').innerText.split('\n');
+            const bbsView = document.querySelector('.bbs.view');
+            const infoEl = bbsView.querySelector('h4').innerText.split('\n');
             const _title = infoEl[0];
             const author = infoEl[1].split(' ')[0];
 
