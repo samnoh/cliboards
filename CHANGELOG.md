@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.120] - 2021-01-27
+
+### Fixed
+
+-   dcinside post list
+-   ppomppu comments
+-   ppomppu post body ([@heavenishere0621](https://github.com/heavenishere0621) in [#14](https://github.com/samnoh/cliboards/pull/14))
+
 ## [1.0.0-beta.120] - 2020-08-20
 
 ### Updated
