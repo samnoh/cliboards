@@ -181,8 +181,8 @@ class Dcinside extends CommunityCrawler {
                 body: body.innerText.trim(),
                 images,
                 hasImages: images.length,
-                upVotes: parseInt(upVotes.innerText),
-                downVotes: parseInt(downVotes.innerText),
+                upVotes: upVotes ? parseInt(upVotes.innerText) : 0,
+                downVotes: downVotes ? parseInt(downVotes.innerText) : 0,
                 comments: [],
             };
         });
