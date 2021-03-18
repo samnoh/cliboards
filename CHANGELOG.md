@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.124] - 2021-03-18
+
+### Fixed
+
+-   dcinside gallaries that are not allowed to downvote
+
 ## [1.0.0-beta.120] - 2021-01-27
 
 ### Fixed

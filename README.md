@@ -65,7 +65,7 @@ cliboards --showSpoiler
 # Hide comments in order to browse posts faster
 cliboards --hideComments
 
-# Hide top and/or bottom bars
+# Show/hide top and/or bottom bars
 cliboards --fullScreen
 cliboards --hideTopBar
 cliboards --hideBottomBar

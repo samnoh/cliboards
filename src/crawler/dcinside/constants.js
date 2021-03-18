@@ -21,13 +21,8 @@ module.exports = {
     boardTypes,
     boards: [
         {
-            name: '궨트',
-            value: 'gwent',
-            type: boardTypes[0],
-        },
-        {
-            name: '배우 박주현',
-            value: 'juhyunpark',
+            name: '브레이브걸스',
+            value: 'bravegirls0409',
             type: boardTypes[0],
         },
         {
