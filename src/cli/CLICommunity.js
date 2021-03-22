@@ -730,6 +730,8 @@ class CLICommunity extends CLI {
         });
 
         this.boardsList.on('focus', () => {
+            this.screen.realloc();
+
             if (this.autoRefreshTimer) {
                 this.autoRefreshTimer = clearTimeout(this.autoRefreshTimer);
             }
@@ -786,6 +788,8 @@ class CLICommunity extends CLI {
         });
 
         this.listList.on('focus', () => {
+            this.screen.realloc();
+
             this.listList.shouldStayAtCurrPage =
                 !!this.searchKeywordInMode ||
                 !!this.crawler.searchParams.value ||
@@ -906,6 +910,8 @@ class CLICommunity extends CLI {
         });
 
         this.detailBox.on('focus', () => {
+            this.screen.realloc();
+
             if (!this.post) {
                 this.detailBox.setContent('');
                 this.flushComments();
@@ -1070,7 +1076,6 @@ class CLICommunity extends CLI {
         }
 
         this.currentPostIndex = scrollOffset;
-        this.screen.realloc();
         this.listList.focus();
     }
 
