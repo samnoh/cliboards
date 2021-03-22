@@ -1070,6 +1070,7 @@ class CLICommunity extends CLI {
         }
 
         this.currentPostIndex = scrollOffset;
+        this.screen.realloc();
         this.listList.focus();
     }
 
