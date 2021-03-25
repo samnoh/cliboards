@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta.125] - 2021-03-25
+
+### Fixed
+
+-   fix text rendering bug
+
 ## [1.0.0-beta.124] - 2021-03-18
 
 ### Fixed
