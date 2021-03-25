@@ -38,7 +38,7 @@ module.exports = {
         dockBorders: true,
         fastCSR: true,
         fullUnicode: true,
-        debug: process.env.NODE_ENV === 'development',
+        debug: process.env.NODE_ENV === 'development', // key f12
     },
     title: {
         ...defaultOptions.box,
