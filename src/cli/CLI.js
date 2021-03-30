@@ -96,6 +96,7 @@ class CLI {
                             this.getWidget().focus();
                             c.show();
                         }
+                        this.screen.realloc();
                         this.screen.render();
                     });
             }
