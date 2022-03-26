@@ -27,7 +27,7 @@
         "axios": "0.21.1",
         "blessed": "0.1.81",
         "configstore": "5.0.1",
-        "minimist": "1.2.5",
+        "minimist": "1.2.6",
         "open": "7.2.0",
         "puppeteer": "5.2.1",
         "update-notifier": "4.1.1"
